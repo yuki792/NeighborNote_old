@@ -648,8 +648,8 @@ public class NeverNote extends QMainWindow {
 		// ICHANGED
 		// 連想ノートリストをセットアップ
 		rensoNoteList = new RensoNoteList(conn);
-		rensoNoteList.itemClicked.connect(this,
-				"rensoNoteItemClick(QListWidgetItem)");
+		rensoNoteList.itemPressed.connect(this,
+				"rensoNoteItemPressed(QListWidgetItem)");
 		rensoNoteListDock = new QDockWidget(tr("Renso Note List"), this);
 		rensoNoteListDock.setWidget(rensoNoteList);
 		addDockWidget(DockWidgetArea.RightDockWidgetArea, rensoNoteListDock);
@@ -4263,7 +4263,6 @@ public class NeverNote extends QMainWindow {
 			while (it.hasNext()) {
 				int tabIndex = it.next();
 				String nextGuid = ((TabBrowse) tabBrowser.widget(tabIndex)).getBrowserWindow().getNote().getGuid();
-				System.out.println("nextGuid = " + nextGuid);
 				// guid1=guid2のデータは登録しない
 				if (!currentNoteGuid.equals(nextGuid)) {
 					conn.getHistoryTable().addHistory("browse",
@@ -7782,9 +7781,14 @@ public class NeverNote extends QMainWindow {
 	// ICHANGED
 	// ユーザが連想ノートリストのアイテムを選択した時の処理
 	@SuppressWarnings("unused")
-	private void rensoNoteItemClick(QListWidgetItem current) {
+	private void rensoNoteItemPressed(QListWidgetItem current) {
 		logger.log(logger.HIGH, "Nevernote.rensoNoteSelectionChangeに入った");
 
+		// 右クリックだったら何もせずに終了
+		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
+			return;
+		}
+		
 		saveNote();
 
 		// 選択されたノート（current）のguidをcurrentnoteguidにセット
