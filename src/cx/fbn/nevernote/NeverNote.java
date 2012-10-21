@@ -941,10 +941,12 @@ public class NeverNote extends QMainWindow {
 		
 		// ICHANGED
 		prevCurrentNoteGuid = new String();
-		prevSelectedNoteGUIDs = new ArrayList<String>();		
+		prevSelectedNoteGUIDs = new ArrayList<String>();
 		// 起動時だけ、noteTableSelection()で正しい位置が取得できないので、ここで取得
-		//List<QModelIndex> selections = noteTableView.selectionModel().selectedRows();
-		//prevRow = selections.get(0).row();
+		List<QModelIndex> selections = noteTableView.selectionModel().selectedRows();
+		if(!selections.isEmpty()){
+			prevRow = selections.get(0).row();
+		}
 	}
 
 	// Main entry point
