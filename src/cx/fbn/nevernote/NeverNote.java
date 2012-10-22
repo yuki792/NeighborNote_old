@@ -5129,6 +5129,7 @@ public class NeverNote extends QMainWindow {
 				addHistory();
 			}
 		}
+		
 	}
 
 	// ICHANGED タブが閉じられた
@@ -7656,7 +7657,7 @@ public class NeverNote extends QMainWindow {
 			menuBar.noteDuplicateAction.setEnabled(true);
 			menuBar.noteOnlineHistoryAction.setEnabled(true);
 			menuBar.noteMergeAction.setEnabled(true);
-			selectedNoteGUIDs.clear();
+			
 			if (Global.showDeleted) {
 				menuBar.noteDuplicateAction.setEnabled(false);
 			}
@@ -7673,6 +7674,8 @@ public class NeverNote extends QMainWindow {
 				downButton.setEnabled(true);
 			else
 				downButton.setEnabled(false);
+			
+			prevRow = row;
 
 			browserWindow.noteSignal.noteChanged.disconnect(this,"setNoteDirty()");
 			browserWindow.focusLost.disconnect(this, "saveNote()");
@@ -7774,11 +7777,14 @@ public class NeverNote extends QMainWindow {
 	
 	// ICHANGED
 	public void restoreCurrentNoteGuid(){
+		
 		if(!prevSelectedNoteGUIDs.isEmpty()){
 			selectedNoteGUIDs.clear();
 			selectedNoteGUIDs.addAll(prevSelectedNoteGUIDs);
 			currentNoteGuid = prevCurrentNoteGuid;
 			noteTableView.selectRow(prevRow);
+		}else{
+			System.out.println("prevSelectedNoteGUIDs is EMPTY!!");
 		}
 		
 		prevSelectedNoteGUIDs.clear();
