@@ -618,25 +618,6 @@ public class NeverNote extends QMainWindow {
 		tabBrowser.tabCloseRequested.connect(this, "tabWindowClosing(int)");
 
 		// ICHANGED
-		/* やっぱりこの部分は要らないっぽいな。あとで消す。
-		tab.getBrowserWindow().noteSignal.tagsChanged.connect(this,
-				"tabWindowTagsEdited(String, List)");
-		tab.contentsChanged.connect(this,
-				"saveNoteTabBrowser(String, String, Boolean, BrowserWindow)");
-		tab.getBrowserWindow().blockApplication.connect(this,
-				"blockApplication(BrowserWindow)");
-		tab.getBrowserWindow().unblockApplication.connect(this,
-				"unblockApplication()");
-
-		browserWindow.noteSignal.tagsChanged.connect(tab,
-				"updateTags(String, List)");
-		browserWindow.noteSignal.titleChanged.connect(tab,
-				"updateTitle(String, String)");
-		browserWindow.noteSignal.notebookChanged.connect(tab,
-				"updateNotebook(String, String)");
-		*/
-
-		// ICHANGED
 		// 履歴記録のハッシュマップを初期化
 		historyGuids.put(index, new ArrayList<String>());
 		historyPosition.put(index, 0);
@@ -5126,23 +5107,7 @@ public class NeverNote extends QMainWindow {
 		showEditorButtons(newBrowser.getBrowserWindow());
 		loadNoteBrowserInformation(newBrowser.getBrowserWindow(), guid, note);
 		setupBrowserWindowListeners(newBrowser.getBrowserWindow(), false);
-		/* 多分要らない。あとで消す。
-		newBrowser.getBrowserWindow().noteSignal.tagsChanged.connect(this,
-				"tabWindowTagsEdited(String, List)");
-		newBrowser.contentsChanged.connect(this,
-				"saveNoteTabBrowser(String, String, Boolean, BrowserWindow)");
-		newBrowser.getBrowserWindow().blockApplication.connect(this,
-				"blockApplication(BrowserWindow)");
-		newBrowser.getBrowserWindow().unblockApplication.connect(this,
-				"unblockApplication()");
-
-		browserWindow.noteSignal.tagsChanged.connect(newBrowser,
-				"updateTags(String, List)");
-		browserWindow.noteSignal.titleChanged.connect(newBrowser,
-				"updateTitle(String, String)");
-		browserWindow.noteSignal.notebookChanged.connect(newBrowser,
-				"updateNotebook(String, String)");
-		*/
+		
 		String noteTitle = note.getTitle();
 		int index = tabBrowser.addNewTab(newBrowser, noteTitle);
 
@@ -5165,22 +5130,6 @@ public class NeverNote extends QMainWindow {
 			}
 		}
 	}
-
-	// ICHANGED
-	/* やっぱりいらなくなった。あとで消す。
-	@SuppressWarnings({ "rawtypes", "unused" })
-	private void tabWindowTagsEdited(String guid, List values) {
-		StringBuffer line = new StringBuffer(100);
-		for (int i = 0; i < values.size(); i++) {
-			if (i > 0)
-				line.append(Global.tagDelimeter + " ");
-			line.append(values.get(i));
-		}
-		if (guid.equals(currentNoteGuid)) {
-			browserWindow.setTag(line.toString());
-		}
-	}
-	*/
 
 	// ICHANGED タブが閉じられた
 	@SuppressWarnings("unused")
@@ -5376,18 +5325,6 @@ public class NeverNote extends QMainWindow {
 		if(prevNote == null){
 			tabWindows.put(tabBrowser.currentIndex(), currentTab);
 		}
-		
-		/* tabWindowsをguidで識別していたときに↑の代わりに使っていた。tabindexで識別するのでもういらない。あとで消す。
-		 * TabBrowse currentTab = (TabBrowse) tabBrowser.currentWidget();
-		Note prevNote = currentTab.getBrowserWindow().getNote();
-		if (prevNote != null) {
-			String prevGuid = prevNote.getGuid();
-			tabWindows.remove(prevGuid);
-			tabWindows.put(currentNoteGuid, currentTab);
-		} else {
-			tabWindows.put(currentNoteGuid, currentTab);
-		}
-		*/
 
 		loadNoteBrowserInformation(browserWindow, currentNoteGuid, currentNote);
 	}
@@ -5932,16 +5869,6 @@ public class NeverNote extends QMainWindow {
 			b.getBrowserWindow().getNote().setGuid(newGuid);
 			externalWindows.put(newGuid, b);
 		}
-
-		// ICHANGED
-		/* tabWindowsをguidで識別していた時のやつ。↓を使うのでもういらない。あとで消す。
-		if (tabWindows.containsKey(oldGuid)) {
-			TabBrowse b = tabWindows.get(oldGuid);
-			tabWindows.remove(oldGuid);
-			b.getBrowserWindow().getNote().setGuid(newGuid);
-			tabWindows.put(newGuid, b);
-		}
-		*/
 		
 		// ICHANGED
 		for(int i = 0; i < tabBrowser.count(); i++){
