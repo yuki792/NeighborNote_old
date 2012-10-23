@@ -5186,6 +5186,9 @@ public class NeverNote extends QMainWindow {
 			fromHistory.put(i,  fromHist);
 			fromHistory.remove(i + 1);
 		}
+		
+		// タブの閉じるボタンを押すと、tabWindowClosingより先にtabWindowChangedが呼ばれてしまうので、手動で呼びなおす
+		tabWindowChanged(tabBrowser.currentIndex());
 	}
 
 	// ***************************************************************
@@ -7650,7 +7653,6 @@ public class NeverNote extends QMainWindow {
 
 	// ICHANGED
 	// タブが変更された
-	@SuppressWarnings("unused")
 	private void tabWindowChanged(int index) {
 		if (index >= 0) {
 			saveNote();
