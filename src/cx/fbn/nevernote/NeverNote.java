@@ -613,6 +613,7 @@ public class NeverNote extends QMainWindow {
 		TabBrowse tab = new TabBrowse(conn, tabBrowser);
 		browserWindow = tab.getBrowserWindow();
 		int index = tabBrowser.addNewTab(tab, "");
+		tabWindows.put(index, tab);
 		tabBrowser.setTabsClosable(true);
 		tabBrowser.currentChanged.connect(this, "tabWindowChanged(int)");
 		tabBrowser.tabCloseRequested.connect(this, "tabWindowClosing(int)");
@@ -5103,13 +5104,13 @@ public class NeverNote extends QMainWindow {
 				true);
 		// 新しいタブエディタを作成
 		TabBrowse newBrowser = new TabBrowse(conn, tabBrowser);
-		tabWindows.put(tabBrowser.currentIndex(), newBrowser);
 		showEditorButtons(newBrowser.getBrowserWindow());
 		loadNoteBrowserInformation(newBrowser.getBrowserWindow(), guid, note);
 		setupBrowserWindowListeners(newBrowser.getBrowserWindow(), false);
 		
 		String noteTitle = note.getTitle();
 		int index = tabBrowser.addNewTab(newBrowser, noteTitle);
+		tabWindows.put(index, newBrowser);
 
 		// 履歴記録のハッシュマップを初期化
 		ArrayList<String> histGuids = new ArrayList<String>();
@@ -5165,6 +5166,13 @@ public class NeverNote extends QMainWindow {
 		historyGuids.remove(index);
 		historyPosition.remove(index);
 		fromHistory.remove(index);
+		
+		// tabWindowsのインデックスを更新（削除によって空いた部分を詰める）
+		for(int i = index ; tabWindows.containsKey(i + 1) ; i++){
+			TabBrowse tab = tabWindows.get(i + 1);
+			tabWindows.put(i, tab);
+			tabWindows.remove(i + 1);
+		}
 	}
 
 	// ***************************************************************
@@ -5319,13 +5327,6 @@ public class NeverNote extends QMainWindow {
 
 		// ICHANGED
 		tabBrowser.setTabTitle(tabBrowser.currentIndex(), currentNote.getTitle());
-		
-		// ICHANGED
-		TabBrowse currentTab = (TabBrowse) tabBrowser.currentWidget();
-		Note prevNote = currentTab.getBrowserWindow().getNote();
-		if(prevNote == null){
-			tabWindows.put(tabBrowser.currentIndex(), currentTab);
-		}
 
 		loadNoteBrowserInformation(browserWindow, currentNoteGuid, currentNote);
 	}
