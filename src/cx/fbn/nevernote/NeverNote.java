@@ -5167,11 +5167,24 @@ public class NeverNote extends QMainWindow {
 		historyPosition.remove(index);
 		fromHistory.remove(index);
 		
-		// tabWindowsのインデックスを更新（削除によって空いた部分を詰める）
+		// タブのインデックスを更新（削除によって空いた部分を詰める）
 		for(int i = index ; tabWindows.containsKey(i + 1) ; i++){
+			// tabWindows
 			TabBrowse tab = tabWindows.get(i + 1);
 			tabWindows.put(i, tab);
 			tabWindows.remove(i + 1);
+			// historyGuids
+			ArrayList<String> histGuids = historyGuids.get(i + 1);
+			historyGuids.put(i, histGuids);
+			historyGuids.remove(i + 1);
+			// historyPosition
+			int histPosition = historyPosition.get(i + 1);
+			historyPosition.put(i, histPosition);
+			historyPosition.remove(i + 1);
+			// fromHistory
+			boolean fromHist = fromHistory.get(i + 1);
+			fromHistory.put(i,  fromHist);
+			fromHistory.remove(i + 1);
 		}
 	}
 
