@@ -187,6 +187,7 @@ import cx.fbn.nevernote.gui.TagTreeWidget;
 import cx.fbn.nevernote.gui.Thumbnailer;
 import cx.fbn.nevernote.gui.TrashTreeWidget;
 import cx.fbn.nevernote.gui.controls.QuotaProgressBar;
+import cx.fbn.nevernote.neighbornote.ClipBoardObserver;
 import cx.fbn.nevernote.oauth.OAuthTokenizer;
 import cx.fbn.nevernote.oauth.OAuthWindow;
 import cx.fbn.nevernote.sql.DatabaseConnection;
@@ -379,6 +380,9 @@ public class NeverNote extends QMainWindow {
 	private String prevCurrentNoteGuid;
 	private final List<String> prevSelectedNoteGUIDs;
 	private int prevRow;
+	
+	// ICHANGED
+	ClipBoardObserver cbObserver;
 
 	String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 
@@ -390,7 +394,11 @@ public class NeverNote extends QMainWindow {
 	// Application Constructor
 	@SuppressWarnings("static-access")
 	public NeverNote(DatabaseConnection dbConn) {
+		// ICHANGED
+		cbObserver = new ClipBoardObserver();
+		
 		conn = dbConn;
+		
 		if (conn.getConnection() == null) {
 			String msg = new String(
 					tr("Unable to connect to the database.\n\nThe most probable reason is that some other process\n"
@@ -610,7 +618,7 @@ public class NeverNote extends QMainWindow {
 		tabWindows = new HashMap<Integer, TabBrowse>();
 		tabBrowser = new TabBrowserWidget(this);
 		tabBrowser.setStyleSheet("QTabBar::tab{width:150px;}");
-		TabBrowse tab = new TabBrowse(conn, tabBrowser);
+		TabBrowse tab = new TabBrowse(conn, tabBrowser, cbObserver);
 		browserWindow = tab.getBrowserWindow();
 		int index = tabBrowser.addNewTab(tab, "");
 		tabWindows.put(index, tab);
@@ -5029,7 +5037,10 @@ public class NeverNote extends QMainWindow {
 				true);
 		// We have a new external editor to create
 		QIcon appIcon = new QIcon(iconPath + "nevernote.png");
-		ExternalBrowse newBrowser = new ExternalBrowse(conn);
+		
+		// ICHANGED
+		ExternalBrowse newBrowser = new ExternalBrowse(conn, cbObserver);
+		
 		newBrowser.setWindowIcon(appIcon);
 		externalWindows.put(guid, newBrowser);
 		showEditorButtons(newBrowser.getBrowserWindow());
@@ -5103,7 +5114,7 @@ public class NeverNote extends QMainWindow {
 		Note note = conn.getNoteTable().getNote(guid, true, true, false, true,
 				true);
 		// 新しいタブエディタを作成
-		TabBrowse newBrowser = new TabBrowse(conn, tabBrowser);
+		TabBrowse newBrowser = new TabBrowse(conn, tabBrowser, cbObserver);
 		showEditorButtons(newBrowser.getBrowserWindow());
 		loadNoteBrowserInformation(newBrowser.getBrowserWindow(), guid, note);
 		setupBrowserWindowListeners(newBrowser.getBrowserWindow(), false);
@@ -6300,7 +6311,9 @@ public class NeverNote extends QMainWindow {
 
 		// If we've gotten this far, we have a good note.
 		if (historyWindow == null) {
-			historyWindow = new OnlineNoteHistory(logger, conn);
+			// ICHANGED
+			historyWindow = new OnlineNoteHistory(logger, conn, cbObserver);
+			
 			historyWindow.historyCombo.activated.connect(this,
 					"reloadHistoryWindow(String)");
 			historyWindow.restoreAsNew.clicked.connect(this,

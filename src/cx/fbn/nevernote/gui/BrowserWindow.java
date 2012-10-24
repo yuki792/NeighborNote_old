@@ -134,6 +134,7 @@ import cx.fbn.nevernote.dialog.TableDialog;
 import cx.fbn.nevernote.dialog.TagAssign;
 import cx.fbn.nevernote.evernote.EnCrypt;
 import cx.fbn.nevernote.filters.FilterEditorTags;
+import cx.fbn.nevernote.neighbornote.ClipBoardObserver;
 import cx.fbn.nevernote.signals.NoteResourceSignal;
 import cx.fbn.nevernote.signals.NoteSignal;
 import cx.fbn.nevernote.sql.DatabaseConnection;
@@ -266,6 +267,8 @@ public class BrowserWindow extends QWidget {
 	private final QTimer setSourceTimer;
 	String latexGuid; // This is set if we are editing an existing LaTeX
 						// formula. Useful to track guid.
+	// ICHANGED
+	private final ClipBoardObserver cbObserver;
 
 	public static class SuggestionListener implements SpellCheckListener {
 		public boolean abortSpellCheck = false;
@@ -309,7 +312,8 @@ public class BrowserWindow extends QWidget {
 		}
 	}
 
-	public BrowserWindow(DatabaseConnection c) {
+	// ICHANGED 引数にcbObserverを追加
+	public BrowserWindow(DatabaseConnection c, ClipBoardObserver cbObserver) {
 		logger = new ApplicationLogger("browser.log");
 		logger.log(logger.HIGH, "Setting up browser");
 		iconPath = new String("classpath:cx/fbn/nevernote/icons/");
@@ -331,6 +335,9 @@ public class BrowserWindow extends QWidget {
 		urlLabel.clicked.connect(this, "sourceUrlClicked()");
 		authorLabel = new QLabel();
 		conn = c;
+		
+		// ICHANGED
+		this.cbObserver = cbObserver; 
 
 		focusLost = new Signal0();
 
@@ -1124,6 +1131,9 @@ public class BrowserWindow extends QWidget {
 	// Listener for when cut is clicked
 	@SuppressWarnings("unused")
 	private void cutClicked() {
+		// ICHANGED
+		cbObserver.setCopySourceGuid(currentNote.getGuid());
+		
 		browser.page().triggerAction(WebAction.Cut);
 		browser.setFocus();
 	}
@@ -1131,6 +1141,9 @@ public class BrowserWindow extends QWidget {
 	// Listener when COPY is clicked
 	@SuppressWarnings("unused")
 	private void copyClicked() {
+		// ICHANGED
+		cbObserver.setCopySourceGuid(currentNote.getGuid());
+		
 		browser.page().triggerAction(WebAction.Copy);
 		browser.setFocus();
 	}
@@ -1142,6 +1155,16 @@ public class BrowserWindow extends QWidget {
 			pasteWithoutFormattingClicked();
 			return;
 		}
+		
+		// ICHANGED コピー＆ペーストの操作履歴をデータベースに登録
+		String srcGuid = cbObserver.getSourceGuid();
+		String dstGuid = currentNote.getGuid();
+		if(srcGuid != null && dstGuid != null){
+			if(!srcGuid.equals(dstGuid)){
+				conn.getHistoryTable().addHistory("copy & paste", srcGuid, dstGuid);
+			}
+		}
+		
 		QClipboard clipboard = QApplication.clipboard();
 		QMimeData mime = clipboard.mimeData();
 
@@ -1185,6 +1208,16 @@ public class BrowserWindow extends QWidget {
 		QMimeData mime = clipboard.mimeData();
 		if (!mime.hasText())
 			return;
+		
+		// ICHANGED コピー＆ペーストの操作履歴をデータベースに登録
+		String srcGuid = cbObserver.getSourceGuid();
+		String dstGuid = currentNote.getGuid();
+		if(srcGuid != null && dstGuid != null){
+			if(!srcGuid.equals(dstGuid)){
+				conn.getHistoryTable().addHistory("copy & paste", srcGuid, dstGuid);
+			}
+		}
+		
 		String text = mime.text();
 		clipboard.clear();
 		clipboard.setText(text, Mode.Clipboard);
@@ -1485,7 +1518,9 @@ public class BrowserWindow extends QWidget {
 		if (text.trim().equalsIgnoreCase(""))
 			return;
 
-		NoteQuickLinkDialog dialog = new NoteQuickLinkDialog(logger, conn, text);
+		// ICHANGED
+		NoteQuickLinkDialog dialog = new NoteQuickLinkDialog(logger, conn, text, cbObserver);
+		
 		if (dialog.getResults().size() == 0) {
 			QMessageBox.critical(null, tr("No Matches Found"),
 					tr("No matching notes found."));

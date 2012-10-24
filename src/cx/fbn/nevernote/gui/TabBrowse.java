@@ -12,6 +12,7 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 
 import cx.fbn.nevernote.dialog.FindDialog;
+import cx.fbn.nevernote.neighbornote.ClipBoardObserver;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 
 public class TabBrowse extends QWidget {
@@ -22,13 +23,15 @@ public class TabBrowse extends QWidget {
 	String saveTitle;
 	private final FindDialog find; // Text search in note dialog
 	private final TabBrowserWidget parent;
+	private final ClipBoardObserver cbObserver;
 
 	// コンストラクタ
-	public TabBrowse(DatabaseConnection c, TabBrowserWidget p) {
+	public TabBrowse(DatabaseConnection c, TabBrowserWidget p, ClipBoardObserver cbObserver) {
 		conn = c;
 		parent = p;
+		this.cbObserver = cbObserver;
 		contentsChanged = new Signal4<String, String, Boolean, BrowserWindow>();
-		browser = new BrowserWindow(conn);
+		browser = new BrowserWindow(conn, this.cbObserver);
 		QVBoxLayout v = new QVBoxLayout();
 		v.addWidget(browser);
 		setLayout(v);
