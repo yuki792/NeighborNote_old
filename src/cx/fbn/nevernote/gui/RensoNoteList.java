@@ -53,7 +53,7 @@ public class RensoNoteList extends QListWidget {
 		logger.log(logger.HIGH, "Leaving RensoNoteList.refreshRensoNoteList");
 	}
 	
-	
+	// 引数1と引数2をマージしたハッシュマップを返す
 	private HashMap<String, Integer> mergeHistory(HashMap<String, Integer> History1, HashMap<String, Integer> History2){
 		HashMap<String, Integer> mergedHistory = new HashMap<String, Integer>();
 		
@@ -73,16 +73,10 @@ public class RensoNoteList extends QListWidget {
 		return mergedHistory;
 	}
 	
-	private void addRensoNoteList(HashMap<String, Integer> History){
-		// 引数をディープコピー
+	private void addRensoNoteList(HashMap<String, Integer> History){		
+		// 引数保護のためディープコピー
 		HashMap<String, Integer> copyHistory = new HashMap<String, Integer>();
-		Set<String> keySet = History.keySet();
-		Iterator<String> iterator = keySet.iterator();
-		
-		while(iterator.hasNext()){
-			String key = iterator.next();
-			copyHistory.put(key, History.get(key));
-		}
+		copyHistory.putAll(History);
 		
 		// 操作回数が多い順に取り出して連想ノートリストに追加
 		while (!copyHistory.isEmpty()) {
