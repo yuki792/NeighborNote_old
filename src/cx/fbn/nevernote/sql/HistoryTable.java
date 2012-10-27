@@ -46,48 +46,48 @@ public class HistoryTable {
 		}
 	}
 
-	// Historyテーブルから引数ノートと関連のあるノートのguidと回数をゲット（操作種別：browse）
-	public HashMap<String, Integer> getBrowseHistory(String guid) {
+	// Historyテーブルから引数ノートと関連のあるノートのguidと回数をゲット
+	public HashMap<String, Integer> getBehaviorHistory(String behaviorType, String guid) {
 		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
-		HashMap<String, Integer> browseHist = new HashMap<String, Integer>();
+		HashMap<String, Integer> behaviorHist = new HashMap<String, Integer>();
 
 		// guid1=guidの履歴一覧を取得
-		query.prepare("Select guid2 from History where behaviorType='browse' and guid1=:guid1");
+		query.prepare("Select guid2 from History where behaviorType='" + behaviorType + "' and guid1=:guid1");
 		query.bindValue(":guid1", guid);
 		if (!query.exec()) {
 			logger.log(logger.MEDIUM,
-					"HistoryテーブルからbehaviorType=browseかつguid1=guidのアイテム取得失敗");
+					"HistoryテーブルからbehaviorType=" + behaviorType + "かつguid1=" + guid + "のアイテム取得失敗");
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 		// HashMapに記録
 		while (query.next()) {
 			// すでにHashMapに登録されていたら、回数を+1
 			String key = query.valueString(0);
-			if (browseHist.containsKey(key)) {
-				browseHist.put(key, browseHist.get(key) + 1);
+			if (behaviorHist.containsKey(key)) {
+				behaviorHist.put(key, behaviorHist.get(key) + 1);
 			} else { // そうでないなら新規登録
-				browseHist.put(key, 1);
+				behaviorHist.put(key, 1);
 			}
 		}
 
 		// guid2=guidの履歴一覧を取得
-		query.prepare("Select guid1 from History where behaviorType='browse' and guid2=:guid2");
+		query.prepare("Select guid1 from History where behaviorType='" + behaviorType + "' and guid2=:guid2");
 		query.bindValue(":guid2", guid);
 		if (!query.exec()) {
 			logger.log(logger.MEDIUM,
-					"HistoryテーブルからbehaviorType=browseかつguid2=guidのアイテム取得失敗");
+					"HistoryテーブルからbehaviorType=" + behaviorType + "かつguid2=" + guid + "のアイテム取得失敗");
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 		// HashMapに記録
 		while (query.next()) {
 			// すでにHashMapに登録されていたら、回数を+1
 			String key = query.valueString(0);
-			if (browseHist.containsKey(key)) {
-				browseHist.put(key, browseHist.get(key) + 1);
+			if (behaviorHist.containsKey(key)) {
+				behaviorHist.put(key, behaviorHist.get(key) + 1);
 			} else { // そうでないなら新規登録
-				browseHist.put(key, 1);
+				behaviorHist.put(key, 1);
 			}
 		}
-		return browseHist;
+		return behaviorHist;
 	}
 }
