@@ -46,11 +46,22 @@ public class RensoNoteList extends QListWidget {
 		
 		// copy&pasteHistory<guid, 回数（ポイント）>
 		HashMap<String, Integer> copyAndPasteHistory = conn.getHistoryTable().getBehaviorHistory("copy & paste", guid);
+		addWeight(copyAndPasteHistory, 2);
 		mergedHistory = mergeHistory(copyAndPasteHistory, mergedHistory);
 		
 		addRensoNoteList(mergedHistory);
 
 		logger.log(logger.HIGH, "Leaving RensoNoteList.refreshRensoNoteList");
+	}
+	
+	// 操作回数に重み付けする
+	private void addWeight(HashMap<String, Integer> history, int weight){
+		Set<String> keySet = history.keySet();
+		Iterator<String> hist_iterator = keySet.iterator();
+		while(hist_iterator.hasNext()){
+			String key = hist_iterator.next();
+			history.put(key, history.get(key) * weight);
+		}
 	}
 	
 	// 引数1と引数2をマージしたハッシュマップを返す
