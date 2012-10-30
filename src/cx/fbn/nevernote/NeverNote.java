@@ -6106,6 +6106,17 @@ public class NeverNote extends QMainWindow {
 		logger.log(logger.EXTREME, "Children count: " + sources.size());
 		mergeNoteContents(masterGuid, sources);
 		currentNoteGuid = masterGuid;
+		
+		// ICHANGED Historyをマージ
+		for (int i = 0; i < sources.size(); i++) {
+			String childGuid = sources.get(i);
+			if(masterGuid != null && childGuid != null){
+				if(!masterGuid.equals(childGuid)){
+					conn.getHistoryTable().updateHistoryGuid(masterGuid, childGuid);
+				}
+			}
+		}
+		
 		noteIndexUpdated(false);
 		refreshEvernoteNote(true);
 		waitCursor(false);

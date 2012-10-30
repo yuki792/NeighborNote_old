@@ -45,6 +45,40 @@ public class HistoryTable {
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
+	
+	// HistoryテーブルのGuidを更新
+	public void updateHistoryGuid(String newGuid, String oldGuid){
+		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
+		boolean check = false;
+		
+		histQuery.prepare("Delete from history where (guid1=:oldGuid1 and guid2=:newGuid1) or (guid1=:newGuid2 and guid2=:oldGuid2)");
+		histQuery.bindValue(":oldGuid1", oldGuid);
+		histQuery.bindValue(":newGuid1", newGuid);
+		histQuery.bindValue(":oldGuid2", oldGuid);
+		histQuery.bindValue(":newGuid2", newGuid);
+		check = histQuery.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "historyテーブルの重複削除で失敗");
+			logger.log(logger.MEDIUM, histQuery.lastError());
+		}
+		
+		histQuery.prepare("Update history set guid1=:newGuid where guid1=:oldGuid");
+		histQuery.bindValue(":newGuid", newGuid);
+		histQuery.bindValue(":oldGuid", oldGuid);
+		check = histQuery.exec();
+		if (!check) {
+			logger.log(logger.MEDIUM, "historyテーブルのguid1のところでguid更新失敗");
+			logger.log(logger.MEDIUM, histQuery.lastError());
+		}
+		histQuery.prepare("Update history set guid2=:newGuid where guid2=:oldGuid");
+		histQuery.bindValue(":newGuid", newGuid);
+		histQuery.bindValue(":oldGuid", oldGuid);
+		check = histQuery.exec();
+		if (!check) {
+			logger.log(logger.MEDIUM, "historyテーブルのguid2のところでguid更新失敗");
+			logger.log(logger.MEDIUM, histQuery.lastError());
+		}
+	}
 
 	// Historyテーブルから引数ノートと関連のあるノートのguidと回数をゲット
 	public HashMap<String, Integer> getBehaviorHistory(String behaviorType, String guid) {
