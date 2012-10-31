@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.filters;
 
@@ -31,25 +31,23 @@ public class FilterEditorTags {
 	DatabaseConnection conn;
 	ApplicationLogger logger;
 	public boolean permitNew;
-
+	
 	public FilterEditorTags(DatabaseConnection conn, ApplicationLogger logger) {
 		this.logger = logger;
 		this.conn = conn;
 	}
-
+	
+	
 	public List<Tag> getValidTags(Note note) {
 		// Reset permit new flag
 		permitNew = true;
-
-		boolean linked = conn.getNotebookTable().isLinked(
-				note.getNotebookGuid());
-
-		// If the notebook is linked, then we really only need to return the one
-		// notebookd
+		
+		boolean linked = conn.getNotebookTable().isLinked(note.getNotebookGuid());
+		
+		// If the notebook is linked, then we really only need to return the one notebookd
 		if (linked) {
 			permitNew = false;
-			return conn.getTagTable()
-					.getTagsForNotebook(note.getNotebookGuid());
+			return conn.getTagTable().getTagsForNotebook(note.getNotebookGuid());
 		} else
 			return conn.getTagTable().getTagsForNotebook("");
 	}

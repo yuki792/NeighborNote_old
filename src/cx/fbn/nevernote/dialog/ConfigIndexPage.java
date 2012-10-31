@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 //**********************************************
 //**********************************************
@@ -47,23 +48,23 @@ public class ConfigIndexPage extends QWidget {
 	private final QLineEdit specialStrip;
 	private final QCheckBox indexBody;
 	private final QLineEdit regexEdit;
-
+	
 	public ConfigIndexPage(QWidget parent) {
-		// super(parent);
-
+//		super(parent);
+							
 		// Recognition weight
 		QGroupBox weightGroup = new QGroupBox(tr("Recognition"));
 		QLabel weightLabel = new QLabel(tr("Minimum Recognition Weight"));
 		weightSpinner = new QSpinBox();
-		weightSpinner.setRange(1, 100);
+		weightSpinner.setRange(1,100);
 		weightSpinner.setSingleStep(1);
 		weightSpinner.setValue(Global.getRecognitionWeight());
-
+		
 		QHBoxLayout weightLayout = new QHBoxLayout();
 		weightLayout.addWidget(weightLabel);
 		weightLayout.addWidget(weightSpinner);
 		weightGroup.setLayout(weightLayout);
-
+		
 		// Local attachment indexing
 		QGroupBox attachmentGroup = new QGroupBox(tr("Content"));
 		indexBody = new QCheckBox(tr("Index Note Body"));
@@ -74,21 +75,20 @@ public class ConfigIndexPage extends QWidget {
 		indexAttachmentsLocally.setChecked(Global.indexAttachmentsLocally());
 		indexImageRecognition = new QCheckBox(tr("Index Image Recognition"));
 		indexImageRecognition.setChecked(Global.indexImageRecognition());
-
-		automaticWildcard = new QCheckBox(
-				tr("Automatically Wildcard All Searches"));
+		
+		automaticWildcard = new QCheckBox(tr("Automatically Wildcard All Searches"));
 		automaticWildcard.setChecked(Global.automaticWildcardSearches());
-
+		
 		specialStrip = new QLineEdit();
 		specialStrip.setText(Global.getSpecialIndexCharacters());
-
+		
 		QVBoxLayout attachmentLayout = new QVBoxLayout();
 		attachmentLayout.addWidget(indexBody);
 		attachmentLayout.addWidget(indexTitle);
 		attachmentLayout.addWidget(indexAttachmentsLocally);
 		attachmentLayout.addWidget(indexImageRecognition);
 		attachmentLayout.addWidget(automaticWildcard);
-
+		
 		QHBoxLayout specialCharLayout = new QHBoxLayout();
 		specialCharLayout.addWidget(new QLabel(tr("Special Word Characters")));
 		specialCharLayout.addWidget(specialStrip);
@@ -97,10 +97,9 @@ public class ConfigIndexPage extends QWidget {
 
 		// Index sleep interval
 		QGroupBox sleepGroup = new QGroupBox(tr("Index Interval"));
-		QLabel sleepLabel = new QLabel(
-				tr("Seconds between looking for unindexed notes"));
+		QLabel sleepLabel = new QLabel(tr("Seconds between looking for unindexed notes"));
 		sleepSpinner = new QSpinBox();
-		sleepSpinner.setRange(30, 600);
+		sleepSpinner.setRange(30,600);
 		sleepSpinner.setSingleStep(1);
 		sleepSpinner.setValue(Global.getIndexThreadSleepInterval());
 
@@ -108,7 +107,7 @@ public class ConfigIndexPage extends QWidget {
 		sleepLayout.addWidget(sleepLabel);
 		sleepLayout.addWidget(sleepSpinner);
 		sleepGroup.setLayout(sleepLayout);
-
+		
 		// Regular Expressions for word parsing
 		QGroupBox regexGroup = new QGroupBox(tr("Word Parse"));
 		QLabel regexLabel = new QLabel(tr("Regular Expression"));
@@ -117,9 +116,10 @@ public class ConfigIndexPage extends QWidget {
 
 		QHBoxLayout regexLayout = new QHBoxLayout();
 		regexLayout.addWidget(regexLabel);
-		regexLayout.addWidget(regexEdit);
+		regexLayout.addWidget(regexEdit);		
 		regexGroup.setLayout(regexLayout);
-
+		
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addWidget(sleepGroup);
 		mainLayout.addWidget(weightGroup);
@@ -128,64 +128,62 @@ public class ConfigIndexPage extends QWidget {
 		mainLayout.addStretch(1);
 		setLayout(mainLayout);
 
-	}
 
-	// *****************************************
-	// * Get for flag to index attachments
-	// *****************************************
+	}
+	
+	
+	//*****************************************
+	//* Get for flag to index attachments 
+	//*****************************************
 	public boolean getIndexAttachmentsLocally() {
 		return indexAttachmentsLocally.isChecked();
 	}
-
 	public boolean getIndexNoteBody() {
 		return indexBody.isChecked();
 	}
-
 	public boolean getIndexNoteTitle() {
 		return indexTitle.isChecked();
 	}
-
 	public String getSpecialCharacters() {
 		return specialStrip.text();
 	}
-
 	public boolean getIndexImageRecognition() {
 		return indexImageRecognition.isChecked();
 	}
-
 	public boolean getAutomaticWildcardSearches() {
 		return automaticWildcard.isChecked();
 	}
-
-	// *****************************************
-	// * Word length get/set methods
-	// *****************************************
+	
+	//*****************************************
+	//* Word length get/set methods 
+	//*****************************************
 	public void setSleepInterval(int len) {
 		sleepSpinner.setValue(len);
 	}
-
 	public int getSleepInterval() {
 		return sleepSpinner.value();
 	}
 
-	// *****************************************
-	// * Recognition Weight
-	// *****************************************
+
+	
+	//*****************************************
+	//* Recognition Weight 
+	//*****************************************
 	public void setRecognitionWeight(int len) {
 		weightSpinner.setValue(len);
 	}
-
 	public int getRecognitionWeight() {
 		return weightSpinner.value();
 	}
-
-	// *****************************************
-	// * Regex get/set methods
-	// *****************************************
+	
+	
+	
+	//*****************************************
+	//* Regex get/set methods 
+	//*****************************************
 	public void setRegex(String s) {
 		regexEdit.setText(s);
 	}
-
 	public String getRegex() {
 		return regexEdit.text();
 	}

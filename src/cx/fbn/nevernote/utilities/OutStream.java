@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.utilities;
 
@@ -37,34 +37,33 @@ public class OutStream extends FilterOutputStream {
 	File file;
 	FileOutputStream fos;
 	DataOutputStream dos;
-
+	
 	public OutStream(OutputStream out, String name) {
 		super(out);
 		buffer = new ArrayList<String>();
-
+		
 		file = Global.getFileManager().getLogsDirFile(name);
 		try {
 			fos = new FileOutputStream(file);
 			dos = new DataOutputStream(fos);
-		} catch (FileNotFoundException e) {
-		}
+		} catch (FileNotFoundException e) {}
 	}
-
+	
+	
 	@Override
 	public synchronized void write(byte b[]) throws IOException {
-		String aString = new String(b);
-		buffer.add(aString);
-		dos.writeBytes(aString + "\n");
-	}
+	        String aString = new String(b);
+	        buffer.add(aString);
+	        dos.writeBytes(aString +"\n");
+	    }
 
 	@Override
-	public synchronized void write(byte b[], int off, int len)
-			throws IOException {
-		String aString = new String(b, off, len);
-		buffer.add(aString);
-		dos.writeBytes(aString + "\n");
+	public synchronized void write(byte b[], int off, int len) throws IOException {
+	    String aString = new String(b , off , len);
+	    buffer.add(aString);
+	    dos.writeBytes(aString +"\n");
 	}
-
+	
 	public List<String> getText() {
 		return buffer;
 	}

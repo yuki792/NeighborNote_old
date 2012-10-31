@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.gui;
 
@@ -30,25 +30,25 @@ import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.gui.QWidget;
 
 public class ColorMenu extends Object {
-
+	
 	private final QMenu menu;
 	QWidget parent;
 	QColor currentColor;
-
+	
 	public ColorMenu(QWidget b) {
 		menu = new QMenu();
 		parent = b;
 		populateList();
 		currentColor = new QColor("black");
 	}
-
+	
 	public void setDefault(QColor color) {
 		currentColor = color;
 	}
-
+		
 	private void populateList() {
 		List<String> colorNames = QColor.colorNames();
-		for (int i = 0; i < colorNames.size(); i++) {
+		for(int i=0; i<colorNames.size(); i++) {
 			QColor color = new QColor(colorNames.get(i));
 			QPixmap pix = new QPixmap(new QSize(22, 22));
 			pix.fill(color);
@@ -59,18 +59,17 @@ public class ColorMenu extends Object {
 			menu.addAction(newAction);
 		}
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void itemHovered() {
-		if (menu.activeAction() != null
-				&& menu.activeAction().toolTip() != null)
+		if (menu.activeAction() != null && menu.activeAction().toolTip() != null)
 			currentColor = new QColor(menu.activeAction().toolTip());
 	}
-
+	
 	public QColor getColor() {
 		return currentColor;
 	}
-
+	
 	public QMenu getMenu() {
 		return menu;
 	}

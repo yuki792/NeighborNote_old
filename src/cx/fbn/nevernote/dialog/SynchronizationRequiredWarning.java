@@ -15,7 +15,9 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
+
 
 //**********************************************
 //**********************************************
@@ -38,23 +40,22 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 
 public class SynchronizationRequiredWarning extends QDialog {
-
+	
 	private final QCheckBox neverSynchronize;
-	private final QPushButton okButton;
-
-	public SynchronizationRequiredWarning(QWidget parent) {
+	private final QPushButton		okButton;
+	
+	public SynchronizationRequiredWarning(QWidget parent) {	
 		setWindowTitle(tr("Synchronization Required"));
-		String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
-		setWindowIcon(new QIcon(new QIcon(iconPath + "synchronize.png")));
-		neverSynchronize = new QCheckBox(
-				tr("I never want to synchronize with Evernote so quit bothering me."));
+	    String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	    setWindowIcon(new QIcon(new QIcon(iconPath+"synchronize.png")));
+		neverSynchronize = new QCheckBox(tr("I never want to synchronize with Evernote so quit bothering me."));
 		okButton = new QPushButton(tr("Ok"));
 		QTextBrowser warning = new QTextBrowser();
-		warning.setText(tr("Please synchronize with Evernote before proceeding.\n\n"
-				+ "In order to use this feature you need to synchronize with Evernote.  After synchronizing"
-				+ " the necessary information will be saved so you won't need to do it again.  \n\n"
-				+ "If you don't wish to use Evernote's then please check the option at the bottom."));
-
+		warning.setText(tr("Please synchronize with Evernote before proceeding.\n\n" +
+				"In order to use this feature you need to synchronize with Evernote.  After synchronizing" +
+				" the necessary information will be saved so you won't need to do it again.  \n\n"
+				+"If you don't wish to use Evernote's then please check the option at the bottom."));
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addWidget(warning);
 		mainLayout.addWidget(neverSynchronize);
@@ -66,11 +67,11 @@ public class SynchronizationRequiredWarning extends QDialog {
 		okLayout.addWidget(new QLabel(""));
 		okLayout.setStretch(0, 10);
 		okLayout.setStretch(2, 10);
-
+		
 		mainLayout.addLayout(okLayout);
 		setLayout(mainLayout);
 	}
-
+	
 	public boolean neverSynchronize() {
 		return neverSynchronize.isChecked();
 	}

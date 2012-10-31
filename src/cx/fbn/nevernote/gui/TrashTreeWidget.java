@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.gui;
 
@@ -39,62 +39,63 @@ import com.trolltech.qt.gui.QTreeWidgetItem;
 public class TrashTreeWidget extends QTreeWidget {
 	private QAction emptyAction;
 	private QTreeWidgetItem trashItem;
-	private Integer trashCount;
+	private Integer trashCount;	
 	private final String iconPath;
 	private final QIcon trashIcon;
 	private final QIcon trashFullIcon;
-
+	
 	public void setEmptyAction(QAction a) {
 		emptyAction = a;
 	}
-
+	
+	
 	public TrashTreeWidget() {
-		trashCount = 0;
-		setProperty("hideTree", true);
-		iconPath = new String("classpath:cx/fbn/nevernote/icons/");
-		trashIcon = new QIcon(iconPath + "trash.png");
-		trashFullIcon = new QIcon(iconPath + "trash-full.png");
-		header().hide();
-		// setMaximumHeight(30);
-		setMinimumHeight(30);
+    	trashCount =  0;
+    	setProperty("hideTree", true);
+    	iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+        trashIcon = new QIcon(iconPath+"trash.png");
+        trashFullIcon = new QIcon(iconPath+"trash-full.png");
+        header().hide();
+        //setMaximumHeight(30);
+        setMinimumHeight(30);
 	}
-
+	
 	public void updateCounts(Integer cnt) {
 		QBrush gray = new QBrush();
 		gray.setColor(QColor.gray);
 		QBrush black = new QBrush();
 		black.setColor(QColor.black);
-
+		
 		trashCount = cnt;
 		trashItem.setText(1, trashCount.toString());
 		header().resizeSection(1, 0);
 		if (trashCount > 0) {
-			trashItem.setForeground(0, black);
+			trashItem.setForeground(0, black);			
 			trashItem.setForeground(1, black);
 			trashItem.setIcon(0, trashFullIcon);
 		} else {
-			trashItem.setIcon(0, trashIcon);
-			trashItem.setForeground(0, gray);
-			trashItem.setForeground(1, gray);
+			trashItem.setIcon(0,trashIcon);
+			trashItem.setForeground(0, gray);			
+			trashItem.setForeground(1, gray);						
 		}
 	}
-
+	
 	public void load() {
-		trashItem = new QTreeWidgetItem();
-		trashItem.setIcon(0, trashIcon);
-		trashItem.setText(0, tr("Trash"));
-		Qt.Alignment ra = new Qt.Alignment(Qt.AlignmentFlag.AlignRight);
-		trashItem.setTextAlignment(1, ra.value());
-		List<String> headers = new ArrayList<String>();
-		headers.add("");
-		headers.add("");
-		setHeaderLabels(headers);
+        trashItem = new QTreeWidgetItem();
+        trashItem.setIcon(0, trashIcon);
+        trashItem.setText(0, tr("Trash"));
+        Qt.Alignment ra = new Qt.Alignment(Qt.AlignmentFlag.AlignRight);
+        trashItem.setTextAlignment(1, ra.value());
+        List<String> headers = new ArrayList<String>();
+        headers.add("");
+        headers.add("");
+        setHeaderLabels(headers);
 		setColumnCount(2);
 		header().setResizeMode(0, QHeaderView.ResizeMode.ResizeToContents);
 		header().setResizeMode(1, QHeaderView.ResizeMode.Stretch);
 		header().setMovable(false);
-		setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
-		addTopLevelItem(trashItem);
+        setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
+        addTopLevelItem(trashItem);
 
 	}
 
@@ -104,11 +105,11 @@ public class TrashTreeWidget extends QTreeWidget {
 		menu.addAction(emptyAction);
 		menu.exec(event.globalPos());
 	}
-
+	
+	
 	@Override
 	public void dragEnterEvent(QDragEnterEvent event) {
-		event.mimeData().setData("application/x-nevernote-trash",
-				new QByteArray(currentItem().text(1)));
+		event.mimeData().setData("application/x-nevernote-trash", new QByteArray(currentItem().text(1)));
 		event.accept();
 	}
 }

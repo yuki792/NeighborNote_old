@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.sql;
 
@@ -28,35 +29,32 @@ import cx.fbn.nevernote.utilities.ListManager;
 
 public class DeletedTable {
 	ListManager parent;
-	private final ApplicationLogger logger;
-	private final DatabaseConnection db;
+	private final ApplicationLogger 		logger;
+	private final DatabaseConnection		db;
 
+	
 	// Constructor
-	public DeletedTable(ApplicationLogger l, DatabaseConnection d) {
+	public DeletedTable(ApplicationLogger l,DatabaseConnection d) {
 		logger = l;
 		db = d;
 	}
-
 	// Create the table
 	public void createTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		logger.log(logger.HIGH, "Creating table DeletedItems...");
-		if (!query
-				.exec("Create table DeletedItems (guid varchar primary key, type varchar)"))
-			logger.log(logger.HIGH, "Table DeletedItems creation FAILED!!!");
+        if (!query.exec("Create table DeletedItems (guid varchar primary key, type varchar)"))
+           	logger.log(logger.HIGH, "Table DeletedItems creation FAILED!!!"); 
 	}
-
 	// Drop the table
 	public void dropTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.exec("Drop table DeletedItems");
 	}
-
 	// Add an item to the deleted table
 	public void addDeletedItem(String guid, String type) {
-		if (exists(guid, type))
+		if (exists(guid,type))
 			return;
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.prepare("Insert Into DeletedItems (guid, type) Values(:guid, :type)");
 		query.bindValue(":guid", guid);
 		query.bindValue(":type", type);
@@ -65,10 +63,9 @@ public class DeletedTable {
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
-
 	// Check if a record exists
 	public boolean exists(String guid, String type) {
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.prepare("Select guid, type from DeletedItems where guid=:guid and type=:type");
 		query.bindValue(":guid", guid);
 		query.bindValue(":type", type);
@@ -78,10 +75,9 @@ public class DeletedTable {
 		}
 		return true;
 	}
-
 	// Add an item to the deleted table
 	public void expungeDeletedItem(String guid, String type) {
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.prepare("delete from DeletedItems where guid=:guid and type=:type");
 		query.bindValue(":guid", guid);
 		query.bindValue(":type", type);
@@ -90,7 +86,6 @@ public class DeletedTable {
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
-
 	public List<DeletedItemRecord> getAllDeleted() {
 		logger.log(logger.HIGH, "Entering DeletedTable.getAllDeleted");
 		List<DeletedItemRecord> list = new ArrayList<DeletedItemRecord>();
@@ -106,7 +101,6 @@ public class DeletedTable {
 		return list;
 
 	}
-
 	public void expungeAllDeletedRecords() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.exec("delete from DeletedItems");

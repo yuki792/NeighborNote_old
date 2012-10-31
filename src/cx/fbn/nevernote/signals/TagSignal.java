@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.signals;
 
@@ -25,10 +25,10 @@ import com.trolltech.qt.QSignalEmitter;
 
 import cx.fbn.nevernote.filters.TagCounter;
 
+
 public class TagSignal extends QSignalEmitter {
 	public Signal0 listChanged = new Signal0();
-	// public Signal2<String,String> changeParent = new Signal2<String,
-	// String>();
+//	public Signal2<String,String> changeParent = new Signal2<String, String>();
 	public Signal1<List<TagCounter>> refreshTagTreeCounts = new Signal1<List<TagCounter>>();
 	public Signal1<List<TagCounter>> countsChanged = new Signal1<List<TagCounter>>();
 

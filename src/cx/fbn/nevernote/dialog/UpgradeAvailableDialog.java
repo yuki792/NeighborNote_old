@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -40,41 +40,39 @@ import cx.fbn.nevernote.Global;
 
 public class UpgradeAvailableDialog extends QDialog {
 
-	private boolean okPressed;
+	private boolean 	okPressed;
 	private final QPushButton ok;
 	private final QCheckBox doNotRemindeMe;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	// Constructor
 	public UpgradeAvailableDialog() {
 		okPressed = false;
 		setWindowTitle(tr("Upgrade Available"));
-		setWindowIcon(new QIcon(iconPath + "nevernote.png"));
+		setWindowIcon(new QIcon(iconPath+"nevernote.png"));
 		QVBoxLayout grid = new QVBoxLayout();
 		QGridLayout input = new QGridLayout();
 		QHBoxLayout button = new QHBoxLayout();
-		setLayout(grid);
-
+		setLayout(grid);		
+			
 		QWebView page = new QWebView(this);
 		page.setUrl(new QUrl(Global.getUpdateAnnounceUrl()));
-
+		
 		doNotRemindeMe = new QCheckBox();
-		doNotRemindeMe
-				.setText(tr("Automatically check for updates at startup"));
-		input.addWidget(page, 1, 1);
+		doNotRemindeMe.setText(tr("Automatically check for updates at startup"));
+		input.addWidget(page,1,1);
 		doNotRemindeMe.setChecked(true);
-		input.addWidget(doNotRemindeMe, 2, 1);
-
+		input.addWidget(doNotRemindeMe,2,1);
+		
 		grid.addLayout(input);
-
+		
 		ok = new QPushButton("OK");
 		ok.clicked.connect(this, "okButtonPressed()");
 
 		button.addStretch();
 		button.addWidget(ok);
 		button.addStretch();
-		grid.addLayout(button);
+		grid.addLayout(button);		
 	}
 
 	// The OK button was pressed
@@ -83,19 +81,17 @@ public class UpgradeAvailableDialog extends QDialog {
 		okPressed = true;
 		close();
 	}
-
 	// The CANCEL button was pressed
 	@SuppressWarnings("unused")
 	private void cancelButtonPressed() {
 		okPressed = false;
 		close();
 	}
-
 	// Check if the OK button was pressed
 	public boolean okPressed() {
 		return okPressed;
 	}
-
+	
 	public boolean remindMe() {
 		return doNotRemindeMe.isChecked();
 	}

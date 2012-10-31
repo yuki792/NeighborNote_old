@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -44,13 +44,13 @@ public class ConfigShowColumnsPage extends QWidget {
 	private final QRadioButton showSynchronized;
 	private final QRadioButton hideSynchronized;
 
+	
 	QComboBox messageCombo;
-
 	public ConfigShowColumnsPage(QWidget parent) {
 		super(parent);
 
 		// Date Created Column
-		QGroupBox dateCreatedGroup = new QGroupBox(tr("Date Created"));
+		QGroupBox dateCreatedGroup =  new QGroupBox(tr("Date Created"));
 		QHBoxLayout dateCreatedLayout = new QHBoxLayout();
 		showDateCreated = new QRadioButton(tr("Show"));
 		hideDateCreated = new QRadioButton(tr("Hide"));
@@ -59,8 +59,9 @@ public class ConfigShowColumnsPage extends QWidget {
 		dateCreatedLayout.setStretch(1, 100);
 		dateCreatedGroup.setLayout(dateCreatedLayout);
 
+
 		// Subject Date Column
-		QGroupBox dateSubjectGroup = new QGroupBox(tr("Subject Date"));
+		QGroupBox dateSubjectGroup =  new QGroupBox(tr("Subject Date"));
 		QHBoxLayout dateSubjectLayout = new QHBoxLayout();
 		showDateSubject = new QRadioButton(tr("Show"));
 		hideDateSubject = new QRadioButton(tr("Hide"));
@@ -69,8 +70,9 @@ public class ConfigShowColumnsPage extends QWidget {
 		dateSubjectLayout.setStretch(1, 100);
 		dateSubjectGroup.setLayout(dateSubjectLayout);
 
+
 		// Title Column
-		QGroupBox sourceUrlGroup = new QGroupBox(tr("Source URL"));
+		QGroupBox sourceUrlGroup =  new QGroupBox(tr("Source URL"));
 		QHBoxLayout sourceUrlLayout = new QHBoxLayout();
 		sourceUrlShow = new QRadioButton(tr("Show"));
 		sourceUrlHide = new QRadioButton(tr("Hide"));
@@ -80,7 +82,7 @@ public class ConfigShowColumnsPage extends QWidget {
 		sourceUrlGroup.setLayout(sourceUrlLayout);
 
 		// Author Column
-		QGroupBox authorGroup = new QGroupBox(tr("Author"));
+		QGroupBox authorGroup =  new QGroupBox(tr("Author"));
 		QHBoxLayout authorLayout = new QHBoxLayout();
 		showAuthor = new QRadioButton(tr("Show"));
 		hideAuthor = new QRadioButton(tr("Hide"));
@@ -89,8 +91,9 @@ public class ConfigShowColumnsPage extends QWidget {
 		authorLayout.setStretch(1, 100);
 		authorGroup.setLayout(authorLayout);
 
+		
 		// Date Changed Column
-		QGroupBox dateChangedGroup = new QGroupBox(tr("Date Changed"));
+		QGroupBox dateChangedGroup =  new QGroupBox(tr("Date Changed"));
 		QHBoxLayout dateChangedLayout = new QHBoxLayout();
 		showDateChanged = new QRadioButton(tr("Show"));
 		hideDateChanged = new QRadioButton(tr("Hide"));
@@ -100,7 +103,7 @@ public class ConfigShowColumnsPage extends QWidget {
 		dateChangedGroup.setLayout(dateChangedLayout);
 
 		// Notebook Column
-		QGroupBox notebookGroup = new QGroupBox(tr("Notebook"));
+		QGroupBox notebookGroup =  new QGroupBox(tr("Notebook"));
 		QHBoxLayout notebookLayout = new QHBoxLayout();
 		showNotebook = new QRadioButton(tr("Show"));
 		hideNotebook = new QRadioButton(tr("Hide"));
@@ -110,7 +113,7 @@ public class ConfigShowColumnsPage extends QWidget {
 		notebookGroup.setLayout(notebookLayout);
 
 		// Tags Column
-		QGroupBox tagsGroup = new QGroupBox(tr("Tags"));
+		QGroupBox tagsGroup =  new QGroupBox(tr("Tags"));
 		QHBoxLayout tagsLayout = new QHBoxLayout();
 		showTags = new QRadioButton(tr("Show"));
 		hideTags = new QRadioButton(tr("Hide"));
@@ -120,8 +123,7 @@ public class ConfigShowColumnsPage extends QWidget {
 		tagsGroup.setLayout(tagsLayout);
 
 		// Synchronized Column
-		QGroupBox synchronizedGroup = new QGroupBox(
-				tr("Synchronized Indicator"));
+		QGroupBox synchronizedGroup =  new QGroupBox(tr("Synchronized Indicator"));
 		QHBoxLayout syncLayout = new QHBoxLayout();
 		showSynchronized = new QRadioButton(tr("Show"));
 		hideSynchronized = new QRadioButton(tr("Hide"));
@@ -129,7 +131,7 @@ public class ConfigShowColumnsPage extends QWidget {
 		syncLayout.addWidget(hideSynchronized);
 		syncLayout.setStretch(1, 100);
 		synchronizedGroup.setLayout(syncLayout);
-
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addWidget(dateCreatedGroup);
 		mainLayout.addWidget(dateChangedGroup);
@@ -142,14 +144,14 @@ public class ConfigShowColumnsPage extends QWidget {
 		mainLayout.addStretch(1);
 		setLayout(mainLayout);
 	}
-
+	
 	public void setDateCreated(boolean value) {
 		if (value)
 			showDateCreated.click();
 		else
 			hideDateCreated.click();
 	}
-
+	
 	public void setDateSubject(boolean value) {
 		if (value)
 			showDateSubject.click();
@@ -177,58 +179,53 @@ public class ConfigShowColumnsPage extends QWidget {
 		else
 			sourceUrlHide.click();
 	}
-
 	public void setNotebook(boolean value) {
 		if (value)
 			showNotebook.click();
 		else
 			hideNotebook.click();
 	}
-
 	public void setTags(boolean value) {
 		if (value)
 			showTags.click();
 		else
 			hideTags.click();
 	}
-
 	public void setSynchronized(boolean value) {
 		if (value)
 			showSynchronized.click();
 		else
 			hideSynchronized.click();
 	}
-
+	
 	public boolean showDateCreated() {
 		return showDateCreated.isChecked();
 	}
-
 	public boolean showDateChanged() {
 		return showDateChanged.isChecked();
 	}
-
 	public boolean showDateSubject() {
 		return showDateSubject.isChecked();
 	}
-
 	public boolean showAuthor() {
 		return showAuthor.isChecked();
 	}
-
 	public boolean showSourceUrl() {
 		return sourceUrlShow.isChecked();
 	}
-
 	public boolean showTags() {
 		return showTags.isChecked();
 	}
-
 	public boolean showSynchronized() {
 		return showSynchronized.isChecked();
 	}
-
 	public boolean showNotebook() {
 		return showNotebook.isChecked();
 	}
+
+
+
+
+
 
 }

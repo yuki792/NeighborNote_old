@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.sql;
 
@@ -28,31 +29,28 @@ import cx.fbn.nevernote.sql.driver.NSqlQuery;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
 
 public class InkImagesTable {
-	private final ApplicationLogger logger;
-	DatabaseConnection db;
+	private final ApplicationLogger 		logger;
+	DatabaseConnection						db;
 
 	// Constructor
-	public InkImagesTable(ApplicationLogger l, DatabaseConnection d) {
+	public InkImagesTable(ApplicationLogger l,DatabaseConnection d) {
 		logger = l;
 		db = d;
 	}
-
 	// Create the table
 	public void createTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
-		// Create the NoteTag table
-		logger.log(logger.HIGH, "Creating table InkImage...");
-		if (!query.exec("Create table InkImages (guid varchar, "
-				+ "slice integer, primary key(guid, slice), image blob)"))
-			logger.log(logger.HIGH, "Table InkImage creation FAILED!!!");
+        // Create the NoteTag table
+        logger.log(logger.HIGH, "Creating table InkImage...");
+        if (!query.exec("Create table InkImages (guid varchar, " +
+        		"slice integer, primary key(guid, slice), image blob)"))
+        	logger.log(logger.HIGH, "Table InkImage creation FAILED!!!"); 
 	}
-
 	// Drop the table
 	public void dropTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.exec("drop table InkImages");
 	}
-
 	// Delete an image
 	public void expungeImage(String guid) {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
@@ -67,15 +65,13 @@ public class InkImagesTable {
 			logger.log(logger.MEDIUM, query.lastError());
 			return;
 		}
-		return;
+		return;		
 	}
-
 	// Get a note tags by the note's Guid
 	public List<QByteArray> getImage(String guid) {
 		List<QByteArray> data = new ArrayList<QByteArray>();
 		NSqlQuery query = new NSqlQuery(db.getConnection());
-		if (!query
-				.prepare("Select image from InkImages where guid = :guid order by slice")) {
+		if (!query.prepare("Select image from InkImages where guid = :guid order by slice")) {
 			logger.log(logger.EXTREME, "InkImage SQL prepare has failed.");
 			logger.log(logger.MEDIUM, query.lastError());
 			return null;
@@ -87,32 +83,31 @@ public class InkImagesTable {
 			return null;
 		}
 		while (query.next()) {
-			data.add(new QByteArray(query.getBlob(0)));
-		}
+			data.add(new QByteArray(query.getBlob(0)));	
+		}	
 		return data;
 	}
-
 	// Save an ink note image
 	public void saveImage(String guid, int slice, QByteArray data) {
 		logger.log(logger.HIGH, "Entering inkImageTable.saveImage");
 		boolean check;
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		check = query.prepare("Insert Into InkImages ("
-				+ "guid, slice, image) Values(" + ":guid, :slice, :data)");
+				+"guid, slice, image) Values("
+				+":guid, :slice, :data)");
 		if (!check) {
-			logger.log(logger.EXTREME,
-					"InkImages SQL insert prepare has failed.");
+			logger.log(logger.EXTREME, "InkImages SQL insert prepare has failed.");
 			logger.log(logger.MEDIUM, query.lastError());
 			return;
 		}
 		query.bindValue(":guid", guid);
 		query.bindValue(":slice", slice);
-		query.bindBlob(":data", data.toByteArray());
+		query.bindBlob(":data", data.toByteArray());						
 		check = query.exec();
 		if (!check) {
-			logger.log(logger.MEDIUM, "*** InkImages Table insert failed.");
+			logger.log(logger.MEDIUM, "*** InkImages Table insert failed.");		
 			logger.log(logger.MEDIUM, query.lastError());
-		}
+		}			
 		logger.log(logger.HIGH, "Leaving InkImages.saveImage");
 	}
 

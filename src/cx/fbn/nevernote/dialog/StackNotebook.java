@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -35,26 +35,26 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QPushButton;
 
 public class StackNotebook extends QDialog {
-	private boolean okPressed;
-	private final QComboBox stack;
-	QPushButton ok;
-	List<String> currentStacks;
-
+	private boolean 		okPressed;
+	private final QComboBox	stack;
+	QPushButton 			ok;
+	List<String>			currentStacks;
+	
 	// Constructor
 	public StackNotebook() {
 		okPressed = false;
 		setWindowTitle(tr("Stack Notebook"));
 		QGridLayout grid = new QGridLayout();
 		setLayout(grid);
-
+		
 		QGridLayout textGrid = new QGridLayout();
 		stack = new QComboBox();
 		stack.setEditable(true);
-		textGrid.addWidget(new QLabel(tr("Stack Name")), 1, 1);
+		textGrid.addWidget(new QLabel(tr("Stack Name")), 1,1);
 		textGrid.addWidget(stack, 1, 2);
-		textGrid.setContentsMargins(10, 10, -10, -10);
-		grid.addLayout(textGrid, 1, 1);
-
+		textGrid.setContentsMargins(10, 10,-10, -10);
+		grid.addLayout(textGrid,1,1);
+		
 		QGridLayout buttonGrid = new QGridLayout();
 		ok = new QPushButton(tr("OK"));
 		ok.clicked.connect(this, "okButtonPressed()");
@@ -63,57 +63,55 @@ public class StackNotebook extends QDialog {
 		cancel.clicked.connect(this, "cancelButtonPressed()");
 		stack.currentStringChanged.connect(this, "textChanged(String)");
 		buttonGrid.addWidget(ok, 3, 1);
-		buttonGrid.addWidget(cancel, 3, 2);
-		grid.addLayout(buttonGrid, 2, 1);
+		buttonGrid.addWidget(cancel, 3,2);
+		grid.addLayout(buttonGrid,2,1);
 	}
-
+	
 	// The OK button was pressed
 	@SuppressWarnings("unused")
 	private void okButtonPressed() {
 		okPressed = true;
 		close();
 	}
-
+	
 	// The CANCEL button was pressed
 	@SuppressWarnings("unused")
 	private void cancelButtonPressed() {
 		okPressed = false;
 		close();
 	}
-
+	
 	// Get the name from the field
 	public String getStackName() {
 		return stack.currentText();
 	}
-
+	
 	public void setStackNames(List<String> names) {
 		currentStacks = names;
 		stack.clear();
-		for (int i = 0; i < names.size(); i++) {
+		for (int i=0; i<names.size(); i++) {
 			stack.addItem(names.get(i));
 		}
 	}
-
+	
 	// Set the tag name
 	public void setStackName(String name) {
 		stack.setEditText(name);
 	}
-
+	
 	// Check if the OK button was pressed
 	public boolean okPressed() {
 		return okPressed;
 	}
-
+	
 	// Set the window title
 	public void setTitle(String s) {
 		setWindowTitle(s);
 	}
-
 	// List of existing tags
 	public void setTagList(List<String> t) {
 		currentStacks = t;
 	}
-
 	// Watch what text is being entered
 	@SuppressWarnings("unused")
 	private void textChanged(String text) {

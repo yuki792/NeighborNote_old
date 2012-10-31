@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -55,40 +55,37 @@ import cx.fbn.nevernote.sql.DatabaseConnection;
 import cx.fbn.nevernote.threads.SyncRunner;
 
 public class ShareNotebook extends QDialog {
-	private final QPushButton okButton;
-	private final QPushButton addButton;
-	private final QPushButton deleteButton;
-	private boolean okClicked;
-	public final QTableWidget table;
-	private final List<SharedNotebook> notebooks;
-	private final DatabaseConnection conn;
-	private final Notebook notebook;
-	private final SyncRunner syncRunner;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private final QPushButton				okButton;
+	private final QPushButton				addButton;
+	private final QPushButton				deleteButton;
+	private boolean							okClicked;
+	public final QTableWidget				table;
+	private final List<SharedNotebook>		notebooks;
+	private final DatabaseConnection		conn;
+	private final Notebook					notebook;
+	private final SyncRunner				syncRunner;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	public ShareNotebook(String guid, DatabaseConnection c, Notebook n,
-			SyncRunner s) {
-		setWindowIcon(new QIcon(iconPath + "globe.png"));
+						SyncRunner s) {
+		setWindowIcon(new QIcon(iconPath+"globe.png"));
 		okClicked = false;
 		conn = c;
-		syncRunner = s;
-		;
+		syncRunner = s;;
 		notebook = n;
-
+		
 		notebooks = conn.getSharedNotebookTable().getForNotebook(n.getGuid());
 		okButton = new QPushButton();
 		okButton.setText(tr("OK"));
 		okButton.pressed.connect(this, "onClicked()");
-
+		
 		QHBoxLayout horizontalLayout = new QHBoxLayout();
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(1);
 		buttonLayout.addWidget(okButton);
-		setWindowTitle(tr("Share Notebook \"") + notebook.getName()
-				+ tr("\" With Others"));
-
-		table = new QTableWidget(notebooks.size(), 3);
+		setWindowTitle(tr("Share Notebook \"") +notebook.getName() + tr("\" With Others"));	
+		
+		table = new QTableWidget(notebooks.size(),3);
 		List<String> headers = new ArrayList<String>();
 		headers.add(tr("Email"));
 		headers.add(tr("Access"));
@@ -100,65 +97,67 @@ public class ShareNotebook extends QDialog {
 		table.setSelectionMode(SelectionMode.SingleSelection);
 		table.itemSelectionChanged.connect(this, "tableSelection()");
 		horizontalLayout.addWidget(table);
-
+		
+		
 		addButton = new QPushButton();
 		addButton.setText(tr("Add"));
 		addButton.clicked.connect(this, "addPressed()");
-
+		
 		deleteButton = new QPushButton();
 		deleteButton.setText(tr("Delete"));
 		deleteButton.setEnabled(false);
 		deleteButton.clicked.connect(this, "deletePressed()");
-
+		
 		QVBoxLayout editLayout = new QVBoxLayout();
 		editLayout.addWidget(addButton);
 		editLayout.addWidget(deleteButton);
-
+		
 		QHBoxLayout listLayout = new QHBoxLayout();
 		listLayout.addLayout(horizontalLayout);
 		listLayout.addLayout(editLayout);
-
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		if (syncRunner.authToken == null) {
-			QLabel msg = new QLabel(
-					tr("You must be connected to make changes."));
+			QLabel msg = new QLabel(tr("You must be connected to make changes."));
 			mainLayout.addWidget(msg);
 		}
 		mainLayout.addLayout(listLayout);
 		mainLayout.addSpacing(1);
 		mainLayout.addLayout(buttonLayout);
 		setLayout(mainLayout);
-
+		
 		table.setColumnWidth(0, 160);
 		resize(500, 200);
 		load();
-
+		
 		if (syncRunner.authToken == null) {
 			addButton.setEnabled(false);
 			deleteButton.setEnabled(false);
 		}
-
+		
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void onClicked() {
 		okClicked = true;
 		close();
 	}
+	
 
 	public boolean okClicked() {
 		return okClicked;
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void itemSelected() {
 		okButton.setEnabled(true);
 	}
-
+	
 	private void load() {
-		for (int i = 0; i < notebooks.size(); i++) {
-			addRow(i, notebooks.get(i).getEmail(), notebooks.get(i)
-					.isNotebookModifiable(), notebooks.get(i).isRequireLogin());
+		for (int i=0; i<notebooks.size(); i++) {
+			addRow(i, notebooks.get(i).getEmail(), 
+					 notebooks.get(i).isNotebookModifiable(),
+					 notebooks.get(i).isRequireLogin());
 		}
 	}
 
@@ -180,7 +179,7 @@ public class ShareNotebook extends QDialog {
 			accessWidget.setText(tr("Modify"));
 		else
 			accessWidget.setText(tr("Read Only"));
-		table.setItem(row, 1, accessWidget);
+		table.setItem(row, 1,accessWidget);
 		accessWidget.setFlags(flags);
 
 		QTableWidgetItem loginWidget = new QTableWidgetItem();
@@ -190,41 +189,43 @@ public class ShareNotebook extends QDialog {
 			loginWidget.setText(tr("False"));
 		table.setItem(row, 2, loginWidget);
 		loginWidget.setFlags(flags);
+		
 
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void tableSelection() {
 		if (syncRunner.authToken != null)
 			deleteButton.setEnabled(true);
 	}
-
+	
+	
 	@SuppressWarnings("unused")
 	private void addPressed() {
 
+		
 	}
-
+	
+	
 	@SuppressWarnings("unused")
 	private void deletePressed() {
 		QModelIndex index = table.currentIndex();
 		int row = index.row();
-
+		
 		QTableWidgetItem dirWidget = table.item(row, 0);
 		String value = dirWidget.text();
-		List<SharedNotebook> notebooks = conn.getSharedNotebookTable()
-				.getForNotebook(notebook.getGuid());
-
+		List<SharedNotebook> notebooks = conn.getSharedNotebookTable().getForNotebook(notebook.getGuid());
+		
 		List<Long> ids = new ArrayList<Long>();
-		for (int i = 0; i < notebooks.size(); i++) {
+		for (int i=0; i<notebooks.size(); i++) {
 			if (notebooks.get(i).getEmail().equalsIgnoreCase(value)) {
 				ids.add(notebooks.get(i).getId());
 			}
 		}
-
+		
 		if (ids.size() > 0) {
 			try {
-				syncRunner.localNoteStore.expungeSharedNotebooks(
-						syncRunner.authToken, ids);
+				syncRunner.localNoteStore.expungeSharedNotebooks(syncRunner.authToken, ids);
 			} catch (EDAMUserException e) {
 				e.printStackTrace();
 			} catch (EDAMNotFoundException e) {
@@ -234,15 +235,14 @@ public class ShareNotebook extends QDialog {
 			} catch (TException e) {
 				e.printStackTrace();
 			}
-			for (int i = 0; i < ids.size(); i++)
-				conn.getSharedNotebookTable()
-						.expungeNotebook(ids.get(i), false);
+			for (int i=0; i<ids.size(); i++)
+				conn.getSharedNotebookTable().expungeNotebook(ids.get(i), false);
 		}
-
+		
 		table.clear();
 		load();
 		if (table.rowCount() == 0) {
 			deleteButton.setEnabled(false);
-		}
+		}		
 	}
 }

@@ -28,18 +28,20 @@ public class EditorButtonBar extends QToolBar {
 	QAction toggleOutdentVisible;
 	QAction toggleBulletListVisible;
 	QAction toggleNumberListVisible;
-
+	
 	QAction toggleFontVisible;
 	QAction toggleFontSizeVisible;
 	QAction toggleFontColorVisible;
 	QAction toggleFontHilight;
 	QAction toggleSpellCheck;
 	QAction toggleTodo;
+	
+
 
 	public EditorButtonBar() {
 		contextMenu = new QMenu();
-
-		toggleUndoVisible = addAction("undo", tr("Undo"));
+		
+		toggleUndoVisible = addAction("undo" ,tr("Undo"));
 		toggleRedoVisible = addAction("redo", tr("Redo Change"));
 		toggleCutVisible = addAction("cut", tr("Cut"));
 		toggleCopyVisible = addAction("copy", tr("Copy"));
@@ -47,8 +49,7 @@ public class EditorButtonBar extends QToolBar {
 		toggleBoldVisible = addAction("bold", tr("Bold"));
 		toggleItalicVisible = addAction("italic", tr("Italic"));
 		toggleUnderlineVisible = addAction("underline", tr("Underline"));
-		toggleStrikethroughVisible = addAction("strikethrough",
-				tr("Strikethrough"));
+		toggleStrikethroughVisible = addAction("strikethrough", tr("Strikethrough"));
 
 		toggleLeftAlignVisible = addAction("alignLeft", tr("Left Align"));
 		toggleCenterAlignVisible = addAction("alignCenter", tr("Center Align"));
@@ -67,7 +68,8 @@ public class EditorButtonBar extends QToolBar {
 		toggleSpellCheck = addAction("spellCheck", tr("Spell Check"));
 		toggleTodo = addAction("todo", tr("To-Do"));
 	}
-
+	
+	
 	private QAction addAction(String config, String name) {
 		QAction newAction = new QAction(this);
 		newAction.setText(name);
@@ -76,7 +78,7 @@ public class EditorButtonBar extends QToolBar {
 		contextMenu.addAction(newAction);
 		return newAction;
 	}
-
+	
 	@Override
 	public void contextMenuEvent(QContextMenuEvent event) {
 		contextMenu.exec(event.globalPos());

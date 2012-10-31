@@ -16,23 +16,21 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.filters;
 
 import com.evernote.edam.type.Note;
 
+
 public abstract class ContainsAttributeFilter extends AttributeFilter {
 	protected String label;
-
 	public ContainsAttributeFilter(String n) {
 		super();
-		label = n;
+		label=n;
 	}
-
 	@Override
 	public abstract boolean attributeCheck(Note n);
-
 	@Override
 	public String getLabel() {
 		return label;

@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -50,34 +50,33 @@ import cx.fbn.nevernote.utilities.ApplicationLogger;
 import cx.fbn.nevernote.xml.NoteFormatter;
 
 public class OnlineNoteHistory extends QDialog {
-	public final QPushButton restoreAsNew;
-	public final QPushButton restore;
-	private final DatabaseConnection conn;
-	public final QComboBox historyCombo;
-	private final BrowserWindow browser;
+	public final QPushButton 	restoreAsNew;
+	public final QPushButton 	restore;
+	private final DatabaseConnection  conn;
+	public final QComboBox		historyCombo;	 
+	private final BrowserWindow	browser;
 	private final ApplicationLogger logger;
-	List<QTemporaryFile> tempFiles;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
+	List<QTemporaryFile>	tempFiles;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	// ICHANGED
 	private final ClipBoardObserver cbObserver;
 
-	// ICHANGED
+	// ICHANGED 引数にcbObserver追加
 	// Constructor
 	public OnlineNoteHistory(ApplicationLogger l, DatabaseConnection c, ClipBoardObserver cbObserver) {
 		setWindowTitle(tr("Online Note History"));
-		setWindowIcon(new QIcon(iconPath + "notebook-green.png"));
+		setWindowIcon(new QIcon(iconPath+"notebook-green.png"));
 		QVBoxLayout main = new QVBoxLayout();
 		setLayout(main);
 		historyCombo = new QComboBox(this);
-
+		
 		QHBoxLayout comboLayout = new QHBoxLayout();
 		comboLayout.addWidget(new QLabel(tr("History Date:")));
 		comboLayout.addWidget(historyCombo);
 		comboLayout.addStretch(100);
-
+		
 		main.addLayout(comboLayout);
-
+				
 		conn = c;
 		// ICHANGED
 		this.cbObserver = cbObserver;
@@ -89,81 +88,85 @@ public class OnlineNoteHistory extends QDialog {
 		browser.hideButtons();
 		browser.tagEdit.setVisible(false);
 		browser.tagLabel.setVisible(false);
-
+		
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(100);
 		restore = new QPushButton(tr("Restore Note"));
 		restore.clicked.connect(this, "restorePushed()");
-
+		
 		restoreAsNew = new QPushButton(tr("Restore As New Note"));
 		restoreAsNew.clicked.connect(this, "restoreAsNewPushed()");
 		QPushButton cancel = new QPushButton(tr("Cancel"));
 		cancel.clicked.connect(this, "cancelPressed()");
-
+		
 		buttonLayout.addWidget(restore);
 		buttonLayout.addWidget(restoreAsNew);
 		buttonLayout.addWidget(cancel);
 		main.addLayout(buttonLayout);
-
-		browser.getBrowser().setContextMenuPolicy(
-				ContextMenuPolicy.NoContextMenu);
+		
+		browser.getBrowser().setContextMenuPolicy(ContextMenuPolicy.NoContextMenu);
 		tempFiles = new ArrayList<QTemporaryFile>();
 		logger = l;
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void restoreAsNewPushed() {
 		this.close();
 	}
-
 	@SuppressWarnings("unused")
 	private void restorePushed() {
 		this.close();
 	}
-
 	@SuppressWarnings("unused")
 	private void cancelPressed() {
 		this.close();
 	}
-
+	
 	public void setCurrent(boolean isDirty) {
-		if (isDirty)
+		if (isDirty) 
 			historyCombo.addItem(new String(tr("Current (Non Synchronized)")));
 		else
 			historyCombo.addItem(new String(tr("Current (Synchronized)")));
-
+				
 	}
-
+	
 	public void load(List<NoteVersionId> versions) {
 		String fmt = Global.getDateFormat() + " " + Global.getTimeFormat();
 		String dateTimeFormat = new String(fmt);
 		SimpleDateFormat simple = new SimpleDateFormat(dateTimeFormat);
-
-		for (int i = 0; i < versions.size(); i++) {
-			StringBuilder versionDate = new StringBuilder(
-					simple.format(versions.get(i).getSaved()));
+		
+		for (int i=0; i<versions.size(); i++) {
+			StringBuilder versionDate = new StringBuilder(simple.format(versions.get(i).getSaved()));
 			historyCombo.addItem(versionDate.toString());
 		}
 	}
-
+	
 	public void setContent(Note currentNote) {
-
+		
+		
 		NoteFormatter formatter = new NoteFormatter(logger, conn, tempFiles);
 		formatter.setNote(currentNote, false);
 		formatter.setHighlight(null);
 		formatter.setNoteHistory(true);
-
+		
 		StringBuffer js = new StringBuffer();
-
-		// We need to prepend the note with <HEAD></HEAD> or encoded characters
-		// are ugly
-		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+		
+		// We need to prepend the note with <HEAD></HEAD> or encoded characters are ugly 
+		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");	
 		js.append("<style type=\"text/css\">en-crypt-temp { border-style:solid; border-color:blue; padding:1mm 1mm 1mm 1mm; }</style>");
 		js.append("</head>");
 		js.append(formatter.rebuildNoteHTML());
 		js.append("</HTML>");
-
+		
 		browser.setNote(currentNote);
 		browser.getBrowser().page().mainFrame().setHtml(js.toString());
 	}
 }
+ 
+
+
+	
+	
+	
+	
+

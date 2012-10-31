@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -41,111 +41,105 @@ import com.trolltech.qt.gui.QSpacerItem;
 import com.trolltech.qt.gui.QVBoxLayout;
 
 public class NotebookArchive extends QDialog {
-	private final QListWidget openBookList;
-	private final QListWidget closedBookList;
-	private final QPushButton okButton;
-	private final QPushButton cancelButton;
-	private boolean okClicked;
-	private final QPushButton leftButton;
-	private final QPushButton rightButton;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private final QListWidget 		openBookList;
+	private final QListWidget 		closedBookList;
+	private final QPushButton		okButton;
+	private final QPushButton		cancelButton;
+	private boolean					okClicked;
+	private final QPushButton		leftButton;
+	private final QPushButton		rightButton;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	public NotebookArchive(List<Notebook> allBooks, List<Notebook> archive) {
-		setWindowIcon(new QIcon(iconPath + "notebook-green.png"));
+		setWindowIcon(new QIcon(iconPath+"notebook-green.png"));
 		okClicked = false;
 		openBookList = new QListWidget();
 		openBookList.setSortingEnabled(true);
-		openBookList
-				.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
-
+		openBookList.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
+		
 		okButton = new QPushButton();
 		okButton.setText(tr("OK"));
 		okButton.pressed.connect(this, "onClicked()");
-
+		
 		cancelButton = new QPushButton();
 		cancelButton.setText(tr("Cancel"));
 		cancelButton.pressed.connect(this, "onCancel()");
-
+		
 		QVBoxLayout openLayout = new QVBoxLayout();
 		openLayout.addWidget(new QLabel(tr("Open Notebooks")));
 		openLayout.addWidget(openBookList);
-
+		
 		rightButton = new QPushButton(this);
-		rightButton.setIcon(new QIcon(iconPath + "forward.png"));
+		rightButton.setIcon(new QIcon(iconPath+"forward.png"));
 		leftButton = new QPushButton(this);
-		leftButton.setIcon(new QIcon(iconPath + "back.png"));
+		leftButton.setIcon(new QIcon(iconPath+"back.png"));
 		leftButton.setEnabled(false);
 		rightButton.setEnabled(false);
-
+		
 		QVBoxLayout middleLayout = new QVBoxLayout();
-		middleLayout.addSpacerItem(new QSpacerItem(1, 1));
+		middleLayout.addSpacerItem(new QSpacerItem(1,1));
 		middleLayout.addWidget(rightButton);
 		middleLayout.addWidget(leftButton);
-		middleLayout.addSpacerItem(new QSpacerItem(1, 1));
+		middleLayout.addSpacerItem(new QSpacerItem(1,1));
 
 		QVBoxLayout closeLayout = new QVBoxLayout();
 		closeLayout.addWidget(new QLabel(tr("Closed Notebooks")));
 		closedBookList = new QListWidget();
 		closedBookList.setSortingEnabled(true);
-		closedBookList
-				.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
+		closedBookList.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
 		closeLayout.addWidget(closedBookList);
 
 		openBookList.itemSelectionChanged.connect(this, "openBookSelected()");
-		closedBookList.itemSelectionChanged.connect(this,
-				"closedBookSelected()");
+		closedBookList.itemSelectionChanged.connect(this, "closedBookSelected()");
 		leftButton.clicked.connect(this, "toOpenList()");
 		rightButton.clicked.connect(this, "toClosedList()");
-
+		
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(1);
 		buttonLayout.addWidget(okButton);
 		buttonLayout.addWidget(cancelButton);
 		setWindowTitle(tr("Open/Close Notebooks"));
-
+		
 		QHBoxLayout upperLayout = new QHBoxLayout();
 		upperLayout.addLayout(openLayout);
 		upperLayout.addLayout(middleLayout);
 		upperLayout.addLayout(closeLayout);
-
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addLayout(upperLayout);
-		// mainLayout.addStretch(1);
+		//mainLayout.addStretch(1);
 		mainLayout.addSpacing(1);
 		mainLayout.addLayout(buttonLayout);
 		setLayout(mainLayout);
 
-		for (int i = 0; i < allBooks.size(); i++) {
+		for (int i=0; i<allBooks.size(); i++) {
 			boolean found = false;
-			for (int j = 0; j < archive.size(); j++) {
-				if (archive.get(j).getName()
-						.equalsIgnoreCase(allBooks.get(i).getName())) {
+			for (int j=0; j<archive.size(); j++) {
+				if (archive.get(j).getName().equalsIgnoreCase(allBooks.get(i).getName())) {
 					found = true;
-					j = archive.size();
+					j=archive.size();
 				}
 			}
 			if (!found) {
-				QListWidgetItem item = new QListWidgetItem(allBooks.get(i)
-						.getName());
+				QListWidgetItem item = new QListWidgetItem(allBooks.get(i).getName());
 				item.setSelected(false);
 				openBookList.addItem(item);
 			}
 		}
-
+		
 		setWindowTitle(tr("Open Notebooks"));
-		for (int i = 0; i < archive.size(); i++) {
+		for (int i=0; i<archive.size(); i++) {
 			QListWidgetItem item = new QListWidgetItem(archive.get(i).getName());
 			item.setSelected(false);
 			closedBookList.addItem(item);
 		}
 		openBookList.itemSelectionChanged.connect(this, "itemSelected()");
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void toClosedList() {
 		List<QListWidgetItem> items = openBookList.selectedItems();
-		for (int i = items.size() - 1; i >= 0; i--) {
+		for (int i=items.size()-1; i>=0; i--) {
 			int row = openBookList.row(items.get(i));
 			openBookList.takeItem(row);
 			closedBookList.addItem(items.get(i).text());
@@ -154,11 +148,12 @@ public class NotebookArchive extends QDialog {
 			okButton.setEnabled(false);
 		rightButton.setEnabled(false);
 	}
-
+	
+	
 	@SuppressWarnings("unused")
 	private void toOpenList() {
 		List<QListWidgetItem> items = closedBookList.selectedItems();
-		for (int i = items.size() - 1; i >= 0; i--) {
+		for (int i=items.size()-1; i>=0; i--) {
 			int row = closedBookList.row(items.get(i));
 			closedBookList.takeItem(row);
 			openBookList.addItem(items.get(i).text());
@@ -166,7 +161,7 @@ public class NotebookArchive extends QDialog {
 		okButton.setEnabled(true);
 		leftButton.setEnabled(false);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void closedBookSelected() {
 		if (closedBookList.selectedItems().size() > 0)
@@ -174,7 +169,7 @@ public class NotebookArchive extends QDialog {
 		else
 			leftButton.setEnabled(false);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void openBookSelected() {
 		if (openBookList.selectedItems().size() > 0)
@@ -182,31 +177,31 @@ public class NotebookArchive extends QDialog {
 		else
 			rightButton.setEnabled(false);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void onClicked() {
 		okClicked = true;
 		close();
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void onCancel() {
 		okClicked = false;
 		close();
 	}
-
+	
 	public boolean okClicked() {
 		return okClicked;
 	}
-
+	
 	public QListWidget getOpenBookList() {
 		return openBookList;
 	}
-
+	
 	public QListWidget getClosedBookList() {
 		return closedBookList;
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void itemSelected() {
 		if (openBookList.selectedItems().size() == openBookList.count()) {

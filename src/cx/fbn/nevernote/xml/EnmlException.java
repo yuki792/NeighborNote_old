@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.xml;
 
@@ -28,11 +28,12 @@ public class EnmlException extends SAXParseException {
 		super(message, publicId, systemId, lineNumber, columnNumber, e);
 		// TODO Auto-generated constructor stub
 	}
-
 	public String attribute = null;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6728529537176421409L;
+
+	
 
 }

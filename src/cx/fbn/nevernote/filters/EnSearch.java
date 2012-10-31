@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.filters;
 
@@ -29,25 +30,28 @@ import cx.fbn.nevernote.sql.REnSearch;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
 
 public class EnSearch {
+	
 
-	private List<Note> matches;
-	public List<String> hilightWords;
-
-	public EnSearch(DatabaseConnection conn, ApplicationLogger logger,
-			String s, List<Tag> t, int weight) {
-		if (s == null)
+	private List<Note>			matches;
+	public List<String>			hilightWords;
+	
+	public EnSearch(DatabaseConnection conn, ApplicationLogger logger, String s, List<Tag> t, int weight) {
+		if (s == null) 
 			return;
 		if (s.trim().equals(""))
 			return;
-
+		
 		matches = null;
 		REnSearch request = new REnSearch(conn, logger, s, t, weight);
 		matches = request.matchWords();
 		hilightWords = request.getWords();
 	}
-
+		
 	public List<Note> matchWords() {
 		return matches;
 	}
+	
 
+
+	
 }

@@ -15,42 +15,40 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.utilities;
 
-public class Pair<T, S> {
+public class Pair<T, S>{
 
 	private T first;
 	private S second;
 
-	public Pair(T f, S s) {
-		first = f;
-		second = s;
-	}
-
+	public Pair(T f, S s){ 
+	    first = f;
+	    second = s;   
+	  }
 	public Pair() {
-
+		
 	}
-
-	public T getFirst() {
-		return first;
+	public T getFirst(){
+	   return first;
 	}
-
-	public S getSecond() {
-		return second;
+	 
+	public S getSecond()   {
+	    return second;
 	}
-
+	 
 	@Override
-	public String toString() {
-		return "(" + first.toString() + ", " + second.toString() + ")";
+	public String toString()  { 
+	  return "(" + first.toString() + ", " + second.toString() + ")"; 
 	}
 
 	public void setFirst(T t) {
 		first = t;
 	}
-
 	public void setSecond(S s) {
 		second = s;
 	}
 }
+	

@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.xml;
 
@@ -34,84 +35,84 @@ public class XMLCleanup {
 	private String content;
 	private QDomDocument doc;
 	private final List<String> resources;
-
+	
 	public XMLCleanup() {
 		resources = new ArrayList<String>();
 	}
-
+	
+	
 	public void setValue(String text) {
 		content = text;
 	}
-
 	public String getValue() {
 		return content;
 	}
-
-	// Validate the contents of the note. Change unsupported things
+	// Validate the contents of the note.  Change unsupported things	
 	public void validate() {
 		doc = new QDomDocument();
 		int br = content.lastIndexOf("</en-note>");
-		content = new String(content.substring(0, br));
+		content = new String(content.substring(0,br));
 		String newContent;
 		int k = content.indexOf("<en-note");
 
+		
 		newContent = new String(content.substring(k));
-
+		
+		
 		// Fix the background color
+		
 
-		newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-				+ "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">\n"
-				+ newContent + "</en-note>";
+		newContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" 
+					+"<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">\n"
+					+newContent 
+					+"</en-note>";
 
 		QDomDocument.Result result = doc.setContent(newContent);
 		if (!result.success) {
 			System.out.println("DOM error in XMLValidator.validate()");
 			System.out.println(newContent);
-			System.out.println("Location : Line-" + result.errorLine
-					+ " Column-" + result.errorColumn);
+			System.out.println("Location : Line-"+result.errorLine +" Column-" + result.errorColumn);
 			System.out.println("Exiting");
 			content = null;
 			return;
 		}
-
+		
 		QDomNodeList noteAnchors = doc.elementsByTagName("en-note");
 		int noteCount = noteAnchors.length();
-		for (int i = noteCount - 1; i >= 0; i--) {
+		for (int i=noteCount-1; i>=0; i--) {
 			if (noteAnchors.at(i).toElement().hasAttribute("style")) {
 				String style = noteAnchors.at(i).toElement().attribute("style");
 				int startColor = style.indexOf("background-color:");
 				if (startColor > -1) {
-					String color = style.substring(startColor + 17);
-					color = color.substring(0, color.indexOf(";"));
-					noteAnchors.at(i).toElement()
-							.setAttribute("bgcolor", color);
+					String color = style.substring(startColor+17);
+					color = color.substring(0,color.indexOf(";"));
+					noteAnchors.at(i).toElement().setAttribute("bgcolor", color);
 				}
 			}
 		}
-
+		
 		// Scan through tags node by node
 		scanTags();
-
-		// Scan again making sure we didn't miss any <a> tags. Sometimes we do
+		
+		// Scan again making sure we didn't miss any <a> tags.  Sometimes we do
 		QDomNodeList anchorList = doc.elementsByTagName("a");
 		int anchorCount = anchorList.length();
-		for (int i = anchorCount - 1; i >= 0; i--) {
+		for (int i=anchorCount-1; i>=0; i--) {
 			QDomNode link = anchorList.at(i);
 			link = fixLinkNode(link);
 		}
-
+		
 		// Remove invalid elements & attributes
 		// Modify en-media tags
 		QDomNodeList anchors;
 		for (String key : Global.invalidAttributes.keySet()) {
 			anchors = doc.elementsByTagName(key);
 			int enMediaCount = anchors.length();
-			for (int i = enMediaCount - 1; i >= 0; i--) {
+			for (int i=enMediaCount-1; i>=0; i--) {
 				QDomElement element = anchors.at(i).toElement();
-				ArrayList<String> names = Global.invalidAttributes.get(element
-						.nodeName().toLowerCase());
-				if (names != null) {
-					for (int j = 0; j < names.size(); j++) {
+				ArrayList<String> names = Global.invalidAttributes.get(element.nodeName().toLowerCase());
+				if (names != null) {	
+					for (int j=0; j<names.size(); j++) {
 						element.removeAttribute(names.get(j));
 					}
 				}
@@ -119,35 +120,35 @@ public class XMLCleanup {
 		}
 
 		List<String> elements = Global.invalidElements;
-		for (int j = 0; j < elements.size(); j++) {
+		for (int j=0; j<elements.size(); j++) {
 			anchors = doc.elementsByTagName(elements.get(j));
 			int enMediaCount = anchors.length();
-			for (int i = enMediaCount - 1; i >= 0; i--) {
+			for (int i=enMediaCount-1; i>=0; i--) {
 				QDomElement element = anchors.at(i).toElement();
 				element.setTagName("span");
 			}
 		}
 		// Replace the XML carrage returns that the toString() creates.
-		content = doc.toString().replace("&#xd;", "");
+		content = doc.toString().replace( "&#xd;", "" );
 
 	}
-
 	// Start looking through the tree.
-	private void scanTags() {
-
+	private void scanTags() {	
+		
 		if (doc.hasChildNodes())
 			parseNodes(doc.childNodes());
 		return;
 	}
-
+	
 	private void parseNodes(QDomNodeList nodes) {
-		for (int i = 0; i < nodes.size(); i++) {
+		for (int i=0; i<nodes.size(); i++) {
 			QDomNode node = nodes.at(i);
 			if (node.hasChildNodes())
 				parseNodes(node.childNodes());
 			fixNode(node);
 		}
 	}
+	
 
 	// Fix the contents of the node back to ENML.
 	private void fixNode(QDomNode node) {
@@ -157,8 +158,7 @@ public class XMLCleanup {
 			if (!scanChecked.attribute("checked").equalsIgnoreCase("true"))
 				scanChecked.setAttribute("checked", "false");
 		}
-		if (node.nodeName().equalsIgnoreCase("#comment")
-				|| node.nodeName().equalsIgnoreCase("script")) {
+		if (node.nodeName().equalsIgnoreCase("#comment") || node.nodeName().equalsIgnoreCase("script")) {
 			node.parentNode().removeChild(node);
 		}
 		if (node.nodeName().equalsIgnoreCase("input")) {
@@ -182,16 +182,15 @@ public class XMLCleanup {
 		if (node.nodeName().equalsIgnoreCase("img")) {
 			QDomElement e = node.toElement();
 			String enType = e.attribute("en-tag");
-
-			// Check if we have an en-crypt tag. Change it from an img to
-			// en-crypt
+			
+			// Check if we have an en-crypt tag.  Change it from an img to en-crypt
 			if (enType.equalsIgnoreCase("en-crypt")) {
-
+				
 				String encrypted = e.attribute("alt");
-
+				
 				QDomText crypt = doc.createTextNode(encrypted);
 				e.appendChild(crypt);
-
+				
 				e.removeAttribute("v:shapes");
 				e.removeAttribute("en-tag");
 				e.removeAttribute("contenteditable");
@@ -205,14 +204,14 @@ public class XMLCleanup {
 				return;
 			}
 
-			// Check if we have a LaTeX image. Remove the parent link tag
+			// Check if we have a LaTeX image.  Remove the parent link tag
 			if (enType.equalsIgnoreCase("en-latex")) {
 				enType = "en-media";
 				QDomNode parent = e.parentNode();
 				parent.removeChild(e);
 				parent.parentNode().replaceChild(e, parent);
 			}
-
+			
 			// If we've gotten this far, we have an en-media tag
 			e.setTagName(enType);
 			resources.add(e.attribute("guid"));
@@ -221,12 +220,10 @@ public class XMLCleanup {
 			e.removeAttribute("en-new");
 			e.removeAttribute("en-tag");
 		}
-
-		// Tags like <ul><ul><li>1</li></ul></ul> are technically valid, but
-		// Evernote
-		// expects that a <ul> tag only has a <li>, so we will need to change
-		// them
-		// to this: <ul><li><ul><li>1</li></ul></li></ul>
+		
+		// Tags like <ul><ul><li>1</li></ul></ul> are technically valid, but Evernote 
+		// expects that a <ul> tag only has a <li>, so we will need to change them
+		// to this:  <ul><li><ul><li>1</li></ul></li></ul>
 		if (node.nodeName().equalsIgnoreCase("ul")) {
 			QDomNode firstChild = node.firstChild();
 			QDomElement childElement = firstChild.toElement();
@@ -237,24 +234,23 @@ public class XMLCleanup {
 				newElement.appendChild(firstChild);
 			}
 		}
-
+		
 		if (node.nodeName().equalsIgnoreCase("en-hilight")) {
 			QDomElement e = node.toElement();
 			QDomText newText = doc.createTextNode(e.text());
-			e.parentNode().replaceChild(newText, e);
+			e.parentNode().replaceChild(newText,e);
 		}
 		if (node.nodeName().equalsIgnoreCase("span")) {
 			QDomElement e = node.toElement();
-			if (e.attribute("class").equalsIgnoreCase("en-hilight")
-					|| e.attribute("class").equalsIgnoreCase("en-spell")) {
+			if (e.attribute("class").equalsIgnoreCase("en-hilight") || e.attribute("class").equalsIgnoreCase("en-spell")) {
 				QDomText newText = doc.createTextNode(e.text());
-				e.parentNode().replaceChild(newText, e);
+				e.parentNode().replaceChild(newText,e);
 			}
 			if (e.attribute("pdfnavigationtable").equalsIgnoreCase("true")) {
 				node.parentNode().removeChild(node);
 			}
 		}
-
+		
 		// Fix up encryption tag
 		if (node.nodeName().equalsIgnoreCase("en-crypt-temp")) {
 			QDomElement e = node.toElement();
@@ -266,6 +262,7 @@ public class XMLCleanup {
 		}
 	}
 
+	
 	private QDomNode fixLinkNode(QDomNode node) {
 		QDomElement e = node.toElement();
 		String enTag = e.attribute("en-tag");
@@ -283,9 +280,12 @@ public class XMLCleanup {
 		return e;
 	}
 
+	
 	// Return old resources we've found
 	public List<String> getResources() {
 		return resources;
 	}
 
 }
+
+	

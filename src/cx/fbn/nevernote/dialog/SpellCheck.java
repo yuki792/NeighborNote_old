@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -40,10 +40,10 @@ import com.trolltech.qt.gui.QPushButton;
 
 public class SpellCheck extends QDialog {
 
-	private boolean replacePressed;
-	private boolean cancelPressed;
-	private final QLabel currentWord;
-	private final QLineEdit replacementWord;
+	private boolean 	replacePressed;
+	private boolean		cancelPressed;
+	private final QLabel	currentWord;
+	private final QLineEdit	replacementWord;
 	private String misspelledWord;
 	private final QPushButton replace;
 	private final QPushButton ignore;
@@ -51,12 +51,12 @@ public class SpellCheck extends QDialog {
 	private final QPushButton addToDictionary;
 	private final QListWidget suggestions;
 	private final SpellChecker checker;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
+	
 	// Constructor
 	public SpellCheck(SpellChecker checker) {
-		setWindowIcon(new QIcon(iconPath + "spellCheck.png"));
+		setWindowIcon(new QIcon(iconPath+"spellCheck.png"));
 		replacePressed = false;
 		cancelPressed = false;
 		this.checker = checker;
@@ -65,21 +65,21 @@ public class SpellCheck extends QDialog {
 		setLayout(grid);
 		QGridLayout suggestionGrid = new QGridLayout();
 		QGridLayout buttonGrid = new QGridLayout();
-
+		
 		currentWord = new QLabel(misspelledWord);
 		replacementWord = new QLineEdit();
 		suggestions = new QListWidget();
-
+		
 		replacementWord.textChanged.connect(this, "validateInput()");
 		suggestions.itemSelectionChanged.connect(this, "replacementChosen()");
-
+		
 		suggestionGrid.addWidget(currentWord, 1, 1);
-		suggestionGrid.addWidget(new QLabel(tr("Suggestion")), 2, 1);
+		suggestionGrid.addWidget(new QLabel(tr("Suggestion")), 2,1);
 		suggestionGrid.addWidget(replacementWord, 3, 1);
-		suggestionGrid.addWidget(suggestions, 4, 1);
-		suggestionGrid.setContentsMargins(10, 10, -10, -10);
-		grid.addLayout(suggestionGrid, 1, 1);
-
+		suggestionGrid.addWidget(suggestions,4,1);
+		suggestionGrid.setContentsMargins(10, 10,  -10, -10);
+		grid.addLayout(suggestionGrid,1,1);
+		
 		replace = new QPushButton(tr("Replace"));
 		ignore = new QPushButton(tr("Ignore"));
 		ignoreAll = new QPushButton(tr("Ignore All"));
@@ -92,17 +92,17 @@ public class SpellCheck extends QDialog {
 		cancel.clicked.connect(this, "cancelButtonPressed()");
 		suggestionGrid.addWidget(replace, 1, 2);
 		suggestionGrid.addWidget(ignore, 2, 2);
-		suggestionGrid.addWidget(ignoreAll, 3, 2);
-		suggestionGrid.addWidget(addToDictionary, 4, 2);
+		suggestionGrid.addWidget(ignoreAll,3,2);
+		suggestionGrid.addWidget(addToDictionary,4,2);
 		suggestionGrid.setAlignment(addToDictionary, AlignmentFlag.AlignTop);
-		buttonGrid.addWidget(new QLabel(), 1, 1);
-		buttonGrid.addWidget(cancel, 1, 2);
-		buttonGrid.addWidget(new QLabel(), 1, 3);
+		buttonGrid.addWidget(new QLabel(), 1,1);
+		buttonGrid.addWidget(cancel, 1,2);
+		buttonGrid.addWidget(new QLabel(), 1,3);
 		buttonGrid.setColumnStretch(1, 10);
 		buttonGrid.setColumnStretch(3, 10);
-		grid.addLayout(buttonGrid, 2, 1);
+		grid.addLayout(buttonGrid,2,1);
 	}
-
+	
 	// The OK button was pressed
 	@SuppressWarnings("unused")
 	private void replaceButtonPressed() {
@@ -110,7 +110,7 @@ public class SpellCheck extends QDialog {
 		cancelPressed = false;
 		close();
 	}
-
+	
 	// The CANCEL button was pressed
 	@SuppressWarnings("unused")
 	private void cancelButtonPressed() {
@@ -118,7 +118,7 @@ public class SpellCheck extends QDialog {
 		cancelPressed = true;
 		close();
 	}
-
+	
 	// The ignore button was pressed
 	@SuppressWarnings("unused")
 	private void ignoreButtonPressed() {
@@ -126,35 +126,35 @@ public class SpellCheck extends QDialog {
 		cancelPressed = false;
 		close();
 	}
-
+	
 	// The ignore button was pressed
 	@SuppressWarnings("unused")
 	private void ignoreAllButtonPressed() {
 		checker.ignoreAll(misspelledWord);
 		close();
 	}
-
+	
 	// Get the userid from the field
 	public String getReplacementWord() {
 		return replacementWord.text();
 	}
-
+	
 	// Set the current misspelled word
 	public void setWord(String w) {
 		misspelledWord = w;
-		currentWord.setText(tr("Word: ") + misspelledWord);
+		currentWord.setText(tr("Word: ") +misspelledWord);
 	}
-
+	
 	// Check if the OK button was pressed
 	public boolean replacePressed() {
 		return replacePressed;
 	}
-
+	
 	// Check if the OK button was pressed
 	public boolean cancelPressed() {
 		return cancelPressed;
 	}
-
+	
 	// Validate user input
 	public void validateInput() {
 		replace.setEnabled(true);
@@ -163,42 +163,42 @@ public class SpellCheck extends QDialog {
 			replace.setEnabled(false);
 			return;
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		List<Word> values = checker.getSuggestions(replacementWord.text(), 10);
-		for (int i = 0; i < values.size(); i++) {
+		for (int i=0; i<values.size(); i++) {
 			suggestions.addItem(values.get(i).toString());
 		}
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void replacementChosen() {
 		String sel = suggestions.currentItem().text();
 		replacementWord.setText(sel);
 	}
-
-	// Add an item to the dictionary
+	
+	//Add an item to the dictionary
 	@SuppressWarnings("unused")
 	private void addToDictionaryButtonPressed() {
 		checker.addToDictionary(misspelledWord);
 		this.close();
 	}
-
+	
 	// Add a suggestion
 	public void addSuggestion(String word) {
 		suggestions.addItem(word);
 	}
-
+	
 	// Set the current suggestion
 	public void setCurrentSuggestion(String word) {
 		replacementWord.setText(word);
 	}
-
+	
 	// Empty out the list
 	public void clearSuggestions() {
 		suggestions.clear();
 	}
-
+	
 	public void setSelectedSuggestion(int index) {
 		if (index < suggestions.count())
 			suggestions.setCurrentRow(index);

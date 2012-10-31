@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -47,7 +47,6 @@ import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QPalette.ColorRole;
 import com.trolltech.qt.gui.QPixmap;
 import com.trolltech.qt.gui.QWheelEvent;
-
 public class ThumbnailViewer extends QDialog {
 	private String thumbnail;
 	private final QLabel picture;
@@ -56,97 +55,101 @@ public class ThumbnailViewer extends QDialog {
 	public Signal0 downArrow;
 	public Signal0 leftArrow;
 	public Signal0 rightArrow;
-	private QImage image;
+	private QImage	image;
 	private List<String> guids;
+	
 
 	public ThumbnailViewer() {
 		this.setVisible(false);
-
+		
 		leftArrow = new Signal0();
 		rightArrow = new Signal0();
 		upArrow = new Signal0();
 		downArrow = new Signal0();
 
+
 		setAutoFillBackground(true);
 		QPalette palette = new QPalette(palette());
-		// Set background colour to black
-		palette.setColor(ColorRole.Base, QColor.black);
-		setPalette(palette);
-
+	    // Set background colour to black
+	    palette.setColor(ColorRole.Base, QColor.black);
+	    setPalette(palette);
+	    
 		grid = new QGridLayout();
 		setLayout(grid);
-
+		
+		
 		picture = new QLabel();
-		/*
-		 * QLabel left = new QLabel(); QLabel right = new QLabel();
-		 * 
-		 * grid.addWidget(left, 0,0); grid.addWidget(picture,0,1);
-		 * grid.addWidget(right, 0,2); grid.setWidgetSpacing(1);
-		 * grid.setContentsMargins(10, 10, -10, -10);
-		 */
-
+/*		
+		QLabel left = new QLabel();
+		QLabel right = new QLabel();
+		
+		grid.addWidget(left, 0,0);
+		grid.addWidget(picture,0,1);
+		grid.addWidget(right, 0,2);
+		grid.setWidgetSpacing(1);
+		grid.setContentsMargins(10, 10,  -10, -10);
+*/		
+		
 		setWindowModality(WindowModality.ApplicationModal);
 		setWindowFlags(Qt.WindowType.FramelessWindowHint);
 		setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground);
-		// setBackgroundRole(ColorRole.Shadow);
-		// setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
-		// showFullScreen();
-		// this.hide();
+//		setBackgroundRole(ColorRole.Shadow);
+//		setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
+//		showFullScreen();
+//		this.hide();
 
 	}
-
 	public void setThumbnail(String thumb) {
 		thumbnail = thumb;
 		image = new QImage(thumbnail);
 		picture.setPixmap(QPixmap.fromImage(image));
 	}
-
 	public void setThumbnail(QImage i) {
 		image = i;
 		picture.setPixmap(QPixmap.fromImage(image));
 	}
+	
 
 	@Override
 	public void keyPressEvent(QKeyEvent e) {
-		if (e.key() == Qt.Key.Key_Up.value()
-				|| e.key() == Qt.Key.Key_Right.value()) {
+		if (e.key() == Qt.Key.Key_Up.value() || e.key() == Qt.Key.Key_Right.value()) {
 			upArrow.emit();
 		}
-		if (e.key() == Qt.Key.Key_Down.value()
-				|| e.key() == Qt.Key.Key_Left.value()) {
+		if (e.key() == Qt.Key.Key_Down.value() || e.key() == Qt.Key.Key_Left.value()) {
 			downArrow.emit();
 		}
 
 		super.keyPressEvent(e);
 	}
-
+	
+	
 	@Override
 	public void mousePressEvent(QMouseEvent e) {
 		if (e.button() == Qt.MouseButton.LeftButton)
 			close();
 	}
-
+	
 	@Override
 	public void wheelEvent(QWheelEvent e) {
 		int numDegrees = e.delta() / 8;
-		int numSteps = numDegrees / 15;
-
-		if (e.orientation().equals(Qt.Orientation.Vertical)) {
-			if (numSteps > 0) {
-				for (int i = 0; i < numSteps; i++) {
-					upArrow.emit();
-					repaint();
-				}
-			}
-			if (numSteps < 0) {
-				for (int i = numSteps; i < 0; i++) {
-					downArrow.emit();
-					repaint();
-				}
-			}
-		}
+        int numSteps = numDegrees / 15;
+        
+        if (e.orientation().equals(Qt.Orientation.Vertical)) { 
+        	if (numSteps > 0) {
+        		for (int i=0; i<numSteps; i++) {
+        			upArrow.emit();
+        			repaint();
+        		}
+        	}
+        	if (numSteps < 0) {
+        		for (int i=numSteps; i<0; i++) {
+        			downArrow.emit();
+        			repaint();
+        		}
+        	}
+        }
 	}
-
+	
 	@Override
 	public void paintEvent(QPaintEvent e) {
 		QDesktopWidget desktop = QApplication.desktop();
@@ -154,25 +157,26 @@ public class ThumbnailViewer extends QDialog {
 		this.setMaximumSize(desktop.size());
 		this.setMinimumSize(desktop.size());
 		resize(desktop.size());
-
+		
 		QPainter painter = new QPainter(this);
-
+		
 		painter.fillRect(desktop.screenGeometry(screen), QColor.black);
 
 		QRect availGeo = desktop.availableGeometry(screen);
-
-		int x1 = (availGeo.width() / 2) - (image.size().width() / 2);
-		int y1 = (availGeo.height() / 2) - (image.size().height() / 2);
-
-		painter.drawImage(new QPoint(x1, y1), image);
+		
+		int x1 = (availGeo.width()/2)-(image.size().width()/2);
+		int y1 = (availGeo.height()/2)-(image.size().height()/2);
+		
+		painter.drawImage(new QPoint(x1,y1), image);
 	}
+
 
 	public List<String> getGuids() {
 		return guids;
 	}
-
 	public void setGuids(List<String> g) {
 		guids = g;
 	}
+
 
 }

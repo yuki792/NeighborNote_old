@@ -6,9 +6,9 @@ import com.trolltech.qt.gui.QProgressBar;
 
 /**
  * Progress bar for showing remaining space for this month in evernote account
- * 
+ *  
  * @author danil
- * 
+ *
  */
 public class QuotaProgressBar extends QProgressBar {
 
@@ -21,7 +21,7 @@ public class QuotaProgressBar extends QProgressBar {
 	@Override
 	protected void mouseReleaseEvent(QMouseEvent arg__1) {
 		super.mouseReleaseEvent(arg__1);
-
+		
 		mouseClickAction.trigger();
 	}
 

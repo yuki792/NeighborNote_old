@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -25,6 +25,7 @@ package cx.fbn.nevernote.dialog;
 //* menu option is clicked.
 //**********************************************
 //**********************************************
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,32 +45,31 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import cx.fbn.nevernote.Global;
 
 public class LogFileDialog extends QDialog {
-	public final QComboBox fileCombo;
-	public final QTextEdit textField;
-	private final List<String> logs;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	public final QComboBox		fileCombo;	 
+	public final QTextEdit		textField;
+	private final List<String>		logs;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	// Constructor
 	public LogFileDialog(List<String> l) {
 		setWindowTitle(tr("Application Logs"));
 		logs = l;
-		setWindowIcon(new QIcon(iconPath + "notebook-green.png"));
+		setWindowIcon(new QIcon(iconPath+"notebook-green.png"));
 		QVBoxLayout main = new QVBoxLayout();
 		setLayout(main);
 		fileCombo = new QComboBox(this);
-
+		
 		QHBoxLayout comboLayout = new QHBoxLayout();
 		comboLayout.addWidget(new QLabel(tr("Log File:")));
 		comboLayout.addWidget(fileCombo);
 		comboLayout.addStretch(100);
 		fileCombo.currentIndexChanged.connect(this, "indexChanged(Integer)");
-
+		
 		main.addLayout(comboLayout);
-
+				
 		textField = new QTextEdit(this);
 		main.addWidget(textField);
-
+		
 		fileCombo.addItem(tr("Message Log"), "MessageLog");
 		fileCombo.addItem(tr("Application Log"), "NeverNoteLog");
 		fileCombo.addItem(tr("Synchronization Log"), "SyncLog");
@@ -80,44 +80,41 @@ public class LogFileDialog extends QDialog {
 		fileCombo.addItem(tr("Note Browser Log"), "NoteBrowserLog");
 		fileCombo.addItem(tr("Export Log"), "ExportLog");
 		fileCombo.addItem(tr("Import Log"), "ImportLog");
-		// fileCombo.addItem(tr("Global Log"), "GlobalLog");
+//		fileCombo.addItem(tr("Global Log"), "GlobalLog");
 		fileCombo.addItem(tr("Index Log"), "IndexLog");
 		fileCombo.addItem(tr("Database Connection Log"), "DatabaseLog");
 		fileCombo.addItem(tr("Thumbnail Generator Log"), "ThumbnailLog");
-		fileCombo.addItem(tr("NixNote Database SQL Trace File"),
-				"NeverNoteDBLog");
+		fileCombo.addItem(tr("NixNote Database SQL Trace File"), "NeverNoteDBLog");
 		fileCombo.addItem(tr("Index Database SQL Trace File"), "IndexDBLog");
-		fileCombo.addItem(tr("Resource Database SQL Trace File"),
-				"ResourceDBLog");
-
+		fileCombo.addItem(tr("Resource Database SQL Trace File"), "ResourceDBLog");
+		
+		
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void restoreAsNewPushed() {
 		this.close();
 	}
-
 	@SuppressWarnings("unused")
 	private void restorePushed() {
 		this.close();
 	}
-
 	@SuppressWarnings("unused")
 	private void cancelPressed() {
 		this.close();
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void indexChanged(Integer index) {
 		String value = (String) fileCombo.itemData(index);
 
 		if (value.equals("MessageLog")) {
 			textField.clear();
-			for (int i = 0; i < logs.size(); i++) {
+			for (int i=0; i<logs.size(); i++) {
 				textField.append(logs.get(i));
 			}
 			return;
-		}
+		}		
 		if (value.equals("NeverNoteLog")) {
 			loadFile("nevernote.log");
 			return;
@@ -177,25 +174,24 @@ public class LogFileDialog extends QDialog {
 		if (value.equals("NeverNoteDBLog")) {
 			loadTraceFile("NeverNote.trace.db");
 			return;
-		}
+		}	
 		if (value.equals("IndexDBLog")) {
 			loadTraceFile("Index.trace.db");
 			return;
-		}
+		}	
 		if (value.equals("ResourceDBLog")) {
 			loadTraceFile("Resources.trace.db");
 			return;
-		}
+		}	
 	}
-
+	
 	private void loadFile(String file) {
 		textField.clear();
 		File f = Global.getFileManager().getLogsDirFile(file);
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(
-					f.getAbsolutePath()));
+			BufferedReader in = new BufferedReader(new FileReader(f.getAbsolutePath()));
 			String data;
-			while ((data = in.readLine()) != null) {
+			while ((data=in.readLine()) != null) {
 				textField.append(data);
 			}
 		} catch (FileNotFoundException e) {
@@ -204,17 +200,16 @@ public class LogFileDialog extends QDialog {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
-
+		
 	private void loadTraceFile(String file) {
 		textField.clear();
 		File f = Global.getFileManager().getDbDirFile(file);
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(
-					f.getAbsolutePath()));
+			BufferedReader in = new BufferedReader(new FileReader(f.getAbsolutePath()));
 			String data;
-			while ((data = in.readLine()) != null) {
+			while ((data=in.readLine()) != null) {
 				textField.append(data);
 			}
 		} catch (FileNotFoundException e) {
@@ -224,3 +219,11 @@ public class LogFileDialog extends QDialog {
 		}
 	}
 }
+ 
+
+
+	
+	
+	
+	
+

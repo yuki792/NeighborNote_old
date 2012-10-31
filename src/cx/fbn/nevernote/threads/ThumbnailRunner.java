@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.threads;
 
@@ -37,6 +37,7 @@ import cx.fbn.nevernote.signals.NoteSignal;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
 import cx.fbn.nevernote.xml.NoteFormatter;
+
 
 /*
  * 
@@ -66,20 +67,20 @@ import cx.fbn.nevernote.xml.NoteFormatter;
  * 
  */
 public class ThumbnailRunner extends QObject implements Runnable {
-
-	private final ApplicationLogger logger;
-	private String guid;
-	public NoteSignal noteSignal;
-	private boolean keepRunning;
-	public boolean interrupt;
-	private final DatabaseConnection conn;
+	
+	private final ApplicationLogger 			logger;
+	private String 								guid;
+	public  NoteSignal 							noteSignal;
+	private boolean								keepRunning;
+	public boolean								interrupt;
+	private final DatabaseConnection			conn;
 	private volatile LinkedBlockingQueue<String> workQueue;
-	private static int MAX_QUEUED_WAITING = 1000;
-	public QMutex mutex;
+	private static int 							MAX_QUEUED_WAITING = 1000;
+	public QMutex								mutex;
+
 
 	// ICHANGED String bを追加
-	public ThumbnailRunner(String logname, String u, String i, String r,
-			String b, String uid, String pswd, String cpswd) {
+	public ThumbnailRunner(String logname, String u, String i, String r, String b, String uid, String pswd, String cpswd) {
 		logger = new ApplicationLogger(logname);
 		// ICHANGED bを追加
 		conn = new DatabaseConnection(logger, u, i, r, b, uid, pswd, cpswd, 300);
@@ -87,13 +88,14 @@ public class ThumbnailRunner extends QObject implements Runnable {
 		guid = null;
 		keepRunning = true;
 		mutex = new QMutex();
-		workQueue = new LinkedBlockingQueue<String>(MAX_QUEUED_WAITING);
+		workQueue=new LinkedBlockingQueue<String>(MAX_QUEUED_WAITING);	
 	}
-
+	
+	
 	@Override
 	public void run() {
 		thread().setPriority(Thread.MIN_PRIORITY);
-
+		
 		logger.log(logger.MEDIUM, "Starting thumbnail thread ");
 		while (keepRunning) {
 			try {
@@ -124,63 +126,67 @@ public class ThumbnailRunner extends QObject implements Runnable {
 		}
 		conn.dbShutdown();
 	}
-
+	
+	
 	private void processImage() {
 		boolean abort = true;
 		if (abort)
 			return;
 		mutex.lock();
-		logger.log(logger.EXTREME, "Image found " + guid);
-
+		logger.log(logger.EXTREME, "Image found "+guid);
+			
 		logger.log(logger.EXTREME, "Getting image");
 		QPixmap image = new QPixmap();
-		if (!image.load(Global.getFileManager().getResDirPath() + "thumbnail-"
-				+ guid + ".png")) {
+		if (!image.load(Global.getFileManager().getResDirPath()+"thumbnail-"+guid+".png")) {
 			logger.log(logger.EXTREME, "Failure to reload image. Aborting.");
 			mutex.unlock();
 			return;
 		}
-
+		
+		
 		logger.log(logger.EXTREME, "Opening buffer");
-		QBuffer buffer = new QBuffer();
-		if (!buffer.open(QIODevice.OpenModeFlag.WriteOnly)) {
-			logger.log(logger.EXTREME, "Failure to open buffer.  Aborting.");
-			mutex.unlock();
-			return;
-		}
-
+        QBuffer buffer = new QBuffer();
+        if (!buffer.open(QIODevice.OpenModeFlag.WriteOnly)) {
+        	logger.log(logger.EXTREME, "Failure to open buffer.  Aborting.");
+        	mutex.unlock();
+        	return;
+        }
+	        
 		logger.log(logger.EXTREME, "Filling buffer");
-		if (!image.save(buffer, "PNG")) {
-			logger.log(logger.EXTREME, "Failure to write to buffer.  Aborting.");
-			mutex.unlock();
-			return;
-		}
-		buffer.close();
-
+        if (!image.save(buffer, "PNG")) {
+        	logger.log(logger.EXTREME, "Failure to write to buffer.  Aborting.");	  
+        	mutex.unlock();
+        	return;
+        }
+        buffer.close();
+	        
 		logger.log(logger.EXTREME, "Updating database");
 		QByteArray b = new QBuffer(buffer).buffer();
 		conn.getNoteTable().setThumbnail(guid, b);
 		conn.getNoteTable().setThumbnailNeeded(guid, false);
 		mutex.unlock();
 	}
-
+	
+	
+	
 	private void scanDatabase() {
 		// If there is already work in the queue, that takes priority
 		logger.log(logger.HIGH, "Scanning database for notes needing thumbnail");
 		if (workQueue.size() > 0)
 			return;
-
+		
 		// Find a few records that need thumbnails
 		List<String> guids = conn.getNoteTable().findThumbnailsNeeded();
-		logger.log(logger.HIGH, guids.size() + " records returned");
-		for (int i = 0; i < guids.size() && keepRunning && !interrupt; i++) {
+		logger.log(logger.HIGH, guids.size() +" records returned");
+		for (int i=0; i<guids.size() && keepRunning && !interrupt; i++) {
 			guid = guids.get(i);
-			logger.log(logger.HIGH, "Working on:" + guids.get(i));
+			logger.log(logger.HIGH, "Working on:" +guids.get(i));
 			generateThumbnail();
 		}
 		logger.log(logger.HIGH, "Scan completed");
 	}
 
+		
 	public synchronized boolean addWork(String request) {
 
 		if (workQueue.size() == 0) {
@@ -189,23 +195,21 @@ public class ThumbnailRunner extends QObject implements Runnable {
 		}
 		return false;
 	}
-
+	
 	public synchronized int getWorkQueueSize() {
 		return workQueue.size();
 	}
-
+	
 	private void generateThumbnail() {
 		QByteArray js = new QByteArray();
-		logger.log(logger.HIGH, "Starting thumbnail for " + guid);
+		logger.log(logger.HIGH, "Starting thumbnail for " +guid);
 		ArrayList<QTemporaryFile> tempFiles = new ArrayList<QTemporaryFile>();
-		Note currentNote = conn.getNoteTable().getNote(guid, true, true, false,
-				true, false);
+		Note currentNote = conn.getNoteTable().getNote(guid,true,true,false,true,false);
 		NoteFormatter formatter = new NoteFormatter(logger, conn, tempFiles);
-		currentNote = conn.getNoteTable().getNote(guid, true, true, false,
-				true, false);
+		currentNote = conn.getNoteTable().getNote(guid, true, true, false, true, false);
 		formatter.setNote(currentNote, true);
 		formatter.setHighlight(null);
-		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");		
 		js.append("<style type=\"text/css\">.en-crypt-temp { border-collapse:collapse; border-style:solid; border-color:blue; padding:0.0mm 0.0mm 0.0mm 0.0mm; }</style>");
 		js.append("<style type=\"text/css\">en-hilight { background-color: rgb(255,255,0) }</style>");
 		js.append("<style> img { max-width:100%; }</style>");
@@ -213,18 +217,19 @@ public class ThumbnailRunner extends QObject implements Runnable {
 		js.append("</head>");
 		js.append(formatter.rebuildNoteHTML());
 		js.append("</HTML>");
-		js.replace(
-				"<!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml.dtd'>",
-				"");
-		js.replace(
-				"<!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml2.dtd'>",
-				"");
+		js.replace("<!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml.dtd'>", "");
+		js.replace("<!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml2.dtd'>", "");
 		js.replace("<?xml version='1.0' encoding='UTF-8'?>", "");
 		int zoom = 1;
-		String content = currentNote.getContent();
-		zoom = Global.calculateThumbnailZoom(content);
+		if (currentNote != null && currentNote.getContent() != null) {
+			String content = currentNote.getContent();
+			zoom = Global.calculateThumbnailZoom(content);
+		}
 		logger.log(logger.HIGH, "Thumbnail file ready");
 		noteSignal.thumbnailPageReady.emit(guid, js, zoom);
 	}
+		
+	
+
 
 }

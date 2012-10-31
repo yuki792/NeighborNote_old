@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -44,13 +44,12 @@ public class DatabaseStatus extends QDialog {
 	QLabel indexCount;
 	QLabel resourceIndexNeeded;
 	private final QPushButton ok;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+    private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	// Constructor
 	public DatabaseStatus() {
 		setWindowTitle(tr("Current Database Status"));
-		setWindowIcon(new QIcon(iconPath + "database.png"));
+		setWindowIcon(new QIcon(iconPath+"database.png"));
 		QGridLayout grid = new QGridLayout();
 		setLayout(grid);
 		noteCount = new QLabel();
@@ -58,87 +57,77 @@ public class DatabaseStatus extends QDialog {
 		syncNeeded = new QLabel();
 		notebookCount = new QLabel();
 		tagCount = new QLabel();
-		savedSearchCount = new QLabel();
+		savedSearchCount = new QLabel();		
 		resourceCount = new QLabel();
 		resourceIndexNeeded = new QLabel();
 		indexCount = new QLabel();
-
-		grid.addWidget(new QLabel(tr("Notebooks:")), 0, 0);
-		grid.addWidget(notebookCount, 0, 1);
-
-		grid.addWidget(new QLabel(tr("Tags:")), 1, 0);
-		grid.addWidget(tagCount, 1, 1);
-
-		grid.addWidget(new QLabel(tr("Total Notes:")), 2, 0);
-		grid.addWidget(noteCount, 2, 1);
-
-		grid.addWidget(new QLabel(tr("Unsynchronized Notes:")), 3, 0);
+		
+		grid.addWidget(new QLabel(tr("Notebooks:")), 0,0);
+		grid.addWidget(notebookCount, 0,1);
+		
+		grid.addWidget(new QLabel(tr("Tags:")), 1,0);
+		grid.addWidget(tagCount, 1,1);
+		
+		grid.addWidget(new QLabel(tr("Total Notes:")), 2,0);
+		grid.addWidget(noteCount, 2,1);
+		
+		grid.addWidget(new QLabel(tr("Unsynchronized Notes:")), 3,0);
 		grid.addWidget(syncNeeded, 3, 1);
-
-		grid.addWidget(new QLabel(tr("Unindexed Notes:")), 4, 0);
+		
+		grid.addWidget(new QLabel(tr("Unindexed Notes:")), 4,0);
 		grid.addWidget(indexNeeded, 4, 1);
+				
+		grid.addWidget(new QLabel(tr("Attachments/Images:")), 5,0);
+		grid.addWidget(resourceCount, 5,1);
 
-		grid.addWidget(new QLabel(tr("Attachments/Images:")), 5, 0);
-		grid.addWidget(resourceCount, 5, 1);
-
-		grid.addWidget(new QLabel(tr("Unindexed Attachments/Images:")), 6, 0);
+		grid.addWidget(new QLabel(tr("Unindexed Attachments/Images:")), 6,0);
 		grid.addWidget(resourceIndexNeeded, 6, 1);
 
-		grid.addWidget(new QLabel(tr("Saved Searches:")), 7, 0);
-		grid.addWidget(savedSearchCount, 7, 1);
-
-		grid.addWidget(new QLabel(tr("Words In Index")), 8, 0);
-		grid.addWidget(indexCount, 8, 1);
-
+		grid.addWidget(new QLabel(tr("Saved Searches:")),7,0);
+		grid.addWidget(savedSearchCount, 7,1);
+		
+		grid.addWidget(new QLabel(tr("Words In Index")), 8,0);
+		grid.addWidget(indexCount, 8,1);
+			
 		QGridLayout buttonLayout = new QGridLayout();
 		ok = new QPushButton(tr("OK"));
 		ok.clicked.connect(this, "okPushed()");
 		buttonLayout.addWidget(ok, 1, 1);
-		grid.addLayout(buttonLayout, 9, 1);
+		grid.addLayout(buttonLayout,9,1);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void okPushed() {
 		this.close();
 	}
-
 	public void setUnindexed(int d) {
 		indexNeeded.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setUnsynchronized(int d) {
 		syncNeeded.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setNoteCount(int d) {
 		noteCount.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setNotebookCount(int d) {
 		notebookCount.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setTagCount(int d) {
 		tagCount.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setSavedSearchCount(int d) {
 		savedSearchCount.setText(NumberFormat.getInstance().format(d));
 	}
-
 	public void setResourceCount(int d) {
 		resourceCount.setText(NumberFormat.getInstance().format(d));
 	}
-
-	public void setUnindexedResourceCount(int r) {
+	public void setUnindexedResourceCount(int r)  {
 		resourceIndexNeeded.setText(NumberFormat.getInstance().format(r));
 	}
-
 	public void setWordCount(int d) {
 		indexCount.setText(NumberFormat.getInstance().format(d));
 	}
-
-	public QPushButton getOkButton() {
+ 	public QPushButton getOkButton() {
 		return ok;
 	}
 }

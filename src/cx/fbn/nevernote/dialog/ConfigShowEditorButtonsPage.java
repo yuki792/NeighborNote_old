@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -69,14 +69,13 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 	private final QRadioButton hideAlignCenter;
 	private final QRadioButton showAlignRight;
 	private final QRadioButton hideAlignRight;
-
+	
 	QComboBox messageCombo;
-
 	public ConfigShowEditorButtonsPage(QWidget parent) {
 		super(parent);
 
 		// Undo Button
-		QGroupBox undoGroup = new QGroupBox(tr("Undo"));
+		QGroupBox undoGroup =  new QGroupBox(tr("Undo"));
 		QHBoxLayout undoLayout = new QHBoxLayout();
 		showUndo = new QRadioButton(tr("Show"));
 		hideUndo = new QRadioButton(tr("Hide"));
@@ -85,8 +84,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		undoLayout.setStretch(1, 100);
 		undoGroup.setLayout(undoLayout);
 
+
 		// Redo Button
-		QGroupBox redoGroup = new QGroupBox(tr("Redo"));
+		QGroupBox redoGroup =  new QGroupBox(tr("Redo"));
 		QHBoxLayout redoLayout = new QHBoxLayout();
 		showRedo = new QRadioButton(tr("Show"));
 		hideRedo = new QRadioButton(tr("Hide"));
@@ -95,8 +95,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		redoLayout.setStretch(1, 100);
 		redoGroup.setLayout(redoLayout);
 
+
 		// Paste button
-		QGroupBox pasteGroup = new QGroupBox(tr("Paste"));
+		QGroupBox pasteGroup =  new QGroupBox(tr("Paste"));
 		QHBoxLayout pasteLayout = new QHBoxLayout();
 		showPaste = new QRadioButton(tr("Show"));
 		hidePaste = new QRadioButton(tr("Hide"));
@@ -106,7 +107,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		pasteGroup.setLayout(pasteLayout);
 
 		// Copy button
-		QGroupBox copyGroup = new QGroupBox(tr("Copy"));
+		QGroupBox copyGroup =  new QGroupBox(tr("Copy"));
 		QHBoxLayout copyLayout = new QHBoxLayout();
 		showCopy = new QRadioButton(tr("Show"));
 		hideCopy = new QRadioButton(tr("Hide"));
@@ -115,8 +116,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		copyLayout.setStretch(1, 100);
 		copyGroup.setLayout(copyLayout);
 
+		
 		// Cut Button
-		QGroupBox cutGroup = new QGroupBox(tr("Cut"));
+		QGroupBox cutGroup =  new QGroupBox(tr("Cut"));
 		QHBoxLayout cutLayout = new QHBoxLayout();
 		showCut = new QRadioButton(tr("Show"));
 		hideCut = new QRadioButton(tr("Hide"));
@@ -126,7 +128,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		cutGroup.setLayout(cutLayout);
 
 		// Notebook Column
-		QGroupBox underlineGroup = new QGroupBox(tr("Underline"));
+		QGroupBox underlineGroup =  new QGroupBox(tr("Underline"));
 		QHBoxLayout underlineLayout = new QHBoxLayout();
 		showUnderline = new QRadioButton(tr("Show"));
 		hideUnderline = new QRadioButton(tr("Hide"));
@@ -136,7 +138,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		underlineGroup.setLayout(underlineLayout);
 
 		// Bold Button
-		QGroupBox boldGroup = new QGroupBox(tr("Bold"));
+		QGroupBox boldGroup =  new QGroupBox(tr("Bold"));
 		QHBoxLayout boldLayout = new QHBoxLayout();
 		showBold = new QRadioButton(tr("Show"));
 		hideBold = new QRadioButton(tr("Hide"));
@@ -145,8 +147,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		boldLayout.setStretch(1, 100);
 		boldGroup.setLayout(boldLayout);
 
+
 		// Italic Button
-		QGroupBox italicGroup = new QGroupBox(tr("Italic"));
+		QGroupBox italicGroup =  new QGroupBox(tr("Italic"));
 		QHBoxLayout italicLayout = new QHBoxLayout();
 		showItalic = new QRadioButton(tr("Show"));
 		hideItalic = new QRadioButton(tr("Hide"));
@@ -156,7 +159,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		italicGroup.setLayout(italicLayout);
 
 		// Strikethrough Button
-		QGroupBox strikethroughGroup = new QGroupBox(tr("Strikethrough"));
+		QGroupBox strikethroughGroup =  new QGroupBox(tr("Strikethrough"));
 		QHBoxLayout strikethroughLayout = new QHBoxLayout();
 		showStrikethrough = new QRadioButton(tr("Show"));
 		hideStrikethrough = new QRadioButton(tr("Hide"));
@@ -165,8 +168,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		strikethroughLayout.setStretch(1, 100);
 		strikethroughGroup.setLayout(strikethroughLayout);
 
+
 		// Hline Button
-		QGroupBox hlineGroup = new QGroupBox(tr("Horizontal Line"));
+		QGroupBox hlineGroup =  new QGroupBox(tr("Horizontal Line"));
 		QHBoxLayout hlineLayout = new QHBoxLayout();
 		showHline = new QRadioButton(tr("Show"));
 		hideHline = new QRadioButton(tr("Hide"));
@@ -176,7 +180,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		hlineGroup.setLayout(hlineLayout);
 
 		// Outdent Button
-		QGroupBox outdentGroup = new QGroupBox(tr("Outdent"));
+		QGroupBox outdentGroup =  new QGroupBox(tr("Outdent"));
 		QHBoxLayout outdentLayout = new QHBoxLayout();
 		showOutdent = new QRadioButton(tr("Show"));
 		hideOutdent = new QRadioButton(tr("Hide"));
@@ -186,7 +190,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		outdentGroup.setLayout(outdentLayout);
 
 		// Indent Button
-		QGroupBox indentGroup = new QGroupBox(tr("Indent"));
+		QGroupBox indentGroup =  new QGroupBox(tr("Indent"));
 		QHBoxLayout indentLayout = new QHBoxLayout();
 		showIndent = new QRadioButton(tr("Show"));
 		hideIndent = new QRadioButton(tr("Hide"));
@@ -196,7 +200,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		indentGroup.setLayout(indentLayout);
 
 		// Bullet List Button
-		QGroupBox bulletListGroup = new QGroupBox(tr("Bullet List"));
+		QGroupBox bulletListGroup =  new QGroupBox(tr("Bullet List"));
 		QHBoxLayout bulletListLayout = new QHBoxLayout();
 		showBulletList = new QRadioButton(tr("Show"));
 		hideBulletList = new QRadioButton(tr("Hide"));
@@ -206,7 +210,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		bulletListGroup.setLayout(bulletListLayout);
 
 		// Number List Button
-		QGroupBox numberListGroup = new QGroupBox(tr("Numbered List"));
+		QGroupBox numberListGroup =  new QGroupBox(tr("Numbered List"));
 		QHBoxLayout numberListLayout = new QHBoxLayout();
 		showNumberList = new QRadioButton(tr("Show"));
 		hideNumberList = new QRadioButton(tr("Hide"));
@@ -216,7 +220,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		numberListGroup.setLayout(numberListLayout);
 
 		// Font drop down list
-		QGroupBox fontGroup = new QGroupBox(tr("Fonts"));
+		QGroupBox fontGroup =  new QGroupBox(tr("Fonts"));
 		QHBoxLayout fontLayout = new QHBoxLayout();
 		showFont = new QRadioButton(tr("Show"));
 		hideFont = new QRadioButton(tr("Hide"));
@@ -226,7 +230,7 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		fontGroup.setLayout(fontLayout);
 
 		// Font sizes drop down list
-		QGroupBox fontSizeGroup = new QGroupBox(tr("Font Size"));
+		QGroupBox fontSizeGroup =  new QGroupBox(tr("Font Size"));
 		QHBoxLayout fontSizeLayout = new QHBoxLayout();
 		showFontSize = new QRadioButton(tr("Show"));
 		hideFontSize = new QRadioButton(tr("Hide"));
@@ -234,9 +238,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		fontSizeLayout.addWidget(hideFontSize);
 		fontSizeLayout.setStretch(1, 100);
 		fontSizeGroup.setLayout(fontSizeLayout);
-
+		
 		// Font color button
-		QGroupBox fontColorGroup = new QGroupBox(tr("Font Color"));
+		QGroupBox fontColorGroup =  new QGroupBox(tr("Font Color"));
 		QHBoxLayout fontColorLayout = new QHBoxLayout();
 		showFontColor = new QRadioButton(tr("Show"));
 		hideFontColor = new QRadioButton(tr("Hide"));
@@ -244,9 +248,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		fontColorLayout.addWidget(hideFontColor);
 		fontColorLayout.setStretch(1, 100);
 		fontColorGroup.setLayout(fontColorLayout);
-
+		
 		// highlight button
-		QGroupBox fontHighlightGroup = new QGroupBox(tr("Text Highlight"));
+		QGroupBox fontHighlightGroup =  new QGroupBox(tr("Text Highlight"));
 		QHBoxLayout fontHighlightLayout = new QHBoxLayout();
 		showFontHighlight = new QRadioButton(tr("Show"));
 		hideFontHighlight = new QRadioButton(tr("Hide"));
@@ -254,9 +258,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		fontHighlightLayout.addWidget(hideFontHighlight);
 		fontHighlightLayout.setStretch(1, 100);
 		fontHighlightGroup.setLayout(fontHighlightLayout);
-
+				
 		// Align Left
-		QGroupBox alignLeftGroup = new QGroupBox(tr("Align Left"));
+		QGroupBox alignLeftGroup =  new QGroupBox(tr("Align Left"));
 		QHBoxLayout alignLeftLayout = new QHBoxLayout();
 		showAlignLeft = new QRadioButton(tr("Show"));
 		hideAlignLeft = new QRadioButton(tr("Hide"));
@@ -264,9 +268,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		alignLeftLayout.addWidget(hideAlignLeft);
 		alignLeftLayout.setStretch(1, 100);
 		alignLeftGroup.setLayout(alignLeftLayout);
-
+		
 		// Align Center
-		QGroupBox alignCenterGroup = new QGroupBox(tr("Align Center"));
+		QGroupBox alignCenterGroup =  new QGroupBox(tr("Align Center"));
 		QHBoxLayout alignCenterLayout = new QHBoxLayout();
 		showAlignCenter = new QRadioButton(tr("Show"));
 		hideAlignCenter = new QRadioButton(tr("Hide"));
@@ -274,9 +278,9 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		alignCenterLayout.addWidget(hideAlignCenter);
 		alignCenterLayout.setStretch(1, 100);
 		alignCenterGroup.setLayout(alignCenterLayout);
-
+		
 		// Align Right
-		QGroupBox alignRightGroup = new QGroupBox(tr("Align Right"));
+		QGroupBox alignRightGroup =  new QGroupBox(tr("Align Right"));
 		QHBoxLayout alignRightLayout = new QHBoxLayout();
 		showAlignRight = new QRadioButton(tr("Show"));
 		hideAlignRight = new QRadioButton(tr("Hide"));
@@ -284,42 +288,42 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		alignRightLayout.addWidget(hideAlignRight);
 		alignRightLayout.setStretch(1, 100);
 		alignRightGroup.setLayout(alignRightLayout);
-
+		
 		QGridLayout mainLayout = new QGridLayout();
-		mainLayout.addWidget(undoGroup, 0, 0);
-		mainLayout.addWidget(redoGroup, 0, 1);
-		mainLayout.addWidget(cutGroup, 0, 2);
-		mainLayout.addWidget(copyGroup, 1, 0);
-		mainLayout.addWidget(pasteGroup, 1, 1);
-		mainLayout.addWidget(boldGroup, 1, 2);
-		mainLayout.addWidget(italicGroup, 2, 0);
-		mainLayout.addWidget(underlineGroup, 2, 1);
-		mainLayout.addWidget(strikethroughGroup, 2, 2);
-		mainLayout.addWidget(hlineGroup, 3, 0);
-		mainLayout.addWidget(indentGroup, 3, 1);
-		mainLayout.addWidget(outdentGroup, 3, 2);
-		mainLayout.addWidget(bulletListGroup, 4, 0);
-		mainLayout.addWidget(numberListGroup, 4, 1);
-		mainLayout.addWidget(fontGroup, 5, 0);
-		mainLayout.addWidget(fontSizeGroup, 5, 1);
-		mainLayout.addWidget(fontColorGroup, 5, 2);
-		mainLayout.addWidget(fontHighlightGroup, 4, 2);
-		mainLayout.addWidget(alignLeftGroup, 6, 0);
-		mainLayout.addWidget(alignCenterGroup, 6, 1);
-		mainLayout.addWidget(alignRightGroup, 6, 2);
+		mainLayout.addWidget(undoGroup, 0,0);
+		mainLayout.addWidget(redoGroup, 0,1);
+		mainLayout.addWidget(cutGroup, 0,2);
+		mainLayout.addWidget(copyGroup, 1,0);
+		mainLayout.addWidget(pasteGroup, 1,1);
+		mainLayout.addWidget(boldGroup, 1,2);
+		mainLayout.addWidget(italicGroup, 2,0);
+		mainLayout.addWidget(underlineGroup, 2,1);
+		mainLayout.addWidget(strikethroughGroup, 2,2);
+		mainLayout.addWidget(hlineGroup, 3,0);
+		mainLayout.addWidget(indentGroup, 3,1);
+		mainLayout.addWidget(outdentGroup, 3,2);
+		mainLayout.addWidget(bulletListGroup, 4,0);
+		mainLayout.addWidget(numberListGroup, 4,1);
+		mainLayout.addWidget(fontGroup, 5,0);
+		mainLayout.addWidget(fontSizeGroup, 5,1);
+		mainLayout.addWidget(fontColorGroup, 5,2);
+		mainLayout.addWidget(fontHighlightGroup, 4,2);
+		mainLayout.addWidget(alignLeftGroup, 6,0);
+		mainLayout.addWidget(alignCenterGroup, 6,1);
+		mainLayout.addWidget(alignRightGroup, 6,2);
 
 		mainLayout.setColumnStretch(3, 100);
 		mainLayout.setRowStretch(7, 100);
 		setLayout(mainLayout);
 	}
-
+	
 	public void setUndo(boolean value) {
 		if (value)
 			showUndo.click();
 		else
 			hideUndo.click();
 	}
-
+	
 	public void setRedo(boolean value) {
 		if (value)
 			showRedo.click();
@@ -347,112 +351,96 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 		else
 			hidePaste.click();
 	}
-
 	public void setUnderline(boolean value) {
 		if (value)
 			showUnderline.click();
 		else
 			hideUnderline.click();
 	}
-
 	public void setBold(boolean value) {
 		if (value)
 			showBold.click();
 		else
 			hideBold.click();
 	}
-
 	public void setItalic(boolean value) {
 		if (value)
 			showItalic.click();
 		else
 			hideItalic.click();
 	}
-
 	public void setStrikethrough(boolean value) {
 		if (value)
 			showStrikethrough.click();
 		else
 			hideStrikethrough.click();
 	}
-
 	public void setHline(boolean value) {
 		if (value)
 			showHline.click();
 		else
 			hideHline.click();
 	}
-
 	public void setIndent(boolean value) {
 		if (value)
 			showIndent.click();
 		else
 			hideIndent.click();
 	}
-
 	public void setOutdent(boolean value) {
 		if (value)
 			showOutdent.click();
 		else
 			hideOutdent.click();
 	}
-
 	public void setBulletList(boolean value) {
 		if (value)
 			showBulletList.click();
 		else
 			hideBulletList.click();
 	}
-
 	public void setNumberList(boolean value) {
 		if (value)
 			showNumberList.click();
 		else
 			hideNumberList.click();
 	}
-
 	public void setFont(boolean value) {
 		if (value)
 			showFont.click();
 		else
 			hideFont.click();
 	}
-
 	public void setFontSize(boolean value) {
 		if (value)
 			showFontSize.click();
 		else
 			hideFontSize.click();
 	}
-
 	public void setFontColor(boolean value) {
 		if (value)
 			showFontColor.click();
 		else
 			hideFontColor.click();
 	}
-
 	public void setFontHighlight(boolean value) {
 		if (value)
 			showFontHighlight.click();
 		else
 			hideFontHighlight.click();
 	}
-
 	public void setAlignLeft(boolean value) {
 		if (value)
 			showAlignLeft.click();
 		else
 			hideAlignLeft.click();
 	}
-
 	public void setAlignCenter(boolean value) {
 		if (value)
 			showAlignCenter.click();
 		else
 			hideAlignCenter.click();
 	}
-
 	public void setAlignRight(boolean value) {
 		if (value)
 			showAlignRight.click();
@@ -460,88 +448,74 @@ public class ConfigShowEditorButtonsPage extends QWidget {
 			hideAlignRight.click();
 	}
 
+
+	
 	public boolean showUndo() {
 		return showUndo.isChecked();
 	}
-
 	public boolean showCut() {
 		return showCut.isChecked();
 	}
-
 	public boolean showRedo() {
 		return showRedo.isChecked();
 	}
-
 	public boolean showCopy() {
 		return showCopy.isChecked();
 	}
-
 	public boolean showPaste() {
 		return showPaste.isChecked();
 	}
-
 	public boolean showBold() {
 		return showBold.isChecked();
 	}
-
 	public boolean showUnderline() {
 		return showUnderline.isChecked();
 	}
-
 	public boolean showItalic() {
 		return showItalic.isChecked();
 	}
-
 	public boolean showStrikethrough() {
 		return showStrikethrough.isChecked();
-	}
-
+	}	
 	public boolean showHline() {
 		return showHline.isChecked();
 	}
-
 	public boolean showIndent() {
 		return showIndent.isChecked();
 	}
-
 	public boolean showOutdent() {
 		return showOutdent.isChecked();
 	}
-
 	public boolean showNumberList() {
 		return showNumberList.isChecked();
 	}
-
 	public boolean showBulletList() {
 		return showBulletList.isChecked();
 	}
-
 	public boolean showFont() {
 		return showFont.isChecked();
-	}
-
+	}	
 	public boolean showFontSize() {
 		return showFontSize.isChecked();
-	}
-
+	}	
 	public boolean showFontColor() {
 		return showFontColor.isChecked();
-	}
-
+	}	
 	public boolean showFontHilight() {
 		return showFontHighlight.isChecked();
-	}
-
+	}	
 	public boolean showAlignCenter() {
 		return showAlignCenter.isChecked();
-	}
-
-	public boolean showAlignLeft() {
+	}	public 
+	boolean showAlignLeft() {
 		return showAlignLeft.isChecked();
 	}
-
 	public boolean showAlignRight() {
 		return showAlignRight.isChecked();
 	}
+
+
+
+
 
 }

@@ -15,33 +15,31 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.filters;
 
 public class TagCounter {
-	private String guid;
-	private int count;
-
+	private String	guid;
+	private int 	count;
+	
+	
 	public TagCounter() {
 		guid = new String("");
 		count = 0;
 	}
-
 	public void setGuid(String g) {
 		guid = g;
 	}
-
 	public String getGuid() {
 		return guid;
 	}
-
 	public void setCount(int i) {
 		count = i;
 	}
-
 	public int getCount() {
 		return count;
 	}
-
+	
 }

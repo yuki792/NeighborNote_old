@@ -29,18 +29,18 @@ import com.trolltech.qt.gui.QTextCharFormat;
 import com.trolltech.qt.gui.QTextDocument;
 
 public class Highlighter extends QSyntaxHighlighter {
-
+	
 	public class HighlightingRule {
 		public QRegExp pattern;
 		public QTextCharFormat format;
-
+		
 		public HighlightingRule(QRegExp pattern, QTextCharFormat format) {
 			this.pattern = pattern;
 			this.format = format;
 		}
 	}
 
-	public Highlighter(QTextDocument parent) {
+	public Highlighter(QTextDocument parent)  {
 		super(parent);
 	}
 
@@ -50,14 +50,15 @@ public class Highlighter extends QSyntaxHighlighter {
 		QBrush brush = new QBrush(QColor.blue, Qt.BrushStyle.SolidPattern);
 		format.setForeground(brush);
 		format.setFontWeight(QFont.Weight.Bold.value());
-
+		
 		int index = text.indexOf("<");
 		while (index >= 0) {
-			int length = text.indexOf(">", index) - index + 1;
+			int length = text.indexOf(">", index)-index+1;
 			setFormat(index, length, format);
-			index = text.indexOf("<", index + 1);
+			index = text.indexOf("<", index+1);
 		}
 		setCurrentBlockState(0);
 	}
+
 
 }

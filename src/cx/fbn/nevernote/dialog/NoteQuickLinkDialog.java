@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -49,40 +49,38 @@ import cx.fbn.nevernote.utilities.Pair;
 import cx.fbn.nevernote.xml.NoteFormatter;
 
 public class NoteQuickLinkDialog extends QDialog {
-	public final QPushButton ok;
-	public final QPushButton cancel;
-	private final DatabaseConnection conn;
-	public final QComboBox titleCombo;
-	private final BrowserWindow browser;
+	public final QPushButton 	ok;
+	public final QPushButton 	cancel;
+	private final DatabaseConnection  conn;
+	public final QComboBox		titleCombo;	 
+	private final BrowserWindow	browser;
 	private final ApplicationLogger logger;
-	List<Pair<String, String>> results;
+	List<Pair<String,String>> results;
 	public boolean okPressed;
 	private List<QTemporaryFile> tempFiles;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-	
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	// ICHANGED
 	private final ClipBoardObserver cbObserver;
-
-	// ICHANGED
+	
+	// ICHANGED 引数にcbObserver追加
 	// Constructor
-	public NoteQuickLinkDialog(ApplicationLogger l, DatabaseConnection c,
-			String text, ClipBoardObserver cbObserver) {
+	public NoteQuickLinkDialog(ApplicationLogger l, DatabaseConnection c, String text, ClipBoardObserver cbObserver) {
 		okPressed = false;
 		setWindowTitle(tr("Quick Link Notes"));
-		setWindowIcon(new QIcon(iconPath + "notebook-green.png"));
+		setWindowIcon(new QIcon(iconPath+"notebook-green.png"));
 		QVBoxLayout main = new QVBoxLayout();
 		setLayout(main);
 		titleCombo = new QComboBox(this);
-
+		
 		QHBoxLayout comboLayout = new QHBoxLayout();
 		comboLayout.addWidget(new QLabel(tr("Matching Notes:")));
 		comboLayout.addWidget(titleCombo);
 		comboLayout.addStretch(100);
-
+		
 		main.addLayout(comboLayout);
-
+				
 		conn = c;
+		
 		// ICHANGED
 		this.cbObserver = cbObserver;
 		browser = new BrowserWindow(conn, this.cbObserver);
@@ -93,37 +91,34 @@ public class NoteQuickLinkDialog extends QDialog {
 		browser.hideButtons();
 		browser.tagEdit.setVisible(false);
 		browser.tagLabel.setVisible(false);
-
+		
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(100);
 		ok = new QPushButton(tr("OK"));
 		ok.clicked.connect(this, "okPressed()");
-
+		
 		cancel = new QPushButton(tr("Cancel"));
 		cancel.clicked.connect(this, "cancelPressed()");
-
+		
 		buttonLayout.addWidget(ok);
 		buttonLayout.addWidget(cancel);
 		main.addLayout(buttonLayout);
-
-		browser.getBrowser().setContextMenuPolicy(
-				ContextMenuPolicy.NoContextMenu);
+		
+		browser.getBrowser().setContextMenuPolicy(ContextMenuPolicy.NoContextMenu);
 		logger = l;
-
+		
 		// Search for matching notes
 		results = conn.getNoteTable().findNotesByTitle(text);
-
+		
 		// Add the results to the combo box
-		for (int i = 0; i < results.size(); i++) {
-			titleCombo.addItem(results.get(i).getSecond(), results.get(i)
-					.getFirst());
+		for (int i=0; i<results.size(); i++) {
+			titleCombo.addItem(results.get(i).getSecond(), results.get(i).getFirst());
 		}
 		titleCombo.activated.connect(this, "selectionChanged(String)");
-
+		
 		// Load the results into the combo box
-		if (results.size() > 0) {
-			Note currentNote = conn.getNoteTable().getNote(
-					results.get(0).getFirst(), true, true, false, true, true);
+		if (results.size() > 0)	{
+			Note currentNote = conn.getNoteTable().getNote(results.get(0).getFirst(), true, true, false, true, true);
 			setContent(currentNote);
 		}
 	}
@@ -133,7 +128,7 @@ public class NoteQuickLinkDialog extends QDialog {
 	private void cancelPressed() {
 		this.close();
 	}
-
+	
 	// OK button pressed
 	@SuppressWarnings("unused")
 	private void okPressed() {
@@ -141,47 +136,54 @@ public class NoteQuickLinkDialog extends QDialog {
 		close();
 	}
 
-	// When the selection changes, we refresh the browser window with the new
-	// content
+	// When the selection changes, we refresh the browser window with the new content
 	@SuppressWarnings("unused")
 	private void selectionChanged(String text) {
 		int pos = titleCombo.currentIndex();
 		String guid = results.get(pos).getFirst();
-		Note note = conn.getNoteTable().getNote(guid, true, true, false, true,
-				true);
+		Note note = conn.getNoteTable().getNote(guid, true, true, false, true, true);
 		setContent(note);
 	}
-
+	
 	// Return the note the user is currently viewing
 	public String getSelectedNote() {
 		int pos = titleCombo.currentIndex();
 		return results.get(pos).getFirst();
 	}
-
+	
+	
 	// Load the content of the note into the viewing window.
-	public void setContent(Note currentNote) {
+	public void setContent(Note currentNote) {	
 		NoteFormatter formatter = new NoteFormatter(logger, conn, tempFiles);
 		formatter.setNote(currentNote, false);
 		formatter.setHighlight(null);
 		formatter.setNoteHistory(true);
-
+		
 		StringBuffer js = new StringBuffer();
-
-		// We need to prepend the note with <HEAD></HEAD> or encoded characters
-		// are ugly
-		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+		
+		// We need to prepend the note with <HEAD></HEAD> or encoded characters are ugly 
+		js.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");	
 		js.append("<style type=\"text/css\">en-crypt-temp { border-style:solid; border-color:blue; padding:1mm 1mm 1mm 1mm; }</style>");
 		js.append("</head>");
 		js.append(formatter.rebuildNoteHTML());
 		js.append("</HTML>");
-
+		
 		browser.setNote(currentNote);
 		browser.setContent(new QByteArray(js.toString()));
 	}
-
+	
 	// give the results from the DB search back to the caller.
-	public List<Pair<String, String>> getResults() {
+	public List<Pair<String,String>> getResults() {
 		return results;
 	}
-
+	
+	
 }
+ 
+
+
+	
+	
+	
+	
+

@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.filters;
 
@@ -25,36 +25,32 @@ import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QDateTime;
 
 public abstract class DateAttributeFilter extends AttributeFilter {
-	protected boolean checkSince;
-	private final boolean checkCreated;
+    protected boolean checkSince;
+    private final boolean checkCreated;
 
-	public DateAttributeFilter(boolean since, boolean created) {
-		super();
-		checkSince = since;
-		checkCreated = created;
-	}
+    public DateAttributeFilter (boolean since, boolean created) {
+	super();
+	checkSince=since;
+	checkCreated=created;
+    }
 
-	@Override
+    @Override
 	public abstract boolean attributeCheck(Note n);
 
-	protected QDateTime noteTime(Note n) {
-		String dateTimeFormat = new String("MM/dd/yyyy HH:mm:ss");
-		SimpleDateFormat simple = new SimpleDateFormat(dateTimeFormat);
+    protected QDateTime noteTime(Note n) {
+        String dateTimeFormat = new String("MM/dd/yyyy HH:mm:ss");
+        SimpleDateFormat simple = new SimpleDateFormat(dateTimeFormat);
 
-		if (checkCreated) {
-			StringBuilder creationDate = new StringBuilder(simple.format(n
-					.getCreated()));
-			return QDateTime.fromString(creationDate.toString(),
-					"MM/dd/yyyy HH:mm:ss");
-		} else {
-			StringBuilder updatedDate = new StringBuilder(simple.format(n
-					.getUpdated()));
-			return QDateTime.fromString(updatedDate.toString(),
-					"MM/dd/yyyy HH:mm:ss");
-		}
-	}
+        if (checkCreated) {
+            StringBuilder creationDate = new StringBuilder(simple.format(n.getCreated()));
+            return QDateTime.fromString(creationDate.toString(), "MM/dd/yyyy HH:mm:ss");
+        } else {
+            StringBuilder updatedDate = new StringBuilder(simple.format(n.getUpdated()));
+            return QDateTime.fromString(updatedDate.toString(), "MM/dd/yyyy HH:mm:ss");
+        }
+    }
 
-	protected QDateTime currentTime() {
-		return QDateTime.currentDateTime();
-	}
+    protected QDateTime currentTime() {
+        return QDateTime.currentDateTime();
+    }
 }

@@ -15,28 +15,22 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.filters;
-
 import com.evernote.edam.type.Note;
 
 public abstract class AttributeFilter {
 	private boolean set;
-
 	public AttributeFilter() {
 		set = false;
 	}
-
 	public void set(boolean b) {
 		set = b;
 	}
-
 	public boolean isSet() {
-		return set;
-	}
-
-	public abstract boolean attributeCheck(Note n);
-
-	public abstract String getLabel();
+		return  set;
+    }
+    public abstract boolean attributeCheck(Note n);
+    public abstract String getLabel();
 }

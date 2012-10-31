@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.sql;
 
@@ -28,40 +29,35 @@ import cx.fbn.nevernote.utilities.ListManager;
 
 public class WatchFolderTable {
 	ListManager parent;
-	private final ApplicationLogger logger;
-	private final DatabaseConnection db;
+	private final ApplicationLogger 		logger;
+	private final DatabaseConnection		db;
 
+	
 	// Constructor
 	public WatchFolderTable(ApplicationLogger l, DatabaseConnection d) {
 		logger = l;
 		db = d;
 	}
-
 	// Create the table
 	public void createTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		logger.log(logger.HIGH, "Creating table WatchFolder...");
-		if (!query
-				.exec("Create table WatchFolders (folder varchar primary key, notebook varchar,"
-						+ "keep boolean, depth integer)"))
-			;
-		logger.log(logger.HIGH, "Table WatchFolders creation FAILED!!!");
+        if (!query.exec("Create table WatchFolders (folder varchar primary key, notebook varchar," +
+        		"keep boolean, depth integer)"));
+           	logger.log(logger.HIGH, "Table WatchFolders creation FAILED!!!"); 
 	}
-
 	// Drop the table
 	public void dropTable() {
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.exec("Drop table WatchFolders");
 	}
-
 	// Add an folder
-	public void addWatchFolder(String folder, String notebook, boolean keep,
-			int depth) {
+	public void addWatchFolder(String folder, String notebook, boolean keep, int depth) {
 		if (exists(folder))
 			expungeWatchFolder(folder);
-		NSqlQuery query = new NSqlQuery(db.getConnection());
-		query.prepare("Insert Into WatchFolders (folder, notebook, keep, depth) "
-				+ "values (:folder, :notebook, :keep, :depth)");
+        NSqlQuery query = new NSqlQuery(db.getConnection());
+		query.prepare("Insert Into WatchFolders (folder, notebook, keep, depth) " +
+				"values (:folder, :notebook, :keep, :depth)");
 		query.bindValue(":folder", folder);
 		query.bindValue(":notebook", notebook);
 		query.bindValue(":keep", keep);
@@ -70,14 +66,13 @@ public class WatchFolderTable {
 			logger.log(logger.MEDIUM, "Insert into WatchFolder failed.");
 		}
 	}
-
 	// Add an folder
 	public boolean exists(String folder) {
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.prepare("Select folder from WatchFolders where folder=:folder ");
 		query.bindValue(":folder", folder);
 		query.exec();
-		if (!query.next())
+		if (!query.next()) 
 			return false;
 		else
 			return true;
@@ -85,7 +80,7 @@ public class WatchFolderTable {
 
 	// remove an folder
 	public void expungeWatchFolder(String folder) {
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.prepare("delete from WatchFolders where folder=:folder");
 		query.bindValue(":folder", folder);
 		if (!query.exec()) {
@@ -93,18 +88,16 @@ public class WatchFolderTable {
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
-
 	public void expungeAll() {
-		NSqlQuery query = new NSqlQuery(db.getConnection());
+        NSqlQuery query = new NSqlQuery(db.getConnection());
 		if (!query.exec("delete from WatchFolders")) {
 			logger.log(logger.MEDIUM, "Expunge all WatchFolder failed.");
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
-
 	public List<WatchFolderRecord> getAll() {
 		logger.log(logger.HIGH, "Entering RWatchFolders.getAll");
-
+		
 		List<WatchFolderRecord> list = new ArrayList<WatchFolderRecord>();
 		NSqlQuery query = new NSqlQuery(db.getConnection());
 		query.exec("Select folder, (select name from notebook where guid = notebook), keep, depth from WatchFolders");
@@ -120,7 +113,7 @@ public class WatchFolderTable {
 		return list;
 
 	}
-
+	
 	public String getNotebook(String dir) {
 		logger.log(logger.HIGH, "Entering RWatchFolders.getNotebook");
 		NSqlQuery query = new NSqlQuery(db.getConnection());

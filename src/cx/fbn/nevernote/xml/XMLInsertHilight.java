@@ -15,7 +15,8 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
+
 
 package cx.fbn.nevernote.xml;
 
@@ -36,7 +37,7 @@ public class XMLInsertHilight {
 	List<String> terms;
 	List<QDomNode> oldNodes;
 	List<QDomNode> newNodes;
-
+	
 	public XMLInsertHilight(QDomDocument d, List<String> t) {
 		doc = d;
 		terms = t;
@@ -44,40 +45,38 @@ public class XMLInsertHilight {
 		newNodes = new ArrayList<QDomNode>();
 		scanTags();
 	}
-
 	public QDomDocument getDoc() {
-		for (int i = 0; i < oldNodes.size(); i++) {
-			oldNodes.get(i).parentNode()
-					.replaceChild(newNodes.get(i), oldNodes.get(i));
+		for (int i=0; i<oldNodes.size(); i++) {
+			oldNodes.get(i).parentNode().replaceChild(newNodes.get(i), oldNodes.get(i));
 		}
 		return doc;
 	}
-
 	// Start looking through the tree.
 	private void scanTags() {
-		// QDomElement element = doc.firstChildElement();
-		// parseChildren(element.firstChild());
+//		QDomElement element = doc.firstChildElement();
+//		parseChildren(element.firstChild());
 		if (doc.hasChildNodes())
 			parseNodes(doc.childNodes());
 		return;
 	}
-
+	
 	private void parseNodes(QDomNodeList nodes) {
-		for (int i = 0; i < nodes.size(); i++) {
+		for (int i=0; i<nodes.size(); i++) {
 			QDomNode node = nodes.at(i);
 			if (node.hasChildNodes()) {
 				parseNodes(node.childNodes());
 			}
 			scanWords(node);
 		}
-	}
-
+}
+	
+	
 	// Parse through individual nodes
 	public void parseChildren(QDomNode node) {
-		for (; !node.isNull(); node = node.nextSibling()) {
+		for(; !node.isNull(); node = node.nextSibling()) {
 			if (node.hasChildNodes()) {
 				QDomNodeList l = node.childNodes();
-				for (int i = 0; i < l.size(); i++)
+				for (int i=0; i<l.size(); i++)
 					parseChildren(l.at(i));
 			}
 			if (node.isText()) {
@@ -85,7 +84,7 @@ public class XMLInsertHilight {
 			}
 		}
 	}
-
+	
 	// We found a text node, so we need to search for things to hilight
 	private void scanWords(QDomNode node) {
 		String value = node.nodeValue();
@@ -93,37 +92,37 @@ public class XMLInsertHilight {
 		boolean matchFound = false;
 		int previousPosition = 0;
 		String valueEnd = "";
-
+	
 		String regex = buildRegex();
-
+			
 		Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(value);
-
+			
 		while (matcher.find()) {
 			matchFound = true;
 			String valueStart = "";
 			int start = matcher.start();
 			int end = matcher.end();
 			if (value.substring(start).startsWith(" "))
-				start++;
-			if (value.substring(start, end).endsWith(" "))
-				end--;
-
+					start++;
+				if (value.substring(start, end).endsWith(" "))
+					end--;
+			
 			if (matcher.start() > 0) {
-				valueStart = value.substring(previousPosition, start);
-			}
+				valueStart = value.substring(previousPosition,start); 
+			} 
 			String valueMiddle = value.substring(start, end);
 			valueEnd = "";
 			if (matcher.end() < value.length()) {
 				valueEnd = value.substring(end);
 			}
-
+			
 			previousPosition = end;
 			if (!valueStart.equals("")) {
 				QDomText startText = doc.createTextNode(valueStart);
 				fragment.appendChild(startText);
 			}
-
+			
 			QDomElement hilight = doc.createElement("en-hilight");
 			hilight.appendChild(doc.createTextNode(valueMiddle));
 			fragment.appendChild(hilight);
@@ -137,29 +136,31 @@ public class XMLInsertHilight {
 			oldNodes.add(node);
 		}
 	}
-
+	
+	
 	private String buildRegex() {
 		StringBuffer regex = new StringBuffer();
-
+		
 		// Remove any empty terms of it screws things up later
-		for (int j = terms.size() - 1; j >= 0; j--) {
+		for (int j=terms.size()-1; j>=0; j--) {
 			if (terms.get(j).trim().equals(""))
 				terms.remove(j);
 		}
-
-		for (int i = 0; i < terms.size(); i++) {
+		
+		for (int i=0; i<terms.size(); i++) {
 			String term = terms.get(i);
 			if (term.indexOf("*") > -1) {
 				term = term.replace("*", "");
 			} else {
-				term = "\\b" + term + "\\b";
+				term = "\\b"+term+"\\b";
 			}
 			regex.append(term);
-			if (i < terms.size() - 1)
-				regex.append("|");
+			if (i<terms.size()-1)
+				regex.append("|"); 
 		}
-
+		
 		return regex.toString();
 	}
+	
 
 }

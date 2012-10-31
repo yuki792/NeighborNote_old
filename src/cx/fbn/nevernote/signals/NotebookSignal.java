@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.signals;
 
@@ -25,6 +25,7 @@ import com.evernote.edam.type.Notebook;
 import com.trolltech.qt.QSignalEmitter;
 
 import cx.fbn.nevernote.filters.NotebookCounter;
+
 
 public class NotebookSignal extends QSignalEmitter {
 	public Signal0 listChanged = new Signal0();

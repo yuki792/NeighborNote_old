@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.gui;
 
@@ -37,19 +37,19 @@ import cx.fbn.nevernote.neighbornote.ClipBoardObserver;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 
 public class ExternalBrowse extends QMdiSubWindow {
-	private final DatabaseConnection conn;
-	private final BrowserWindow browser;
+	private final DatabaseConnection  conn;
+	private final BrowserWindow	browser;
 	public Signal4<String, String, Boolean, BrowserWindow> contentsChanged;
-	public Signal1<String> windowClosing;
+	public Signal1<String>	windowClosing;
 	boolean noteDirty;
 	String saveTitle;
-	private final FindDialog find; // Text search in note dialog
-	// ExternalBrowserMenuBar menu;
-	ExternalBrowserMenuBar menu;
+	private final FindDialog	find;						// Text search in note dialog
+//	ExternalBrowserMenuBar		menu;
+	ExternalBrowserMenuBar	menu;
 	
 	// ICHANGED
 	private final ClipBoardObserver cbObserver;
-
+	
 	// Constructor
 	// ICHANGED cbObserver引数を追加
 	public ExternalBrowse(DatabaseConnection c, ClipBoardObserver cbObserver) {
@@ -65,47 +65,45 @@ public class ExternalBrowse extends QMdiSubWindow {
 		browser = new BrowserWindow(conn, this.cbObserver);
 		
 		menu = new ExternalBrowserMenuBar(this);
-		for (int i = 0; i < menu.actions().size(); i++) {
+		for (int i=0; i<menu.actions().size(); i++) {
 			addAction(menu.actions().get(i));
 		}
-
+		
 		setWidget(browser);
 		noteDirty = false;
 		browser.titleLabel.textChanged.connect(this, "titleChanged(String)");
-		browser.getBrowser().page().contentsChanged.connect(this,
-				"contentChanged()");
+		browser.getBrowser().page().contentsChanged.connect(this, "contentChanged()");
 		find = new FindDialog();
 		find.getOkButton().clicked.connect(this, "doFindText()");
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void contentChanged() {
 		noteDirty = true;
-		contentsChanged.emit(getBrowserWindow().getNote().getGuid(),
-				getBrowserWindow().getContent(), false, getBrowserWindow());
+		contentsChanged.emit(getBrowserWindow().getNote().getGuid(), getBrowserWindow().getContent(), false, getBrowserWindow());
 	}
 
+	
 	@Override
 	public void closeEvent(QCloseEvent event) {
-		if (noteDirty)
-			contentsChanged.emit(getBrowserWindow().getNote().getGuid(),
-					getBrowserWindow().getContent(), true, getBrowserWindow());
+		if (noteDirty) 
+			contentsChanged.emit(getBrowserWindow().getNote().getGuid(), getBrowserWindow().getContent(), true, getBrowserWindow());
 		windowClosing.emit(getBrowserWindow().getNote().getGuid());
 	}
-
-	public BrowserWindow getBrowserWindow() {
-		return browser;
-	}
-
-	@SuppressWarnings("unused")
+	
+    public BrowserWindow getBrowserWindow() {
+    	return browser;
+    }
+    
+    @SuppressWarnings("unused")
 	private void titleChanged(String value) {
-		setWindowTitle(tr("NixNote - ") + value);
-	}
-
+    	setWindowTitle(tr("NixNote - ") +value);
+    }
+    
 	@SuppressWarnings("unused")
 	private void updateTitle(String guid, String title) {
-		if (guid.equals(getBrowserWindow().getNote().getGuid())
-				&& (saveTitle != null && !title.equals(saveTitle) || saveTitle == null)) {
+		if (guid.equals(getBrowserWindow().getNote().getGuid()) &&
+				(saveTitle != null && !title.equals(saveTitle) || saveTitle == null) ) {
 			saveTitle = title;
 			getBrowserWindow().loadingData(true);
 			getBrowserWindow().setTitle(title);
@@ -113,7 +111,6 @@ public class ExternalBrowse extends QMdiSubWindow {
 			getBrowserWindow().loadingData(false);
 		}
 	}
-
 	@SuppressWarnings("unused")
 	private void updateNotebook(String guid, String notebook) {
 		if (guid.equals(getBrowserWindow().getNote().getGuid())) {
@@ -122,16 +119,16 @@ public class ExternalBrowse extends QMdiSubWindow {
 			getBrowserWindow().loadingData(false);
 		}
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void updateTags(String guid, List<String> tags) {
 		if (guid.equals(getBrowserWindow().getNote().getGuid())) {
 			StringBuffer tagLine = new StringBuffer(100);
-			for (int i = 0; i < tags.size(); i++) {
-				if (i > 0)
-					tagLine.append(Global.tagDelimeter + " ");
+			for (int i=0; i<tags.size(); i++) {
+				if (i>0)
+					tagLine.append(Global.tagDelimeter+" ");
 				tagLine.append(tags.get(i));
-
+				
 			}
 			getBrowserWindow().loadingData(true);
 			getBrowserWindow().getTagLine().setText(tagLine.toString());
@@ -139,39 +136,40 @@ public class ExternalBrowse extends QMdiSubWindow {
 		}
 	}
 
-	@SuppressWarnings("unused")
+	
+    @SuppressWarnings("unused")
 	private void findText() {
-		find.show();
-		find.setFocusOnTextField();
-	}
-
-	@SuppressWarnings("unused")
+    	find.show();
+    	find.setFocusOnTextField();
+    }
+    @SuppressWarnings("unused")
 	private void doFindText() {
-		browser.getBrowser().page().findText(find.getText(), find.getFlags());
-		find.setFocus();
-	}
+    	browser.getBrowser().page().findText(find.getText(), find.getFlags());
+    	find.setFocus();
+    }
 
-	@SuppressWarnings("unused")
+	
+    @SuppressWarnings("unused")
 	private void printNote() {
 
-		QPrintDialog dialog = new QPrintDialog();
-		if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
-			QPrinter printer = dialog.printer();
-			browser.getBrowser().print(printer);
-		}
-	}
-
-	// Listener triggered when the email button is pressed
-	@SuppressWarnings("unused")
+    	QPrintDialog dialog = new QPrintDialog();
+    	if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
+    		QPrinter printer = dialog.printer();
+    		browser.getBrowser().print(printer);
+    	}
+    }
+    
+    // Listener triggered when the email button is pressed
+    @SuppressWarnings("unused")
 	private void emailNote() {
-		if (Desktop.isDesktopSupported()) {
-			Desktop desktop = Desktop.getDesktop();
-
-			String text2 = browser.getContentsToEmail();
-			QUrl url = new QUrl("mailto:");
-			url.addQueryItem("subject", browser.getTitle());
-			url.addQueryItem("body", text2);
-			QDesktopServices.openUrl(url);
-		}
-	}
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            
+            String text2 = browser.getContentsToEmail();
+            QUrl url = new QUrl("mailto:");
+            url.addQueryItem("subject", browser.getTitle());
+            url.addQueryItem("body", text2);
+            QDesktopServices.openUrl(url);
+        }
+    }
 }

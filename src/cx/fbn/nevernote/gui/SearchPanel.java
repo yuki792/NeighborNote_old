@@ -15,16 +15,15 @@ public class SearchPanel extends QWidget {
 	private final NotebookTreeWidget notebook;
 	private final QComboBox search;
 	private final QuotaProgressBar bar;
-
-	public SearchPanel(QComboBox search, QuotaProgressBar bar,
-			NotebookTreeWidget notebook, QSpinBox zoom) {
+	
+	public SearchPanel(QComboBox search, QuotaProgressBar bar, NotebookTreeWidget notebook, QSpinBox zoom) {
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		QVBoxLayout subLayout = new QVBoxLayout();
 		zoomSpinner = zoom;
 		this.bar = bar;
 		this.search = search;
 		this.notebook = notebook;
-
+		
 		setLayout(mainLayout);
 		subLayout.addWidget(search);
 		subLayout.addWidget(bar);
@@ -36,30 +35,29 @@ public class SearchPanel extends QWidget {
 		subLayout.addLayout(zoomLayout);
 		mainLayout.addLayout(subLayout);
 		mainLayout.addWidget(notebook);
-		// setStyleSheet("QTreeView {border: 0.0em;}");
+		//setStyleSheet("QTreeView {border: 0.0em;}");
 		mainLayout.setContentsMargins(0, 0, 0, 0);
 	}
-
+	
 	public void hideZoom() {
 		zoomLabel.hide();
 		zoomSpinner.hide();
 	}
-
 	public void showZoom() {
 		zoomLabel.show();
 		zoomSpinner.show();
 	}
-
+	
 	public void toggleNotebook() {
 		show();
 		if (notebook.isVisible())
 			notebook.hide();
 		else
 			notebook.show();
-
+		
 		checkVisibility();
 	}
-
+	
 	public void toggleSearchField() {
 		show();
 		if (search.isVisible())
@@ -68,14 +66,13 @@ public class SearchPanel extends QWidget {
 			search.show();
 		checkVisibility();
 	}
-
+	
 	private void checkVisibility() {
-		if (notebook.isHidden() && bar.isHidden() && search.isHidden()
-				&& zoomSpinner.isHidden()) {
+		if (notebook.isHidden() && bar.isHidden() && search.isHidden() && zoomSpinner.isHidden()) {
 			hide();
 		}
 	}
-
+	
 	public void toggleQuotaBar() {
 		show();
 		if (bar.isVisible())
@@ -84,7 +81,7 @@ public class SearchPanel extends QWidget {
 			bar.show();
 		checkVisibility();
 	}
-
+	
 	public void toggleZoom() {
 		show();
 		if (zoomSpinner.isVisible()) {

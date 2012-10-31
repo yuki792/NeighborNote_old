@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -38,49 +38,51 @@ public class ConfigFontPage extends QWidget {
 	private final QComboBox fontSizeList;
 	private String font;
 	private String fontSize;
-
+		
 	public ConfigFontPage(QWidget parent) {
-
+		
 		font = Global.getDefaultFont();
 		fontSize = Global.getDefaultFontSize();
-
+		
 		// Group Box
 		QGroupBox fontGroup = new QGroupBox(tr("New Note Defaults"));
 		QGridLayout fontLayout = new QGridLayout();
-		overrideFonts = new QCheckBox(tr("Override Defaults"));
+		overrideFonts = new QCheckBox(tr("Override Defaults")); 
 		overrideFonts.setCheckable(true);
 		overrideFonts.setChecked(Global.overrideDefaultFont());
 		overrideFonts.clicked.connect(this, "toggleFontOverride(Boolean)");
-		fontLayout.addWidget(overrideFonts, 1, 2);
-
+		fontLayout.addWidget(overrideFonts,1,2);
+		
+		
 		// Fonts
-		fontList = new QComboBox();
+		fontList = new QComboBox();				
 		fontList.activated.connect(this, "fontSelected(String)");
-		fontLayout.addWidget(new QLabel(tr("Font")), 2, 1);
-		fontLayout.addWidget(fontList, 2, 2);
-
+		fontLayout.addWidget(new QLabel(tr("Font")),2,1);
+		fontLayout.addWidget(fontList,2,2);
+		
 		// Font Sizes
-		fontSizeList = new QComboBox();
-		fontLayout.addWidget(fontSizeList, 3, 2);
+		fontSizeList = new QComboBox();				
+		fontLayout.addWidget(fontSizeList,3,2);
 		fontSizeList.activated.connect(this, "fontSizeSelected(String)");
-		fontLayout.addWidget(new QLabel(tr("Size")), 3, 1);
+		fontLayout.addWidget(new QLabel(tr("Size")),3,1);
 		fontGroup.setLayout(fontLayout);
 		fontLayout.setColumnStretch(2, 100);
 		toggleFontOverride(Global.overrideDefaultFont());
 		loadFonts();
 		loadSettings();
-
+		
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addWidget(fontGroup);
 		mainLayout.addStretch(1);
 		setLayout(mainLayout);
 	}
-
+	
 	private void toggleFontOverride(Boolean value) {
 		fontList.setEnabled(value);
 		fontSizeList.setEnabled(value);
 	}
-
+	
 	private void loadFonts() {
 		QFontDatabase fonts = new QFontDatabase();
 		List<String> fontFamilies = fonts.families();
@@ -94,31 +96,31 @@ public class ConfigFontPage extends QWidget {
 		}
 
 	}
-
+	
 	// Load the font combo box based upon the font selected
-	private void loadFontSize(String name) {
-		QFontDatabase db = new QFontDatabase();
+	private void loadFontSize(String name) {	
+		QFontDatabase db = new QFontDatabase(); 
 		fontSizeList.clear();
-		List<Integer> points = db.pointSizes(name);
-		for (int i = 0; i < points.size(); i++) {
+		List<Integer> points = db.pointSizes(name); 
+		for (int i=0; i<points.size(); i++) { 
 			if (fontSize.equals(""))
 				fontSize = points.get(i).toString();
-			fontSizeList.addItem(points.get(i).toString());
+			fontSizeList.addItem(points.get(i).toString()); 
 		}
 
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void fontSelected(String font) {
 		this.font = font;
 		loadFontSize(font);
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void fontSizeSelected(String size) {
 		this.fontSize = size;
 	}
-
+	
 	private void loadSettings() {
 		if (!Global.getDefaultFont().equals("")) {
 			int index = fontList.findText(Global.getDefaultFont());
@@ -129,17 +131,15 @@ public class ConfigFontPage extends QWidget {
 			fontSizeList.setCurrentIndex(index);
 		}
 	}
-
+	
 	public String getFont() {
 		return font;
 	}
-
 	public String getFontSize() {
 		return fontSize;
 	}
-
 	public boolean overrideFont() {
 		return overrideFonts.isChecked();
 	}
-
+	
 }

@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -36,72 +36,67 @@ import com.trolltech.qt.gui.QTextEdit;
 
 public class InsertLatexImage extends QDialog {
 
-	private boolean okPressed;
-	private final QTextEdit url;
+	private boolean 	okPressed;
+	private final QTextEdit	url;
 	private final QPushButton ok;
-	private String latexText;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private String		latexText;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+		
 	// Constructor
 	public InsertLatexImage() {
 		okPressed = false;
 		setWindowTitle(tr("Insert LaTeX Formula"));
-		setWindowIcon(new QIcon(iconPath + "link.png"));
+		setWindowIcon(new QIcon(iconPath+"link.png"));
 		QGridLayout grid = new QGridLayout();
 		QGridLayout input = new QGridLayout();
 		QGridLayout button = new QGridLayout();
 		setLayout(grid);
-
+		
+		
 		url = new QTextEdit("");
-
-		input.addWidget(new QLabel(tr("Formula")), 1, 1);
+		
+		input.addWidget(new QLabel(tr("Formula")), 1,1);
 		input.addWidget(url, 2, 1);
-		input.setContentsMargins(10, 10, -10, -10);
-		grid.addLayout(input, 1, 1);
-
+		input.setContentsMargins(10, 10,  -10, -10);
+		grid.addLayout(input, 1,1);
+			
 		ok = new QPushButton(tr("OK"));
 		ok.clicked.connect(this, "accept()");
 		ok.setEnabled(false);
-
+		
 		QPushButton cancel = new QPushButton(tr("Cancel"));
 		cancel.clicked.connect(this, "reject()");
 		button.addWidget(ok, 1, 1);
-		button.addWidget(cancel, 1, 2);
+		button.addWidget(cancel, 1,2);
 		grid.addLayout(button, 3, 1);
 		url.textChanged.connect(this, "validateInput()");
-
+		
 		setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose);
 	}
-
 	// Set the formula
 	public void setFormula(String x) {
 		url.setText(x);
 	}
-
-	// Get the formula
+	// Get the formula 
 	public String getFormula() {
 		return latexText;
 	}
-
 	// Set the url
 	public void setUrl(String u) {
 		url.setText(u);
 	}
-
 	// Check if the OK button was pressed
 	public boolean okPressed() {
 		return okPressed;
 	}
-
 	// Check that we have a valid URL
 	@SuppressWarnings("unused")
 	private void validateInput() {
 		ok.setEnabled(true);
-		if (url.toPlainText().trim().equals(""))
+		if (url.toPlainText().trim().equals("")) 
 			ok.setEnabled(false);
 	}
-
+	
 	@Override
 	public void accept() {
 		if (ok.isEnabled()) {
@@ -110,10 +105,10 @@ public class InsertLatexImage extends QDialog {
 			super.accept();
 		}
 	}
-
+	
 	@Override
 	public void reject() {
-		okPressed = false;
+		okPressed=false;
 		super.reject();
 	}
 }

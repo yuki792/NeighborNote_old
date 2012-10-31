@@ -15,15 +15,16 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.signals;
 
 import com.trolltech.qt.QSignalEmitter;
 
+
 public class NoteResourceSignal extends QSignalEmitter {
-	public Signal1<String> resourceIndexed = new Signal1<String>();
-	public Signal2<String, Boolean> resourceIndexNeeded = new Signal2<String, Boolean>();
-	public Signal3<String, String, String> resourceGuidChanged = new Signal3<String, String, String>();
-	public Signal1<String> contentChanged = new Signal1<String>();
+	public Signal1<String>				resourceIndexed = new Signal1<String>();
+	public Signal2<String, Boolean>		resourceIndexNeeded = new Signal2<String, Boolean>();
+	public Signal3<String,String,String>  resourceGuidChanged = new Signal3<String,String,String>();
+	public Signal1<String>				contentChanged = new Signal1<String>();
 }

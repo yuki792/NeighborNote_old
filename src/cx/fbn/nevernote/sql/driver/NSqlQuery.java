@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.sql.driver;
 
@@ -29,22 +29,24 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 public class NSqlQuery {
-
+	
 	private final Connection connection;
 	private String lastError;
 	private ResultSet resultSet;
 	private PreparedStatement preparedStatement;
-	private final HashMap<String, Integer> positionMap;
+	private final HashMap<String, Integer>	positionMap;
 	private ByteArrayInputStream fis;
-
+	
+	
 	public NSqlQuery(Connection c) {
 		connection = c;
 		positionMap = new HashMap<String, Integer>();
 	}
-
+	
+	
 	public boolean next() {
 		lastError = null;
-
+		
 		if (resultSet == null) {
 			lastError = "Result set is null";
 			return false;
@@ -57,7 +59,8 @@ public class NSqlQuery {
 			return false;
 		}
 	}
-
+	
+	
 	public boolean exec(String sql) {
 		Statement st;
 		boolean retVal = false;
@@ -73,11 +76,11 @@ public class NSqlQuery {
 		}
 		return retVal;
 	}
-
+	
 	public boolean exec() {
 		lastError = "";
 		resultSet = null;
-
+		
 		if (preparedStatement == null) {
 			lastError = "No SQL statement prepared";
 			return false;
@@ -91,75 +94,79 @@ public class NSqlQuery {
 			lastError = e.getMessage();
 			return false;
 		}
-
+		
+		
 		return true;
 	}
-
+	
+	
 	public String lastError() {
 		if (lastError == null)
 			return "";
 		return lastError;
 	}
-
+	
+	
 	public Object valueObject(int position) {
 		lastError = null;
 		if (resultSet == null) {
 			lastError = "ResultSet is null";
 			return null;
 		}
-
+		
 		try {
-			return resultSet.getObject(position + 1);
+			return resultSet.getObject(position+1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			lastError = e.getMessage();
 			return null;
 		}
 	}
-
+	
+	
 	public String valueString(int position) {
 		lastError = null;
 		if (resultSet == null) {
 			lastError = "ResultSet is null";
 			return null;
 		}
-
+		
 		try {
-			return resultSet.getString(position + 1);
+			return resultSet.getString(position+1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			lastError = e.getMessage();
 			return null;
 		}
 	}
-
-	public boolean valueBoolean(int position, boolean unknown) {
+	
+	public  boolean valueBoolean(int position, boolean unknown) {
 		try {
-			return resultSet.getBoolean(position + 1);
+			return resultSet.getBoolean(position+1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return unknown;
 		}
 	}
 
-	public long valueLong(int position) {
+	public  long valueLong(int position) {
 		try {
-			return resultSet.getLong(position + 1);
+			return resultSet.getLong(position+1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
-
+	
 	public int valueInteger(int position) {
 		try {
-			return resultSet.getInt(position + 1);
+			return resultSet.getInt(position+1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
-
+	
 	public void bindValue(String field, String value) {
 		Integer position = positionMap.get(field.toLowerCase());
 		lastError = null;
@@ -175,9 +182,9 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
-
+	
 	public void bindValue(String field, boolean value) {
 		Integer position = positionMap.get(field.toLowerCase());
 		lastError = null;
@@ -193,8 +200,10 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
+	
+	
 
 	public void bindValue(String field, int value) {
 		Integer position = positionMap.get(field.toLowerCase());
@@ -211,8 +220,10 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
+	
+	
 
 	public void bindValue(String field, double value) {
 		Integer position = positionMap.get(field.toLowerCase());
@@ -229,9 +240,11 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
-
+	
+	
+	
 	public void bindValue(String field, byte[] value) {
 		Integer position = positionMap.get(field.toLowerCase());
 		lastError = null;
@@ -247,41 +260,43 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
-
+	
+	
+	
 	public boolean prepare(String statement) {
 		positionMap.clear();
 		preparedStatement = null;
 		lastError = null;
-
+		
 		int position = 1;
-		for (int i = statement.indexOf(":"); i > 0; i = statement.indexOf(":",
-				i)) {
-			int endField = statement.indexOf(" ", i + 1);
-			int nextComma = statement.indexOf(",", i + 1);
-			int nextBracket = statement.indexOf(")", i + 1);
-
+		for (int i=statement.indexOf(":"); i>0; i=statement.indexOf(":",i)) {
+			int endField = statement.indexOf(" ",i+1);
+			int nextComma = statement.indexOf(",",i+1);
+			int nextBracket = statement.indexOf(")",i+1);
+			
 			if (nextComma > 0 && nextComma < endField)
 				endField = nextComma;
 			if (endField == -1)
 				endField = nextBracket;
 			if (nextBracket > 0 && nextBracket < endField)
 				endField = nextBracket;
-
+			
 			String fieldName = null;
 			if (endField > 0) {
-				fieldName = statement.substring(i, endField);
-			} else {
+				fieldName = statement.substring(i,endField);
+			}
+			else {
 				fieldName = statement.substring(i);
 				endField = statement.length();
 			}
-			statement = statement.substring(0, i) + "?"
-					+ statement.substring(endField);
+			statement = statement.substring(0,i)+"?" +statement.substring(endField);
 			positionMap.put(fieldName.toLowerCase(), new Integer(position));
 			position++;
 		}
-
+		
+		
 		try {
 			preparedStatement = connection.prepareStatement(statement);
 		} catch (SQLException e) {
@@ -289,10 +304,12 @@ public class NSqlQuery {
 			lastError = e.getMessage();
 			return false;
 		}
-
+		
+		
 		return true;
 	}
-
+	
+	
 	public void bindBlob(String field, byte[] value) {
 		Integer position = positionMap.get(field.toLowerCase());
 		lastError = null;
@@ -309,13 +326,14 @@ public class NSqlQuery {
 				lastError = e.getMessage();
 			}
 			return;
-		}
+		}	
 	}
-
+	
+	
 	public byte[] getBlob(int position) {
 		Blob dataBinary;
 		try {
-			dataBinary = resultSet.getBlob(position + 1);
+			dataBinary = resultSet.getBlob(position+1);
 			byte[] b;
 			if (dataBinary == null)
 				return null;
@@ -327,5 +345,7 @@ public class NSqlQuery {
 		}
 		return null;
 	}
+	
+	
 
 }

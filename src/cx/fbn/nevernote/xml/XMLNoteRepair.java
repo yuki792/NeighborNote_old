@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 package cx.fbn.nevernote.xml;
 
 import java.io.File;
@@ -34,34 +34,30 @@ import cx.fbn.nevernote.Global;
 
 public class XMLNoteRepair {
 	public boolean saveInvalidXML;
-
+	
 	public String parse(String xmlData, boolean validate) {
 		saveInvalidXML = false;
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(xmlData));
 		XMLNoteRepairHandler handler = new XMLNoteRepairHandler();
-
+		
 		// Replace DTD with local copy in case we are not connected
 		File dtdFile = Global.getFileManager().getXMLDirFile("enml2.dtd");
 		String dtd = dtdFile.toURI().toString();
-		xmlData = xmlData
-				.replace(
-						"<!DOCTYPE en-note SYSTEM \'http://xml.evernote.com/pub/enml2.dtd'>",
-						"<!DOCTYPE en-note SYSTEM \"" + dtd + "\">");
-		xmlData = xmlData
-				.replace(
-						"<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">",
-						"<!DOCTYPE en-note SYSTEM \"" + dtd + "\">");
-
+		xmlData = xmlData.replace("<!DOCTYPE en-note SYSTEM \'http://xml.evernote.com/pub/enml2.dtd'>", 
+				"<!DOCTYPE en-note SYSTEM \"" +dtd +"\">");
+		xmlData = xmlData.replace("<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", 
+				"<!DOCTYPE en-note SYSTEM \"" +dtd +"\">");
+		
 		handler.setXml(xmlData);
 		is.setCharacterStream(new StringReader(handler.getXml()));
-
+        
 		boolean fixed = false;
-		int i = 0;
+		int i=0;
 		int max = 10;
 		if (validate)
 			max = 10000;
-		while (!fixed && i < max) {
+		while (!fixed && i<max) {
 			try {
 				i++;
 				SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -69,41 +65,34 @@ public class XMLNoteRepair {
 				SAXParser parser = factory.newSAXParser();
 				parser.parse(is, handler);
 				fixed = true;
-			} catch (EnmlException e) {
+			} catch (EnmlException e) { 
 				String message = e.getMessage();
 				saveInvalidXML = true;
-				// System.out.println("ENML Exception: " +message);
+				//System.out.println("ENML Exception: " +message);
 				boolean found = false;
-				int endAttribute = message
-						.indexOf(" must be declared for element type ");
+				int endAttribute = message.indexOf(" must be declared for element type ");
 				if (message.startsWith("Attribute ") && endAttribute > -1) {
-					String attribute = message.substring(11, endAttribute - 1);
-					String element = message.substring(message.indexOf("\"",
-							endAttribute + 3));
+					String attribute = message.substring(11, endAttribute-1);
+					String element = message.substring(message.indexOf("\"", endAttribute+3));
 					element = element.replace("\"", "");
-					element = element.substring(0, element.length() - 1);
+					element = element.substring(0,element.length()-1);
 					Global.addInvalidAttribute(element, attribute);
-					handler.stripAttribute(attribute, e.getLineNumber(),
-							e.getColumnNumber());
+					handler.stripAttribute(attribute, e.getLineNumber(), e.getColumnNumber());
 					is.setCharacterStream(new StringReader(handler.getXml()));
 					found = true;
 				}
 				int endElement = message.indexOf(" must be declared.");
 				if (message.startsWith("Element type") && endElement > -1) {
-					String element = message.substring(14, endElement - 1);
+					String element = message.substring(14,endElement-1);
 					Global.addInvalidElement(element);
-					handler.renameElement(element, e.getLineNumber(),
-							e.getColumnNumber());
+					handler.renameElement(element, e.getLineNumber(), e.getColumnNumber());
 					is.setCharacterStream(new StringReader(handler.getXml()));
 					found = true;
 				}
 				if (!found)
-					System.err.println("New enml validation error: "
-							+ e.getMessage() + " Line:" + e.getLineNumber()
-							+ " Column:" + e.getColumnNumber());
+					System.err.println("New enml validation error: " +e.getMessage() +" Line:" +e.getLineNumber() +" Column:" +e.getColumnNumber());
 			} catch (SAXParseException e) {
-				System.err.println("SAXParse Exception - Attempt #" + i + " "
-						+ e.getMessage());
+				System.err.println("SAXParse Exception - Attempt #"+i +" "+e.getMessage());
 				handler.repair(e.getLineNumber(), e.getColumnNumber());
 				is.setCharacterStream(new StringReader(handler.getXml()));
 				if (validate) {
@@ -126,10 +115,8 @@ public class XMLNoteRepair {
 		else {
 			// Replace DTD with online copy
 			xmlData = handler.getXml();
-			xmlData = xmlData
-					.replace("<!DOCTYPE en-note SYSTEM \"" + dtd + "\">",
-							"<!DOCTYPE en-note SYSTEM \'http://xml.evernote.com/pub/enml2.dtd'>");
-			return xmlData;
+			xmlData = xmlData.replace("<!DOCTYPE en-note SYSTEM \"" +dtd +"\">", "<!DOCTYPE en-note SYSTEM \'http://xml.evernote.com/pub/enml2.dtd'>");
+			return xmlData;			
 		}
 	}
 }

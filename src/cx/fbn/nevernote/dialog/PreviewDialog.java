@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -25,6 +25,8 @@ package cx.fbn.nevernote.dialog;
 //* isn't really used much any more.
 //**********************************************
 //**********************************************
+
+
 
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -36,46 +38,44 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 
 import cx.fbn.nevernote.Global;
-
 public class PreviewDialog extends QDialog {
 
+	
 	public PreviewDialog(QWidget parent) {
-
+		
 		QWidget masterLabel = new QWidget();
-
+		
 		QVBoxLayout subLayout = new QVBoxLayout();
 		setMouseTracking(true);
-
+		
 		PreviewImage imageLabel = new PreviewImage(masterLabel);
 		imageLabel.ID = "Number 1";
-		QImage image = new QImage(Global.getFileManager().getResDirPath(
-				"thumbnail.png"));
-		imageLabel.setPixmap(QPixmap.fromImage(image).scaled(400, 400));
-		subLayout.addWidget(imageLabel);
+        QImage image = new QImage(Global.getFileManager().getResDirPath("thumbnail.png"));
+        imageLabel.setPixmap(QPixmap.fromImage(image).scaled(400, 400));
+        subLayout.addWidget(imageLabel);
 
 		PreviewImage imageLabel2 = new PreviewImage(masterLabel);
 		imageLabel2.ID = "Number 2";
-		QImage image2 = new QImage(Global.getFileManager().getResDirPath(
-				"thumbnail.png"));
-		imageLabel2.setPixmap(QPixmap.fromImage(image2).scaled(400, 400));
-		subLayout.addWidget(imageLabel2);
-		masterLabel.setLayout(subLayout);
+		QImage image2 = new QImage(Global.getFileManager().getResDirPath("thumbnail.png"));
+        imageLabel2.setPixmap(QPixmap.fromImage(image2).scaled(400,400));
+        subLayout.addWidget(imageLabel2);
+        masterLabel.setLayout(subLayout);
 
-		QScrollArea scrollArea = new QScrollArea();
-		scrollArea.setWidget(masterLabel);
-
+        QScrollArea scrollArea = new QScrollArea();
+        scrollArea.setWidget(masterLabel);
+		
 		QPushButton okButton = new QPushButton(tr("OK"));
 		okButton.clicked.connect(this, "okPushed()");
 		;
-
+		
 		QVBoxLayout verticalLayout = new QVBoxLayout();
 		verticalLayout.addWidget(scrollArea);
-
+		
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(1);
 		buttonLayout.addWidget(okButton);
-		setWindowTitle(tr("Note Preview"));
-
+		setWindowTitle(tr("Note Preview"));	
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addLayout(verticalLayout);
 		mainLayout.addSpacing(1);
@@ -83,10 +83,9 @@ public class PreviewDialog extends QDialog {
 		setLayout(mainLayout);
 
 	}
-
 	public void okPushed() {
 
 		close();
 	}
-
+		
 }

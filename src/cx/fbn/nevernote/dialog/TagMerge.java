@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.dialog;
 
@@ -38,73 +38,73 @@ import com.trolltech.qt.gui.QSpacerItem;
 import com.trolltech.qt.gui.QVBoxLayout;
 
 public class TagMerge extends QDialog {
-	private final QComboBox newTag;
-	private final QPushButton okButton;
-	private final QPushButton cancelButton;
-	private boolean okClicked;
-	private final String iconPath = new String(
-			"classpath:cx/fbn/nevernote/icons/");
-
+	private final QComboBox 		newTag;
+	private final QPushButton		okButton;
+	private final QPushButton		cancelButton;
+	private boolean					okClicked;
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
 	public TagMerge(List<Tag> tags) {
-		setWindowIcon(new QIcon(iconPath + "tag.png"));
+		setWindowIcon(new QIcon(iconPath+"tag.png"));
 		okClicked = false;
-
+		
 		okButton = new QPushButton();
 		okButton.setText(tr("OK"));
 		okButton.pressed.connect(this, "onClicked()");
-
+		
 		cancelButton = new QPushButton();
 		cancelButton.setText(tr("Cancel"));
 		cancelButton.pressed.connect(this, "onCancel()");
-
+	
+		
 		QVBoxLayout middleLayout = new QVBoxLayout();
-		middleLayout.addSpacerItem(new QSpacerItem(1, 1));
-		middleLayout.addSpacerItem(new QSpacerItem(1, 1));
+		middleLayout.addSpacerItem(new QSpacerItem(1,1));
+		middleLayout.addSpacerItem(new QSpacerItem(1,1));
 
 		QVBoxLayout closeLayout = new QVBoxLayout();
 		closeLayout.addWidget(new QLabel(tr("Merge Into")));
 		newTag = new QComboBox();
 		closeLayout.addWidget(newTag);
-
+		
 		QHBoxLayout buttonLayout = new QHBoxLayout();
 		buttonLayout.addStretch(1);
 		buttonLayout.addWidget(okButton);
 		buttonLayout.addWidget(cancelButton);
 		setWindowTitle(tr("Open/Close Notebooks"));
-
+		
 		QHBoxLayout upperLayout = new QHBoxLayout();
 		upperLayout.addLayout(middleLayout);
 		upperLayout.addLayout(closeLayout);
-
+		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addLayout(upperLayout);
-		// mainLayout.addStretch(1);
+		//mainLayout.addStretch(1);
 		mainLayout.addSpacing(1);
 		mainLayout.addLayout(buttonLayout);
 		setLayout(mainLayout);
-
-		for (int i = 0; i < tags.size(); i++) {
+		
+		for (int i=0; i<tags.size(); i++) {
 			newTag.addItem(tags.get(i).getName(), tags.get(i).getGuid());
 		}
 		setWindowTitle(tr("Merge Tags"));
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void onClicked() {
 		okClicked = true;
 		close();
 	}
-
+	
 	@SuppressWarnings("unused")
 	private void onCancel() {
 		okClicked = false;
 		close();
 	}
-
+	
 	public boolean okClicked() {
 		return okClicked;
 	}
-
+	
 	public String getNewTagGuid() {
 		int position = newTag.currentIndex();
 		return newTag.itemData(position).toString();

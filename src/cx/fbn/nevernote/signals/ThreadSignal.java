@@ -15,16 +15,16 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.signals;
 
 import com.trolltech.qt.QSignalEmitter;
 
 public class ThreadSignal extends QSignalEmitter {
-	public Signal1<String> filterChanged = new Signal1<String>();
-	public Signal0 exit = new Signal0();
-	public Signal2<String, String> deleteNoteFromWordIndex = new Signal2<String, String>();
+	public Signal1<String> 	filterChanged = new Signal1<String>();
+	public Signal0			exit = new Signal0();
+	public Signal2<String, String>  deleteNoteFromWordIndex = new Signal2<String, String>();
 	public Signal4<String, String, String, Integer> addNoteToWordIndex = new Signal4<String, String, String, Integer>();
-	public Signal3<String, String, Boolean> indexNeeded = new Signal3<String, String, Boolean>();
+	public Signal3<String, String, Boolean>  indexNeeded = new Signal3<String, String, Boolean>();
 }

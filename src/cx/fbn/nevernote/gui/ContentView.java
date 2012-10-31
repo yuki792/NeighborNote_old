@@ -1,7 +1,7 @@
 /*
- * This file is part of NixNote
+ * This file is part of NixNote 
  * Copyright 2009 Randy Baumgarte
- *
+ * 
  * This file may be licensed under the terms of of the
  * GNU General Public License Version 2 (the ``GPL'').
  *
@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 package cx.fbn.nevernote.gui;
 
 import com.trolltech.qt.core.QEvent;
@@ -59,85 +59,81 @@ public class ContentView extends QWebView {
 	QAction rotateImageRight;
 	QShortcut rotateImageRightShortcut;
 	QAction rotateImageLeft;
-	QShortcut rotateImageLeftShortcut;
-	QAction insertLinkAction;
+	QShortcut rotateImageLeftShortcut;	
+	QAction	insertLinkAction;
 	QShortcut insertLinkShortcut;
 	QAction insertLatexAction;
 	QShortcut insertLatexShortcut;
-	QAction insertTableAction;
+	QAction	insertTableAction;
 	QShortcut insertTableShortcut;
-	QAction insertTableRowAction;
+	QAction	insertTableRowAction;
 	QShortcut insertTableRowShortcut;
-	QAction insertTableColumnAction;
+	QAction	insertTableColumnAction;
 	QShortcut insertTableColumnShortcut;
-	QAction deleteTableRowAction;
+	QAction	deleteTableRowAction;
 	QShortcut deleteTableRowShortcut;
-	QAction deleteTableColumnAction;
+	QAction	deleteTableColumnAction;
 	QShortcut deleteTableColumnShortcut;
 	QAction openAction;
 	QAction insertQuickLinkAction;
 	QShortcut insertQuickLinkShortcut;
 	QMenu imageMenu;
-
+	
 	QAction redBackgroundColor;
-
+	
 	QShortcut insertDateTimeShortcut;
-
+	
 	Signal1<QNetworkRequest> downloadAttachmentRequested;
 	Signal1<QNetworkRequest> downloadImageRequested;
-
+	
 	public ContentView(BrowserWindow p) {
-		parent = p;
+		parent=p;
 		contextMenu = new QMenu(this);
-
+		
 		openAction = new QAction(tr("Open"), this);
 		openAction.setText(tr("Open"));
 		contextMenu.addAction(openAction);
 		openAction.triggered.connect(parent, "openFile()");
-
+		
 		cutAction = new QAction(tr("Cut"), this);
 		cutAction.triggered.connect(parent, "cutClicked()");
-		contextMenu.addAction(cutAction);
+		contextMenu.addAction(cutAction); 
 		contextMenu.insertSeparator(cutAction);
 		setupShortcut(cutAction, "Edit_Cut");
 		cutShortcut = new QShortcut(this);
 		cutShortcut.activated.connect(parent, "cutClicked()");
 		setupShortcut(cutShortcut, "Edit_Cut");
-
+		
 		copyAction = new QAction(tr("Copy"), this);
 		copyAction.triggered.connect(parent, "copyClicked()");
-		contextMenu.addAction(copyAction);
+		contextMenu.addAction(copyAction); 
 		setupShortcut(copyAction, "Edit_Copy");
 		copyShortcut = new QShortcut(this);
 		copyShortcut.activated.connect(parent, "copyClicked()");
 		setupShortcut(copyShortcut, "Edit_Copy");
-
+		
 		pasteAction = pageAction(QWebPage.WebAction.Paste);
 		pasteAction.disconnect();
 		pasteAction.triggered.connect(parent, "pasteClicked()");
-
-		contextMenu.addAction(pasteAction);
+		
+		contextMenu.addAction(pasteAction); 
 		setupShortcut(pasteAction, "Edit_Paste");
 		pasteShortcut = new QShortcut(this);
 		pasteShortcut.activated.connect(parent, "pasteClicked()");
 		setupShortcut(pasteShortcut, "Edit_Paste");
-
-		pasteWithoutFormatAction = new QAction(tr("Paste Without Formatting"),
-				this);
-		pasteWithoutFormatAction.triggered.connect(parent,
-				"pasteWithoutFormattingClicked()");
-		contextMenu.addAction(pasteWithoutFormatAction);
+		
+		pasteWithoutFormatAction = new QAction(tr("Paste Without Formatting"), this);
+		pasteWithoutFormatAction.triggered.connect(parent, "pasteWithoutFormattingClicked()");
+		contextMenu.addAction(pasteWithoutFormatAction); 
 		setupShortcut(pasteWithoutFormatAction, "Edit_Paste_Without_Formatting");
-		// pasteWithoutFormatShortcut = new QShortcut(this);
-		// pasteWithoutFormatShortcut.activated.connect(parent,
-		// "pasteWithoutFormattingClicked()");
-		// setupShortcut(pasteWithoutFormatShortcut,
-		// "Edit_Paste_Without_Formatting");
-
+//		pasteWithoutFormatShortcut = new QShortcut(this);
+//		pasteWithoutFormatShortcut.activated.connect(parent, "pasteWithoutFormattingClicked()");
+//		setupShortcut(pasteWithoutFormatShortcut, "Edit_Paste_Without_Formatting");
+		
 		contextMenu.addSeparator();
 		QMenu colorMenu = new QMenu(tr("Background Color"));
 		contextMenu.addMenu(colorMenu);
-
+		
 		colorMenu.addAction(setupColorMenuOption("White"));
 		colorMenu.addAction(setupColorMenuOption("Red"));
 		colorMenu.addAction(setupColorMenuOption("Blue"));
@@ -149,7 +145,8 @@ public class ContentView extends QWebView {
 		colorMenu.addAction(setupColorMenuOption("Brown"));
 		colorMenu.addAction(setupColorMenuOption("Orange"));
 		colorMenu.addAction(setupColorMenuOption("Powder Blue"));
-
+		
+		
 		contextMenu.addSeparator();
 		todoAction = new QAction(tr("To-do"), this);
 		todoAction.triggered.connect(parent, "todoClicked()");
@@ -159,7 +156,7 @@ public class ContentView extends QWebView {
 		todoShortcut = new QShortcut(this);
 		todoShortcut.activated.connect(parent, "todoClicked()");
 		setupShortcut(todoShortcut, "Edit_Insert_Todo");
-
+		
 		encryptAction = new QAction(tr("Encrypt Selected Text"), this);
 		encryptAction.triggered.connect(parent, "encryptText()");
 		contextMenu.addAction(encryptAction);
@@ -169,7 +166,7 @@ public class ContentView extends QWebView {
 		encryptShortcut = new QShortcut(this);
 		encryptShortcut.activated.connect(parent, "encryptText()");
 		setupShortcut(encryptShortcut, "Edit_Encrypt_Text");
-
+		
 		insertLinkAction = new QAction(tr("Insert Hyperlink"), this);
 		insertLinkAction.triggered.connect(parent, "insertLink()");
 		setupShortcut(insertLinkAction, "Edit_Insert_Hyperlink");
@@ -178,7 +175,7 @@ public class ContentView extends QWebView {
 		insertLinkShortcut = new QShortcut(this);
 		setupShortcut(insertLinkShortcut, "Edit_Insert_Hyperlink");
 		insertLinkShortcut.activated.connect(parent, "insertLink()");
-
+		
 		insertQuickLinkAction = new QAction(tr("Quick Link"), this);
 		insertQuickLinkAction.triggered.connect(parent, "insertQuickLink()");
 		setupShortcut(insertQuickLinkAction, "Edit_Insert_QuickLink");
@@ -195,10 +192,9 @@ public class ContentView extends QWebView {
 		insertLatexShortcut = new QShortcut(this);
 		setupShortcut(insertLatexShortcut, "Edit_Insert_Latex");
 		insertLatexShortcut.activated.connect(parent, "insertLatex()");
-
+		
 		contextMenu.addMenu(tableMenu);
-		// IFIXED tr()が抜けていたので修正
-		tableMenu.setTitle(tr("Table"));
+		tableMenu.setTitle("Table");
 		insertTableAction = new QAction(tr("Insert Table"), this);
 		insertTableAction.triggered.connect(parent, "insertTable()");
 		setupShortcut(insertTableAction, "Edit_Insert_Table");
@@ -214,17 +210,15 @@ public class ContentView extends QWebView {
 		insertTableRowShortcut = new QShortcut(this);
 		setupShortcut(insertTableRowShortcut, "Edit_Insert_Table_Row");
 		insertTableRowShortcut.activated.connect(parent, "insertTableRow()");
-
+		
 		insertTableColumnAction = new QAction(tr("Insert Column"), this);
-		insertTableColumnAction.triggered
-				.connect(parent, "insertTableColumn()");
+		insertTableColumnAction.triggered.connect(parent, "insertTableColumn()");
 		setupShortcut(insertTableColumnAction, "Edit_Insert_Table_Column");
 		tableMenu.addAction(insertTableColumnAction);
 		insertTableColumnShortcut = new QShortcut(this);
 		setupShortcut(insertTableColumnShortcut, "Edit_Insert_Table_Column");
-		insertTableColumnShortcut.activated.connect(parent,
-				"insertTableColumn()");
-
+		insertTableColumnShortcut.activated.connect(parent, "insertTableColumn()");
+		
 		deleteTableRowAction = new QAction(tr("Delete Row"), this);
 		deleteTableRowAction.triggered.connect(parent, "deleteTableRow()");
 		setupShortcut(deleteTableRowAction, "Edit_Delete_Table_Row");
@@ -232,110 +226,105 @@ public class ContentView extends QWebView {
 		deleteTableRowShortcut = new QShortcut(this);
 		setupShortcut(deleteTableRowShortcut, "Edit_Delete_Table_Row");
 		deleteTableRowShortcut.activated.connect(parent, "deleteTableRow()");
-
+		
 		deleteTableColumnAction = new QAction(tr("Delete Column"), this);
-		deleteTableColumnAction.triggered
-				.connect(parent, "deleteTableColumn()");
+		deleteTableColumnAction.triggered.connect(parent, "deleteTableColumn()");
 		setupShortcut(deleteTableColumnAction, "Edit_Delete_Table_Column");
 		tableMenu.addAction(deleteTableColumnAction);
 		deleteTableColumnShortcut = new QShortcut(this);
 		setupShortcut(deleteTableColumnShortcut, "Edit_Delete_Table_Column");
-		deleteTableColumnShortcut.activated.connect(parent,
-				"deleteTableColumn()");
-
+		deleteTableColumnShortcut.activated.connect(parent, "deleteTableColumn()");
+		
+		
 		insertDateTimeShortcut = new QShortcut(this);
 		insertDateTimeShortcut.activated.connect(parent, "insertDateTime()");
 		setupShortcut(insertDateTimeShortcut, "Insert_DateTime");
-
+			
 		imageMenu = new QMenu();
 		imageMenu.setTitle(tr("Image"));
 		contextMenu.addMenu(imageMenu);
 		downloadImage = pageAction(QWebPage.WebAction.DownloadImageToDisk);
 		downloadImage.setText(tr("Save Image"));
 		imageMenu.addAction(downloadImage);
-		// contextMenu.insertSeparator(downloadImage);
-		// page().downloadRequested.connect(this,
-		// "downloadImage(QNetworkRequest)");
+//		contextMenu.insertSeparator(downloadImage);
+//		page().downloadRequested.connect(this, "downloadImage(QNetworkRequest)");
 		downloadImageRequested = new Signal1<QNetworkRequest>();
-
+		
 		rotateImageRight = new QAction(tr("Rotate Right"), this);
 		imageMenu.addAction(rotateImageRight);
 		rotateImageRight.triggered.connect(parent, "rotateImageRight()");
 		rotateImageRightShortcut = new QShortcut(this);
 		setupShortcut(rotateImageRightShortcut, "Edit_Image_Rotate_Right");
-		rotateImageRightShortcut.activated
-				.connect(parent, "rotateImageRight()");
-
+		rotateImageRightShortcut.activated.connect(parent, "rotateImageRight()");
+		
 		rotateImageLeft = new QAction(tr("Rotate Left"), this);
 		imageMenu.addAction(rotateImageLeft);
 		rotateImageLeft.triggered.connect(parent, "rotateImageLeft()");
 		rotateImageLeftShortcut = new QShortcut(this);
 		setupShortcut(rotateImageLeftShortcut, "Edit_Image_Rotate_Left");
 		rotateImageLeftShortcut.activated.connect(parent, "rotateImageLeft()");
-
+		
 		downloadAttachment = pageAction(QWebPage.WebAction.DownloadLinkToDisk);
 		downloadAttachment.setText(tr("Save Attachment"));
 		contextMenu.addAction(downloadAttachment);
-		page().downloadRequested.connect(this,
-				"downloadAttachment(QNetworkRequest)");
+		page().downloadRequested.connect(this, "downloadAttachment(QNetworkRequest)");
 		downloadAttachmentRequested = new Signal1<QNetworkRequest>();
-
+		
 	}
-
+	
 	private void setupShortcut(QAction action, String text) {
 		if (!Global.shortcutKeys.containsAction(text))
 			return;
 		action.setShortcut(Global.shortcutKeys.getShortcut(text));
 	}
-
+	
 	private void setupShortcut(QShortcut action, String text) {
 		if (!Global.shortcutKeys.containsAction(text))
 			return;
 		action.setKey(new QKeySequence(Global.shortcutKeys.getShortcut(text)));
 	}
-
+	
 	private QAction setupColorMenuOption(String color) {
 		QAction backgroundColor = new QAction(tr(color), this);
 		color = color.replace(" ", "");
-		backgroundColor.triggered.connect(this, "setBackground" + color + "()");
+		backgroundColor.triggered.connect(this, "setBackground"+color+"()");
 		return backgroundColor;
 	}
-
+	
 	@Override
-	public boolean event(QEvent event) {
-		if (event.type().equals(QEvent.Type.KeyPress)) {
-			QKeyEvent ke = (QKeyEvent) event;
-			if (ke.key() == Qt.Key.Key_Tab.value()) {
-				parent.tabPressed();
-				ke.accept();
-				return true;
-			}
-			if (ke.key() == Qt.Key.Key_Backtab.value()) {
-				parent.backtabPressed();
-				return true;
-			}
-		}
-		return super.event(event);
-	}
-
+	public boolean event(QEvent event)
+    {
+        if (event.type().equals(QEvent.Type.KeyPress)) {
+            QKeyEvent ke = (QKeyEvent) event;
+            if (ke.key() == Qt.Key.Key_Tab.value()) {
+    			parent.tabPressed();
+    			ke.accept();
+                return true;
+            }
+            if (ke.key() == Qt.Key.Key_Backtab.value()) {
+            	parent.backtabPressed();
+            	return true;
+            }
+        }
+        return super.event(event);
+    }
+	
+	
 	@Override
 	public void keyPressEvent(QKeyEvent e) {
-
-		// This is done because if we set the content editable, the scroll keys
-		// are
+			
+		// This is done because if we set the content editable, the scroll keys are
 		// ignored by webkit.
-		if (e.key() == Qt.Key.Key_PageUp.value()
-				|| e.key() == Qt.Key.Key_PageDown.value()) {
+		if (e.key() == Qt.Key.Key_PageUp.value() || e.key() == Qt.Key.Key_PageDown.value()) {
 			int bottom = page().mainFrame().geometry().bottom();
 			int top = page().mainFrame().geometry().top();
-			int scrollValue = top - bottom;
+			int scrollValue = top-bottom;
 			if (e.key() == Qt.Key.Key_PageDown.value())
-				scrollValue = -1 * scrollValue;
+				scrollValue = -1*scrollValue;
 			page().mainFrame().scroll(0, scrollValue);
 		}
-
-		// This is done to allow proper pasting of resources, otherwise it
-		// messes up multiple pastes
+				
+		// This is done to allow proper pasting of resources, otherwise it messes up multiple pastes
 		if (e.matches(StandardKey.Paste)) {
 			parent.pasteClicked();
 			e.accept();
@@ -344,82 +333,54 @@ public class ContentView extends QWebView {
 		super.keyPressEvent(e);
 	}
 
-	// public void downloadImage(QNetworkRequest req) {
-	// System.out.println(req.url().toString());
-	// downloadImageRequested.emit(req);
-	// }
+//	public void downloadImage(QNetworkRequest req) {
+//		System.out.println(req.url().toString());
+//		downloadImageRequested.emit(req);
+//	}
 	public void downloadAttachment(QNetworkRequest req) {
 		downloadAttachmentRequested.emit(req);
 	}
 
+	
 	@Override
 	public void dropEvent(QDropEvent e) {
 		setFocus();
 		QMimeData mime = e.mimeData();
 		parent.handleUrls(mime);
 		parent.contentChanged();
-		// triggerPageAction(WebAction.Reload);
+//		triggerPageAction(WebAction.Reload);
 	}
-
+	
 	@Override
 	public void contextMenuEvent(QContextMenuEvent event) {
 		if (event != null)
 			contextMenu.exec(event.globalPos());
 	}
 
+	
+	
 	@SuppressWarnings("unused")
-	private void setBackgroundWhite() {
-		parent.setBackgroundColor("white");
-	}
+	private void setBackgroundWhite() {parent.setBackgroundColor("white");}
+	@SuppressWarnings("unused")
+	private void setBackgroundRed() {parent.setBackgroundColor("red");}
+	@SuppressWarnings("unused")
+	private void setBackgroundBlue() {parent.setBackgroundColor("blue");}
+	@SuppressWarnings("unused")
+	private void setBackgroundGreen() {parent.setBackgroundColor("green");}
+	@SuppressWarnings("unused")
+	private void setBackgroundYellow() {parent.setBackgroundColor("yellow");}
+	@SuppressWarnings("unused")
+	private void setBackgroundBlack() {parent.setBackgroundColor("black");}
+	@SuppressWarnings("unused")
+	private void setBackgroundPurple() {parent.setBackgroundColor("purple");}
+	@SuppressWarnings("unused")
+	private void setBackgroundBrown() {parent.setBackgroundColor("brown");}
+	@SuppressWarnings("unused")
+	private void setBackgroundGrey() {parent.setBackgroundColor("grey");}
+	@SuppressWarnings("unused")
+	private void setBackgroundOrange() {parent.setBackgroundColor("orange");}
+	@SuppressWarnings("unused")
+	private void setBackgroundPowderBlue() {parent.setBackgroundColor("powderblue");}
 
-	@SuppressWarnings("unused")
-	private void setBackgroundRed() {
-		parent.setBackgroundColor("red");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundBlue() {
-		parent.setBackgroundColor("blue");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundGreen() {
-		parent.setBackgroundColor("green");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundYellow() {
-		parent.setBackgroundColor("yellow");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundBlack() {
-		parent.setBackgroundColor("black");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundPurple() {
-		parent.setBackgroundColor("purple");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundBrown() {
-		parent.setBackgroundColor("brown");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundGrey() {
-		parent.setBackgroundColor("grey");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundOrange() {
-		parent.setBackgroundColor("orange");
-	}
-
-	@SuppressWarnings("unused")
-	private void setBackgroundPowderBlue() {
-		parent.setBackgroundColor("powderblue");
-	}
 
 }

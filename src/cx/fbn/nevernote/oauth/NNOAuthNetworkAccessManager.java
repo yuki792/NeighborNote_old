@@ -1,3 +1,4 @@
+
 /*
  * This file is part of NixNote 
  * Copyright 2012 Randy Baumgarte
@@ -36,13 +37,13 @@ public class NNOAuthNetworkAccessManager extends QNetworkAccessManager {
 	public Signal1<String> tokenFound;
 	private ApplicationLogger logger;
 
-	public NNOAuthNetworkAccessManager(ApplicationLogger l) {
+	public NNOAuthNetworkAccessManager(ApplicationLogger l){
 		super();
 		tokenFound = new Signal1<String>();
 		logger = l;
 	}
 
-	public NNOAuthNetworkAccessManager(QObject qObject) {
+	public NNOAuthNetworkAccessManager(QObject qObject){
 		super(qObject);
 		tokenFound = new Signal1<String>();
 	}
@@ -51,17 +52,14 @@ public class NNOAuthNetworkAccessManager extends QNetworkAccessManager {
 	protected QNetworkReply createRequest(Operation op,
 			QNetworkRequest request, QIODevice outgoingData) {
 
-		logger.log(logger.EXTREME,
-				"NNOAuthNetworkAccessManager URL request scheme: "
-						+ request.url().scheme() + " "
-						+ request.url().toString());
+		logger.log(logger.EXTREME,"NNOAuthNetworkAccessManager URL request scheme: " 
+				+request.url().scheme() + " " + request.url().toString());
 		String searchReq = "nnoauth?oauth_token=";
 		int pos = request.url().toString().indexOf(searchReq);
-		if (pos > 0) {
-			String token = request.url().toString()
-					.substring(pos + searchReq.length());
+		if (pos>0) {
+			String token = request.url().toString().substring(pos+searchReq.length());
 			tokenFound.emit(token);
 		}
 		return super.createRequest(op, request, outgoingData);
-	}
+	}		
 }

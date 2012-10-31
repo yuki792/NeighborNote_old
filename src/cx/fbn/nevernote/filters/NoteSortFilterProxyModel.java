@@ -15,7 +15,7 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.filters;
 
@@ -35,63 +35,56 @@ import cx.fbn.nevernote.evernote.NoteMetadata;
 public class NoteSortFilterProxyModel extends QSortFilterProxyModel {
 	private final HashMap<String, NoteMetadata> guids;
 	private final HashMap<String, NoteMetadata> pinnedGuids;
-	public Signal2<Integer, Integer> sortChanged;
+	public Signal2<Integer,Integer> sortChanged;
 	public boolean blocked;
-
+	
 	public NoteSortFilterProxyModel(QObject parent) {
 		super(parent);
 		guids = new HashMap<String, NoteMetadata>();
 		pinnedGuids = new HashMap<String, NoteMetadata>();
 		setDynamicSortFilter(true);
-		sortChanged = new Signal2<Integer, Integer>();
+		sortChanged = new Signal2<Integer,Integer>();
 	}
-
 	public void clear() {
 		guids.clear();
 	}
-
 	public void addGuid(String guid, NoteMetadata meta) {
 		if (!guids.containsKey(guid))
 			guids.put(guid, meta);
-		if (meta != null && pinnedGuids != null && meta.isPinned() == true
-				&& !pinnedGuids.containsKey(guid))
+		if (meta!= null && pinnedGuids != null && meta.isPinned() == true && !pinnedGuids.containsKey(guid))
 			pinnedGuids.put(guid, meta);
 	}
-
 	public void filter() {
 		invalidateFilter();
 	}
-
 	@Override
 	protected boolean filterAcceptsRow(int sourceRow, QModelIndex sourceParent) {
 		QAbstractItemModel model = sourceModel();
-		QModelIndex guidIndex = sourceModel().index(sourceRow,
-				Global.noteTableGuidPosition);
-		String guid = (String) model.data(guidIndex);
-
+		QModelIndex guidIndex = sourceModel().index(sourceRow, Global.noteTableGuidPosition);
+		String guid = (String)model.data(guidIndex);
+		
 		if (guids.containsKey(guid) || pinnedGuids.containsKey(guid))
 			return true;
 		else
 			return false;
 	}
-
+	
+	
 	@Override
 	public void sort(int col, Qt.SortOrder order) {
 		if (col != Global.noteTableThumbnailPosition) {
-			if (!blocked) {
-				sortChanged.emit(col, order.value()); // Signal that the sort
-														// order has been
-														// modified
+			if (!blocked)	{
+				sortChanged.emit(col, order.value());    // Signal that the sort order has been modified
 			}
-			super.sort(col, order);
+			super.sort(col,order);
 		}
 	}
-
+	
 	@Override
 	protected boolean lessThan(QModelIndex left, QModelIndex right) {
 		Object leftData = sourceModel().data(left);
 		Object rightData = sourceModel().data(right);
-
+		
 		if (rightData == null)
 			return true;
 		if (leftData instanceof QIcon)
@@ -99,17 +92,16 @@ public class NoteSortFilterProxyModel extends QSortFilterProxyModel {
 		if (leftData instanceof QImage && rightData instanceof QImage)
 			return true;
 		if (leftData instanceof Long && rightData instanceof Long) {
-			Long leftLong = (Long) leftData;
-			Long rightLong = (Long) rightData;
-			return leftLong.compareTo(rightLong) < 0;
+			  Long leftLong = (Long)leftData;
+			  Long rightLong = (Long)rightData;
+			  return leftLong.compareTo(rightLong) < 0;            
 		}
 		if (leftData instanceof String && rightData instanceof String) {
-			String leftString = (String) leftData;
-			String rightString = (String) rightData;
-			return leftString.toLowerCase()
-					.compareTo(rightString.toLowerCase()) < 0;
+			String leftString = (String)leftData;
+			String rightString = (String)rightData;
+			return leftString.toLowerCase().compareTo(rightString.toLowerCase()) < 0;
 		}
-
+		
 		return super.lessThan(left, right);
 	}
 }

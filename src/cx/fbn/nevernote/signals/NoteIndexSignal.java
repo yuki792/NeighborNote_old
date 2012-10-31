@@ -15,11 +15,12 @@
  * or write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- */
+*/
 
 package cx.fbn.nevernote.signals;
 
 import com.trolltech.qt.QSignalEmitter;
+
 
 public class NoteIndexSignal extends QSignalEmitter {
 	public Signal1<Boolean> listChanged = new Signal1<Boolean>();
