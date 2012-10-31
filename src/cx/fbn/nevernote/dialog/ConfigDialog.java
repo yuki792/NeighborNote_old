@@ -293,7 +293,10 @@ public class ConfigDialog extends QDialog {
 		debugPage.setDisableUploads(Global.disableUploads);
 		debugPage.setEnableThumbnails(Global.enableThumbnails());
 //		if (Global.getUpdateSequenceNumber() > 0)
-			debugPage.serverCombo.setEnabled(false);
+		
+		// ICHANGED
+		// TODO ↓のコメントアウトは最終的に外す（設定のデバッグページのサーバー選択を使用不可にする）
+		//	debugPage.serverCombo.setEnabled(false);
 
 		appearancePage.setAutoSaveInterval(Global.getAutoSaveInterval());
 		connectionPage.setAutomaticLogin(Global.automaticLogin());
