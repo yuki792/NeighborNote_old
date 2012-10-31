@@ -6107,7 +6107,7 @@ public class NeverNote extends QMainWindow {
 		mergeNoteContents(masterGuid, sources);
 		currentNoteGuid = masterGuid;
 		
-		// ICHANGED Historyをマージ
+		// ICHANGED 操作履歴をマージ
 		for (int i = 0; i < sources.size(); i++) {
 			String childGuid = sources.get(i);
 			if(masterGuid != null && childGuid != null){
@@ -7725,12 +7725,12 @@ public class NeverNote extends QMainWindow {
 			browserWindow.noteSignal.noteChanged.connect(this, "setNoteDirty()");
 			browserWindow.focusLost.connect(this, "saveNote()");
 			menuBar.refreshTargetWindow();
-
-			// prev, nextボタンの有効・無効化
+			
 			int currentIndex = tabBrowser.currentIndex();
 			ArrayList<String> histGuids = historyGuids.get(currentIndex);
 			int histPosition = historyPosition.get(currentIndex);
 
+			// prev, nextボタンの有効・無効化
 			nextButton.setEnabled(true);
 			prevButton.setEnabled(true);
 
@@ -7764,18 +7764,6 @@ public class NeverNote extends QMainWindow {
 		// 選択されたノート（current）のguidをcurrentnoteguidにセット
 		currentNoteGuid = rensoNoteList.getNoteGuid(current);
 
-		// タブまたは外部ウィンドウでそのページをすでに開いていたら、一番上に出して終了
-		/*
-		if (tabWindows.containsKey(currentNoteGuid)) {
-			tabBrowser.setCurrentWidget(tabWindows.get(currentNoteGuid));
-			return;
-		}
-		if (externalWindows.containsKey(currentNoteGuid)) {
-			externalWindows.get(currentNoteGuid).raise();
-			return;
-		}
-		*/
-
 		// 選択ノートを更新
 		selectedNoteGUIDs.clear();
 		selectedNoteGUIDs.add(currentNoteGuid);
@@ -7792,6 +7780,7 @@ public class NeverNote extends QMainWindow {
 		for (int j = histPosition; j <= endPosition; j++) {
 			histGuids.remove(histGuids.size() - 1);
 		}
+		
 		histGuids.add(currentNoteGuid);
 		historyPosition.put(currentIndex, histGuids.size());
 		histPosition = histGuids.size();
@@ -7806,8 +7795,20 @@ public class NeverNote extends QMainWindow {
 		scrollToGuid(currentNoteGuid);
 		// 再接続
 		noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
-
+		
 		refreshEvernoteNote(true); // Evernoteからノートをゲット（そしてブラウザに表示）
+		
+		// upButton, downButton, 選択リストア用のprevRowを設定
+		int row = noteTableView.selectionModel().selectedRows().get(0).row();
+		if (row == 0)
+			upButton.setEnabled(false);
+		else
+			upButton.setEnabled(true);
+		if (row < listManager.getNoteTableModel().rowCount() - 1)
+			downButton.setEnabled(true);
+		else
+			downButton.setEnabled(false);
+		prevRow = row;
 
 		// 連想ノートリストを更新
 		rensoNoteList.refreshRensoNoteList(currentNoteGuid);

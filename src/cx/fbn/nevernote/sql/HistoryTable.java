@@ -18,7 +18,6 @@ public class HistoryTable {
 
 	// テーブル作成
 	public void createTable() {
-		// TODO 自動生成されたメソッド・スタブ
 		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
 		logger.log(logger.HIGH, "Historyテーブルを作成しています...");
 		if (!query
