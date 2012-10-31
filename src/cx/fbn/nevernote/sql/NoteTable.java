@@ -237,7 +237,8 @@ public class NoteTable {
 	// Get a note by Guid
 	public Note getNote(String noteGuid, boolean loadContent, boolean loadResources, boolean loadRecognition, boolean loadBinary, boolean loadTags) {
 
-//		extractMetadata("otherKey:{values};baumgarte:{titleColor=fff;pinned=true;};finalKey:{values1);");
+		// ICHANGED 自分のキーに変更
+//		extractMetadata("otherKey:{values};kimaira792:{titleColor=fff;pinned=true;};finalKey:{values1);");
 		if (noteGuid == null)
 			return null;
 		if (noteGuid.trim().equals(""))
@@ -1615,7 +1616,9 @@ public class NoteTable {
 
 	// Extract metadata from a note's Note.attributes.sourceApplication
 	private NoteMetadata extractMetadata(String sourceApplication) {
-		String consumerKey = "baumgarte:{";
+		// ICHANGED 自分のキーに変更
+		String consumerKey = "kimaira792:{";
+		
 		int startPos = sourceApplication.indexOf(consumerKey);
 		if (startPos < 0 )
 				return null;
@@ -1675,7 +1678,8 @@ public class NoteTable {
 			if (value.length()>1 && (!value.toString().trim().endsWith(";") || !value.toString().trim().endsWith(";")))   
 				value.append("; ");
 			
-			value.append("baumgarte:{");
+			// ICHANGED 自分のキーに変更
+			value.append("kimaira792:{");
 			value.append(metaString);
 			value.append("};");
 			return value.toString();
@@ -1702,7 +1706,8 @@ public class NoteTable {
 		if (sourceApplication == null) 
 			return "";
 		
-		String consumerKey = "baumgarte:{";
+		// ICHANGED 自分のキーに変更
+		String consumerKey = "kimaira792:{";
 		int startPos = sourceApplication.indexOf(consumerKey);
 		if (startPos < 0 )
 				return sourceApplication;
