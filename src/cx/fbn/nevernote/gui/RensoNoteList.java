@@ -7,9 +7,13 @@ import java.util.Set;
 
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QContextMenuEvent;
 import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
+import com.trolltech.qt.gui.QMenu;
 
+import cx.fbn.nevernote.NeverNote;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
 
@@ -17,12 +21,16 @@ public class RensoNoteList extends QListWidget {
 	private final DatabaseConnection conn;
 	private final ApplicationLogger logger;
 	private final HashMap<QListWidgetItem, String> rensoNoteListItems;
+	
+	private QAction openNewTabAction;
+	private final NeverNote parent;
 
-	public RensoNoteList(DatabaseConnection c) {
+	public RensoNoteList(DatabaseConnection c, NeverNote p) {
 		logger = new ApplicationLogger("rensoNoteList.log");
 		logger.log(logger.HIGH, "Setting up rensoNoteList");
 
 		conn = c;
+		this.parent = p;
 		rensoNoteListItems = new HashMap<QListWidgetItem, String>();
 		
 		logger.log(logger.HIGH, "rensoNoteList setup complete");
@@ -125,6 +133,21 @@ public class RensoNoteList extends QListWidget {
 	// リストのアイテムから対象ノートのguidを取得
 	public String getNoteGuid(QListWidgetItem item) {
 		return rensoNoteListItems.get(item);
+	}
+	
+	// 関連ノートリストの右クリックメニュー
+	@Override
+	public void contextMenuEvent(QContextMenuEvent event){
+		QMenu menu = new QMenu(this);
+		
+		// 新しいタブで開くアクション生成
+		openNewTabAction = new QAction(tr("Open in New Tab"), this);
+		openNewTabAction.setToolTip(tr("Open this note in new tab"));
+		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
+		
+		menu.addAction(openNewTabAction);
+		
+		menu.exec(event.globalPos());
 	}
 	
 }

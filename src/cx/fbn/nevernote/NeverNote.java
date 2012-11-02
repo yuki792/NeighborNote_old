@@ -371,6 +371,9 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	ClipBoardObserver cbObserver;
 	
+	// ICHANGED
+	String rensoNotePressedItem;
+	
     String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
     	
 	
@@ -621,7 +624,7 @@ public class NeverNote extends QMainWindow{
         
 		// ICHANGED
 		// 連想ノートリストをセットアップ
-		rensoNoteList = new RensoNoteList(conn);
+		rensoNoteList = new RensoNoteList(conn, this);
 		rensoNoteList.itemPressed.connect(this,
 				"rensoNoteItemPressed(QListWidgetItem)");
 		rensoNoteListDock = new QDockWidget(tr("Renso Note List"), this);
@@ -701,8 +704,9 @@ public class NeverNote extends QMainWindow{
 		savedSearchTree.setVisible(Global.isWindowVisible("savedSearchTree"));
 		menuBar.hideSavedSearches.setChecked(Global.isWindowVisible("savedSearchTree"));
 		
-		// ICHANGED 新しいタブで開くを追加
+		// ICHANGED noteTableViewに新しいタブで開くを追加
 		noteTableView.setOpenNewTabAction(menuBar.noteOpenNewTab);
+		
 		noteTableView.setAddAction(menuBar.noteAdd);
 		noteTableView.setDeleteAction(menuBar.noteDelete);
 		noteTableView.setRestoreAction(menuBar.noteRestoreAction);
@@ -4716,23 +4720,19 @@ public class NeverNote extends QMainWindow{
 		saveNote();
 		openTabEditor(currentNoteGuid);
 	}
+	
+	// ICHANGED 連想ノートリストから新しいタブで開く
+	private void openNewTabFromRNL(){
+		if(rensoNotePressedItem != null){
+			currentNoteGuid = rensoNotePressedItem;
+			openNewTab();
+		}
+	}
 
 	// ICHANGED
 	private void openTabEditor(String guid) {
-		// タブまたは外部ウィンドウでそのページをすでに開いていたら、一番上に出して終了
-		/*
-		if (tabWindows.containsKey(guid)) {
-			tabBrowser.setCurrentWidget(tabWindows.get(guid));
-			return;
-		}
-		if (externalWindows.containsKey(guid)) {
-			externalWindows.get(guid).raise();
-			return;
-		}
-		*/
 		
-		Note note = conn.getNoteTable().getNote(guid, true, true, false, true,
-				true);
+		Note note = conn.getNoteTable().getNote(guid, true, true, false, true, true);
 		// 新しいタブエディタを作成
 		TabBrowse newBrowser = new TabBrowse(conn, tabBrowser, cbObserver);
 		showEditorButtons(newBrowser.getBrowserWindow());
@@ -4750,13 +4750,13 @@ public class NeverNote extends QMainWindow{
 		fromHistory.put(index, false);
 
 		// 履歴に今開いたノートを追加
-		histGuids.add(currentNoteGuid);
+		histGuids.add(guid);
 		historyPosition.put(index, histGuids.size());
 
 		tabBrowser.setCurrentWidget(newBrowser);
 
 		// ICHANGED
-		if (currentNoteGuid != null && !currentNoteGuid.equals("")) {
+		if (guid != null && !guid.equals("")) {
 			if (!Global.showDeleted) { // ゴミ箱じゃなければ
 				addHistory();
 			}
@@ -4965,6 +4965,7 @@ public class NeverNote extends QMainWindow{
 	}
 
 	private void loadNoteBrowserInformation(BrowserWindow browser, String guid, Note note) {
+		System.out.println("loadNoteBrowserInformation");
 		NoteFormatter	formatter = new NoteFormatter(logger, conn, tempFiles);
 		formatter.setNote(note, Global.pdfPreview());
 		formatter.setHighlight(listManager.getEnSearch());
@@ -7108,8 +7109,10 @@ public class NeverNote extends QMainWindow{
 	private void rensoNoteItemPressed(QListWidgetItem current) {
 		logger.log(logger.HIGH, "Nevernote.rensoNoteSelectionChangeに入った");
 
+		rensoNotePressedItem = null;
 		// 右クリックだったら何もせずに終了
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
+			rensoNotePressedItem = rensoNoteList.getNoteGuid(current);
 			return;
 		}
 		
