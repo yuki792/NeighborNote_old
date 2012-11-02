@@ -123,4 +123,38 @@ public class HistoryTable {
 		}
 		return behaviorHist;
 	}
+
+	public void duplicateHistory(String newGuid, String oldGuid) {
+		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
+
+		// guid1 = oldGuidの履歴一覧を取得
+		histQuery.prepare("Select behaviorType, guid2 from History where guid1=:oldGuid");
+		histQuery.bindValue(":oldGuid", oldGuid);
+		if(!histQuery.exec()){
+			logger.log(logger.MEDIUM, "Historyテーブルからguid1=" + oldGuid + "のアイテム取得失敗");
+			logger.log(logger.MEDIUM, histQuery.lastError());
+		}
+		// guid1 = newGuidの履歴として複製
+		while(histQuery.next()){
+			String behaviorType = histQuery.valueString(0);
+			String guid2 = histQuery.valueString(1);
+			
+			addHistory(behaviorType, newGuid, guid2);
+		}
+		
+		// guid2 = oldGuidの履歴一覧を取得
+		histQuery.prepare("Select behaviorType, guid1 from History where guid2=:oldGuid");
+		histQuery.bindValue(":oldGuid", oldGuid);
+		if(!histQuery.exec()){
+			logger.log(logger.MEDIUM, "Historyテーブルからguid2=" + oldGuid + "のアイテム取得失敗");
+			logger.log(logger.MEDIUM,  histQuery.lastError());
+		}
+		// guid2 = newGuidの履歴として複製
+		while(histQuery.next()){
+			String behaviorType = histQuery.valueString(0);
+			String guid1 = histQuery.valueString(1);
+			
+			addHistory(behaviorType, guid1, newGuid);
+		}
+	}
 }

@@ -5568,6 +5568,10 @@ public class NeverNote extends QMainWindow{
 		}
 		newNote.setResources(resList);
 		
+		// ICHANGED
+		// 操作履歴も複製する
+		conn.getHistoryTable().duplicateHistory(newGuid, oldNote.getGuid());
+		
 		// Add note to the database
 		conn.getNoteTable().addNote(newNote, true);
 		NoteMetadata metaData = new NoteMetadata();
@@ -5581,6 +5585,7 @@ public class NeverNote extends QMainWindow{
 		refreshEvernoteNote(true);
 		listManager.countNotebookResults(listManager.getNoteIndex());
 		waitCursor(false);
+		
 	}
 	// View all notes
 	@SuppressWarnings("unused")
