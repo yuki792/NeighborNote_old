@@ -4714,7 +4714,6 @@ public class NeverNote extends QMainWindow{
 	// ** タブウィンドウの機能
 	// ***************************************************************
 	// ***************************************************************
-	// ICHANGED
 	@SuppressWarnings("unused")
 	private void openNewTab() {
 		saveNote();
@@ -4736,7 +4735,13 @@ public class NeverNote extends QMainWindow{
 		// 新しいタブエディタを作成
 		TabBrowse newBrowser = new TabBrowse(conn, tabBrowser, cbObserver);
 		showEditorButtons(newBrowser.getBrowserWindow());
+		
+		// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
+		noteTableView.selectionModel().selectionChanged.disconnect(this, "noteTableSelection()");
 		loadNoteBrowserInformation(newBrowser.getBrowserWindow(), guid, note);
+		// 再接続
+		noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
+		
 		setupBrowserWindowListeners(newBrowser.getBrowserWindow(), false);
 		
 		String noteTitle = note.getTitle();
@@ -4965,7 +4970,6 @@ public class NeverNote extends QMainWindow{
 	}
 
 	private void loadNoteBrowserInformation(BrowserWindow browser, String guid, Note note) {
-		System.out.println("loadNoteBrowserInformation");
 		NoteFormatter	formatter = new NoteFormatter(logger, conn, tempFiles);
 		formatter.setNote(note, Global.pdfPreview());
 		formatter.setHighlight(listManager.getEnSearch());
@@ -7110,7 +7114,7 @@ public class NeverNote extends QMainWindow{
 		logger.log(logger.HIGH, "Nevernote.rensoNoteSelectionChangeに入った");
 
 		rensoNotePressedItem = null;
-		// 右クリックだったら何もせずに終了
+		// 右クリックだったときの処理
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
 			rensoNotePressedItem = rensoNoteList.getNoteGuid(current);
 			return;
