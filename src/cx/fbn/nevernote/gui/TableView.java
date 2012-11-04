@@ -404,6 +404,7 @@ public class TableView extends QTableView {
 			menu.addAction(addAction);
 		}
 		// ICHANGED
+		menu.addSeparator();
 		menu.addAction(openNewTabAction);
 		menu.addSeparator();
 		

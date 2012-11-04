@@ -3887,12 +3887,14 @@ public class NeverNote extends QMainWindow{
 				prevSelectedNoteGUIDs.clear();
 				prevSelectedNoteGUIDs.addAll(selectedNoteGUIDs);
 				selectedNoteGUIDs.clear();
-				int row = selections.get(0).row();
-				QModelIndex index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
-				SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
-				prevCurrentNoteGuid = currentNoteGuid;
-				currentNoteGuid = (String) ix.values().toArray()[0];
-				selectedNoteGUIDs.add(currentNoteGuid);
+				for(int i = 0; i < selections.size(); i++){
+					int row = selections.get(i).row();
+					QModelIndex index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
+					SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
+					prevCurrentNoteGuid = currentNoteGuid;
+					currentNoteGuid = (String) ix.values().toArray()[0];
+					selectedNoteGUIDs.add(currentNoteGuid);
+				}
 			}
 			return;
 		}
@@ -7181,7 +7183,11 @@ public class NeverNote extends QMainWindow{
 			selectedNoteGUIDs.clear();
 			selectedNoteGUIDs.addAll(prevSelectedNoteGUIDs);
 			currentNoteGuid = prevCurrentNoteGuid;
+			// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
+			noteTableView.selectionModel().selectionChanged.disconnect(this, "noteTableSelection()");
 			noteTableView.selectRow(prevRow);
+			// 再接続
+			noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
 		}else{
 			System.out.println("prevSelectedNoteGUIDs is EMPTY!!");
 		}
