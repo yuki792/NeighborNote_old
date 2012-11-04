@@ -3882,20 +3882,18 @@ public class NeverNote extends QMainWindow{
 		// 右クリックだったときの処理
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
 			// 選択されたノート（current）のguidをcurrentnoteguidにセット
-			prevSelectedNoteGUIDs.clear();
-			prevSelectedNoteGUIDs.addAll(selectedNoteGUIDs);
-			selectedNoteGUIDs.clear();
-			List<QModelIndex> selections = noteTableView.selectionModel()
-					.selectedRows();
-			int row = selections.get(0).row();
-			QModelIndex index = noteTableView.proxyModel.index(row,
-					Global.noteTableGuidPosition);
-			SortedMap<Integer, Object> ix = noteTableView.proxyModel
-					.itemData(index);
-			prevCurrentNoteGuid = currentNoteGuid;
-			currentNoteGuid = (String) ix.values().toArray()[0];
-			selectedNoteGUIDs.add(currentNoteGuid);
-
+			List<QModelIndex> selections = noteTableView.selectionModel().selectedRows();
+			if(selections.size() > 0){
+				prevSelectedNoteGUIDs.clear();
+				prevSelectedNoteGUIDs.addAll(selectedNoteGUIDs);
+				selectedNoteGUIDs.clear();
+				int row = selections.get(0).row();
+				QModelIndex index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
+				SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
+				prevCurrentNoteGuid = currentNoteGuid;
+				currentNoteGuid = (String) ix.values().toArray()[0];
+				selectedNoteGUIDs.add(currentNoteGuid);
+			}
 			return;
 		}
 		
@@ -3909,7 +3907,7 @@ public class NeverNote extends QMainWindow{
 		// If the ctrl key is pressed, then they are selecting multiple 
 		// entries and we don't want to change the currently viewed note.
 		if (QApplication.keyboardModifiers().isSet(KeyboardModifier.ControlModifier) &&
-				QApplication.mouseButtons().isSet(MouseButton.LeftButton)) 
+				QApplication.mouseButtons().isSet(MouseButton.LeftButton))
 			return;
 		
 		// ICHANGED たぶんこれは不要
@@ -7188,7 +7186,5 @@ public class NeverNote extends QMainWindow{
 			System.out.println("prevSelectedNoteGUIDs is EMPTY!!");
 		}
 		
-		prevSelectedNoteGUIDs.clear();
-		prevCurrentNoteGuid = new String();
 	}
 }
