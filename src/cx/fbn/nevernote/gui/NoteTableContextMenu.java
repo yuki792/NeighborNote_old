@@ -21,9 +21,9 @@ public class NoteTableContextMenu extends QMenu {
 		int y = event.y();
 		
 		if(x < 0 || this.width() < x){
-			parent.restoreCurrentNoteGuid();
+			parent.restoreSelectedNoteInfo();
 		}else if(y < 0 || this.height() < y){
-			parent.restoreCurrentNoteGuid();
+			parent.restoreSelectedNoteInfo();
 		}
 	}
 	
@@ -32,7 +32,7 @@ public class NoteTableContextMenu extends QMenu {
 		super.keyPressEvent(event);
 		
 		if(event.key() == Qt.Key.Key_Escape.value()){
-			parent.restoreCurrentNoteGuid();
+			parent.restoreSelectedNoteInfo();
 		}
 	}
 }

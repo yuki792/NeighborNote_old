@@ -364,11 +364,6 @@ public class NeverNote extends QMainWindow{
 	private final QDockWidget rensoNoteListDock; // 連想ノートリストドックウィジェット
 	
 	// ICHANGED
-	private String prevCurrentNoteGuid;
-	private final List<String> prevSelectedNoteGUIDs;
-	private int prevRow;
-	
-	// ICHANGED
 	ClipBoardObserver cbObserver;
 	
 	// ICHANGED
@@ -911,15 +906,6 @@ public class NeverNote extends QMainWindow{
 		
 		if (Global.checkVersionUpgrade())
 			checkForUpdates();
-		
-		// ICHANGED
-		prevCurrentNoteGuid = new String();
-		prevSelectedNoteGUIDs = new ArrayList<String>();
-		// 起動時だけ、noteTableSelection()で正しい位置が取得できないので、ここで取得
-		List<QModelIndex> selections = noteTableView.selectionModel().selectedRows();
-		if(!selections.isEmpty()){
-			prevRow = selections.get(0).row();
-		}
 	}
 	
 	
@@ -3884,14 +3870,11 @@ public class NeverNote extends QMainWindow{
 			// 選択されたノート（current）のguidをcurrentnoteguidにセット
 			List<QModelIndex> selections = noteTableView.selectionModel().selectedRows();
 			if(selections.size() > 0){
-				prevSelectedNoteGUIDs.clear();
-				prevSelectedNoteGUIDs.addAll(selectedNoteGUIDs);
 				selectedNoteGUIDs.clear();
 				for(int i = 0; i < selections.size(); i++){
 					int row = selections.get(i).row();
 					QModelIndex index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
 					SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
-					prevCurrentNoteGuid = currentNoteGuid;
 					currentNoteGuid = (String) ix.values().toArray()[0];
 					selectedNoteGUIDs.add(currentNoteGuid);
 				}
@@ -3951,8 +3934,6 @@ public class NeverNote extends QMainWindow{
     				downButton.setEnabled(false);
     			index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
     			SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
-    			// ICHANGED
-				prevRow = row;
 				
         		currentNoteGuid = (String)ix.values().toArray()[0];
         		selectedNoteGUIDs.add(currentNoteGuid);
@@ -4714,13 +4695,13 @@ public class NeverNote extends QMainWindow{
 	// ** タブウィンドウの機能
 	// ***************************************************************
 	// ***************************************************************
-	@SuppressWarnings("unused")
 	private void openNewTab() {
 		saveNote();
 		openTabEditor(currentNoteGuid);
 	}
 	
 	// ICHANGED 連想ノートリストから新しいタブで開く
+	@SuppressWarnings("unused")
 	private void openNewTabFromRNL(){
 		if(rensoNotePressedItem != null){
 			currentNoteGuid = rensoNotePressedItem;
@@ -5198,7 +5179,7 @@ public class NeverNote extends QMainWindow{
     					QMessageBox.StandardButton.Yes, 
     					QMessageBox.StandardButton.No)==StandardButton.No.value() && Global.verifyDelete() == true) {
 						// ICHANGED
-						restoreCurrentNoteGuid();
+						restoreSelectedNoteInfo();
     					return;
     			}
     		}
@@ -5223,7 +5204,7 @@ public class NeverNote extends QMainWindow{
     				QMessageBox.StandardButton.Yes, 
 					QMessageBox.StandardButton.No)==StandardButton.No.value()) {
 	    				// ICHANGED
-						restoreCurrentNoteGuid();
+						restoreSelectedNoteInfo();
     					return;
     			}
     		}
@@ -7073,8 +7054,6 @@ public class NeverNote extends QMainWindow{
 				downButton.setEnabled(true);
 			else
 				downButton.setEnabled(false);
-			
-			prevRow = row;
 
 			browserWindow.noteSignal.noteChanged.disconnect(this,"setNoteDirty()");
 			browserWindow.focusLost.disconnect(this, "saveNote()");
@@ -7169,7 +7148,6 @@ public class NeverNote extends QMainWindow{
 			downButton.setEnabled(true);
 		else
 			downButton.setEnabled(false);
-		prevRow = row;
 
 		// 連想ノートリストを更新
 		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
@@ -7178,19 +7156,22 @@ public class NeverNote extends QMainWindow{
 	}
 	
 	// ICHANGED
-	public void restoreCurrentNoteGuid(){
-		if(!prevSelectedNoteGUIDs.isEmpty()){
-			selectedNoteGUIDs.clear();
-			selectedNoteGUIDs.addAll(prevSelectedNoteGUIDs);
-			currentNoteGuid = prevCurrentNoteGuid;
-			// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
-			noteTableView.selectionModel().selectionChanged.disconnect(this, "noteTableSelection()");
-			noteTableView.selectRow(prevRow);
-			// 再接続
-			noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
-		}else{
-			System.out.println("prevSelectedNoteGUIDs is EMPTY!!");
-		}
+	public void restoreSelectedNoteInfo(){		
+		// 現在のタブからguid取得
+    	// currentNoteGuid = browserWindow.getNote().getGuid();	↓と同じはずだけど敢えて使わない
+		int currentTabIndex = tabBrowser.currentIndex();
+		TabBrowse currentTab = tabWindows.get(currentTabIndex);
+		currentNoteGuid = currentTab.getBrowserWindow().getNote().getGuid();
 		
+		selectedNoteGUIDs.clear();
+		selectedNoteGUIDs.add(currentNoteGuid);
+
+		// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
+		noteTableView.selectionModel().selectionChanged.disconnect(this, "noteTableSelection()");
+		scrollToGuid(currentNoteGuid);
+		// 再接続
+		noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
+		
+		// test
 	}
 }

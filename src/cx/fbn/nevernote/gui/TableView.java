@@ -595,8 +595,8 @@ public class TableView extends QTableView {
 	}
 	
 	// ICHANGED
-	public void restoreCurrentNoteGuid(){
-		parent.restoreCurrentNoteGuid();
+	public void restoreSelectedNoteInfo(){
+		parent.restoreSelectedNoteInfo();
 	}
 	
 }
