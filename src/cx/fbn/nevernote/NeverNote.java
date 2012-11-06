@@ -3891,9 +3891,18 @@ public class NeverNote extends QMainWindow{
 
 		// If the ctrl key is pressed, then they are selecting multiple 
 		// entries and we don't want to change the currently viewed note.
+		// ICHANGED
 		if (QApplication.keyboardModifiers().isSet(KeyboardModifier.ControlModifier) &&
-				QApplication.mouseButtons().isSet(MouseButton.LeftButton))
+				QApplication.mouseButtons().isSet(MouseButton.LeftButton)){
+			selectedNoteGUIDs.clear();
+    		for (int i=0; i<selections.size(); i++) {
+    			int row = selections.get(i).row();
+    			QModelIndex index = noteTableView.proxyModel.index(row, Global.noteTableGuidPosition);
+    			SortedMap<Integer, Object> ix = noteTableView.proxyModel.itemData(index);
+        		selectedNoteGUIDs.add((String)ix.values().toArray()[0]);
+    		}
 			return;
+		}
 		
 		// ICHANGED たぶんこれは不要
 		// IFIXED ?
