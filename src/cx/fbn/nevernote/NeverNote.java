@@ -4488,6 +4488,10 @@ public class NeverNote extends QMainWindow{
     			}
     		}
     	}
+    	
+    	// ICHANGED
+    	restoreSelectedNoteInfo();
+    	
     	logger.log(logger.HIGH, "Leaving NeverNote.titleColorChanged");
     }
     // A note has been pinned or unpinned
@@ -4506,6 +4510,9 @@ public class NeverNote extends QMainWindow{
     		noteTableView.proxyModel.addGuid(selectedNoteGUIDs.get(j), meta);
     	}
    	
+    	// ICHANGED
+    	restoreSelectedNoteInfo();
+
 		logger.log(logger.EXTREME, "Leaving NeverNote.setNoteDirty()");
     }
     // Wide list was chosen
