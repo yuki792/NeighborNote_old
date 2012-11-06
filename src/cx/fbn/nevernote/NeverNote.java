@@ -4751,7 +4751,6 @@ public class NeverNote extends QMainWindow{
 	}
 
 	// ICHANGED タブが閉じられた
-	@SuppressWarnings("unused")
 	private void tabWindowClosing(int index) {
 		// タブが1つしかなかったら閉じない
 		if (tabBrowser.count() <= 1) {
@@ -5226,6 +5225,34 @@ public class NeverNote extends QMainWindow{
     		}
     	}
     	currentNoteGuid = "";
+    	
+    	// ICHANGED　↓↓↓ここから↓↓↓
+		Collection<TabBrowse> tabBrowsers = tabWindows.values();
+		Iterator<TabBrowse> tabIterator = tabBrowsers.iterator();
+		Collection<Integer> tabIndexes = tabWindows.keySet();
+		Iterator<Integer>	indexIterator = tabIndexes.iterator();
+		List<Integer> closeIndexes = new ArrayList<Integer>();	//イテレータ操作中に中身をいじっちゃダメなので
+
+		while (tabIterator.hasNext()) {
+			TabBrowse tab = tabIterator.next();
+			int index = indexIterator.next();
+			String guid = tab.getBrowserWindow().getNote().getGuid();
+			
+			for(int i = 0; i < selectedNoteGUIDs.size(); i++){
+				if(guid.equals(selectedNoteGUIDs.get(i))){
+					closeIndexes.add(index);
+				}
+			}
+		}
+		
+		for(int i = closeIndexes.size() - 1; i >= 0; i--){
+			tabWindowClosing(closeIndexes.get(i));
+		}
+		// ICHANGED ↑↑↑ここまで↑↑↑
+		
+    	// ICHANGED
+    	restoreSelectedNoteInfo();
+    	
     	listManager.loadNotesIndex();
     	noteIndexUpdated(false);
     	refreshEvernoteNote(true);
@@ -7171,7 +7198,5 @@ public class NeverNote extends QMainWindow{
 		scrollToGuid(currentNoteGuid);
 		// 再接続
 		noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
-		
-		// test
 	}
 }
