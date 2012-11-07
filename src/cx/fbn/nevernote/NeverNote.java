@@ -5366,7 +5366,9 @@ public class NeverNote extends QMainWindow{
     	
     	currentNote = newNote;
     	currentNoteGuid = currentNote.getGuid();
-    	noteTableView.clearSelection();
+    	// IFIXED こいつのせいで、ノート追加時にcurrentNoteGuidが更新されないので消す
+    	// noteTableView.clearSelection();
+    	
     	refreshEvernoteNote(true);
     	listManager.countNotebookResults(listManager.getNoteIndex());
     	browserWindow.titleLabel.setFocus();
