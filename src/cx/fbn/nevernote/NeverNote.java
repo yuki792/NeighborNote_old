@@ -7021,7 +7021,12 @@ public class NeverNote extends QMainWindow{
 	//* View / Hide source HTML for a note
 	//*************************************************
 	public void viewSource() {
-		browserWindow.showSource(menuBar.viewSource.isChecked());
+		// ICHANGED すべてのタブに対して
+    	for(int i = 0; i < tabBrowser.count(); i++){
+    		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
+    		browser.showSource(menuBar.viewSource.isChecked());
+    	}
+    	
 	}
 	//*************************************************
 	// Block the program.  This is used for things  
