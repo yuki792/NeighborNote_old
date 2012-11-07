@@ -1166,10 +1166,6 @@ public class NeverNote extends QMainWindow{
 		logger.log(logger.HIGH, "Entering NeverNote.closeEvent");
 		waitCursor(true);
 		
-		// ICHANGED まだ変更してないけどこれから変更予定
-		// TODO browserWindowとcurrentNoteのタイトルが異なるときに、変更を適用する。
-		// browserWindowでタイトルを変更したのがまだ反映されていない場合。
-		// すべてのタブに対してこの処理を行うように変更する。（またはタブ切り替え時にこの処理を逐次行う？）
 		if (currentNote != null & browserWindow != null) {
 			if (currentNote.getTitle() != null && browserWindow != null
 					&& !currentNote.getTitle().equals(browserWindow.getTitle()))
@@ -1412,6 +1408,7 @@ public class NeverNote extends QMainWindow{
 	@SuppressWarnings("unused")
 	private void settings() {
 		logger.log(logger.HIGH, "Entering NeverNote.settings");
+
 		saveNoteColumnPositions();
 		saveNoteIndexWidth();
 		showColumns();
@@ -1434,9 +1431,12 @@ public class NeverNote extends QMainWindow{
         	trayIcon.hide();
         showColumns();
         if (menuBar.showEditorBar.isChecked()){
-        	// ICHANGED まだ変更してないけどこれから変更予定
-        	// TODO 全てのタブに対して行う
-        	showEditorButtons(browserWindow);
+        	// ICHANGED 
+        	for(int i = 0; i < tabBrowser.count(); i++){
+        		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
+        		showEditorButtons(browser);
+        	}
+        	
         }
         
         // Reset the save timer
@@ -5475,17 +5475,24 @@ public class NeverNote extends QMainWindow{
     	
     }
     // Toggle the note editor button bar
+    // ICHANGED すべてのタブに
     private void toggleEditorButtonBar() {
-    	if (browserWindow.buttonsVisible) {
-    		browserWindow.hideButtons();
-    		menuBar.showEditorBar.setChecked(browserWindow.buttonsVisible);
-//    		Global.saveWindowVisible("editorButtonBar", browserWindow.buttonsVisible);
-    	} else {
-    		browserWindow.buttonsVisible = true;
-    		showEditorButtons(browserWindow);
+    	for(int i = 0; i < tabBrowser.count(); i++){
+    		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
+    		
+        	if (browser.buttonsVisible) {
+        		browser.hideButtons();
+        		menuBar.showEditorBar.setChecked(browser.buttonsVisible);
+//        		Global.saveWindowVisible("editorButtonBar", browserWindow.buttonsVisible);
+        	} else {
+        		browser.buttonsVisible = true;
+        		showEditorButtons(browser);
+        	}
     	}
+
     	Global.saveWindowVisible("editorButtonBar", browserWindow.buttonsVisible);
     }
+    
     // Show editor buttons
     private void showEditorButtons(BrowserWindow browser) {
    		browser.buttonLayout.setVisible(true);
