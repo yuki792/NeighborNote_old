@@ -701,20 +701,6 @@ public class NeverNote extends QMainWindow{
 		
 		// ICHANGED noteTableViewに新しいタブで開くを追加
 		noteTableView.setOpenNewTabAction(menuBar.noteOpenNewTab);
-		
-		noteTableView.setAddAction(menuBar.noteAdd);
-		noteTableView.setDeleteAction(menuBar.noteDelete);
-		noteTableView.setRestoreAction(menuBar.noteRestoreAction);
-		noteTableView.setNoteDuplicateAction(menuBar.noteDuplicateAction);
-		noteTableView.setNoteHistoryAction(menuBar.noteOnlineHistoryAction);
-		noteTableView.noteSignal.titleColorChanged.connect(this,
-				"titleColorChanged(Integer)");
-		noteTableView.noteSignal.notePinned.connect(this, "notePinned()");
-		noteTableView.setMergeNotesAction(menuBar.noteMergeAction);
-		noteTableView.setCopyAsUrlAction(menuBar.noteCopyAsUrlAction);
-		noteTableView.doubleClicked.connect(this, "listDoubleClick()");
-		listManager.trashSignal.countChanged.connect(trashTree,
-				"updateCounts(Integer)");
 			
 		noteTableView.setAddAction(menuBar.noteAdd);
 		noteTableView.setDeleteAction(menuBar.noteDelete);

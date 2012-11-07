@@ -37,7 +37,6 @@ import com.trolltech.qt.gui.QDropEvent;
 import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QKeySequence.StandardKey;
-import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QTableView;
 
 import cx.fbn.nevernote.Global;
@@ -395,7 +394,7 @@ public class TableView extends QTableView {
 	
 	@Override
 	public void contextMenuEvent(QContextMenuEvent event) {
-		// ICHANGED
+		// ICHANGED QMenu から NoteTableContextMenu へ
 		NoteTableContextMenu menu = new NoteTableContextMenu(this);
 		
 		if (Global.showDeleted) {
@@ -416,7 +415,9 @@ public class TableView extends QTableView {
 		menu.addAction(noteHistoryAction);
 		menu.addAction(mergeNotesAction);
 		
-		QMenu titleColorMenu = new QMenu();
+		// ICHANGED QMenu から NoteTableContextMenu へ
+		NoteTableContextMenu titleColorMenu = new NoteTableContextMenu(this);
+		
 		titleColorMenu.setTitle(tr("Title Color"));
 		menu.addMenu(titleColorMenu);
 		noteTitleColorWhite = new QAction(titleColorMenu);

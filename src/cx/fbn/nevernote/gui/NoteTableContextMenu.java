@@ -16,10 +16,10 @@ public class NoteTableContextMenu extends QMenu {
 	@Override
 	protected void mousePressEvent(QMouseEvent event){
 		super.mousePressEvent(event);
-		
+
 		int x = event.x();
 		int y = event.y();
-		
+
 		if(x < 0 || this.width() < x){
 			parent.restoreSelectedNoteInfo();
 		}else if(y < 0 || this.height() < y){
@@ -30,7 +30,7 @@ public class NoteTableContextMenu extends QMenu {
 	@Override
 	protected void keyPressEvent(QKeyEvent event){
 		super.keyPressEvent(event);
-		
+
 		if(event.key() == Qt.Key.Key_Escape.value()){
 			parent.restoreSelectedNoteInfo();
 		}
