@@ -5073,7 +5073,13 @@ public class NeverNote extends QMainWindow{
 	// Save a generated thumbnail
 	private void toggleNoteInformation() {
 		logger.log(logger.HIGH, "Entering NeverNote.toggleNoteInformation");
-    	browserWindow.toggleInformation();
+    	
+    	// ICHANGED
+    	for(int i = 0; i < tabBrowser.count(); i++){
+    		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
+    		browser.toggleInformation();
+    	}
+    	
     	menuBar.noteAttributes.setChecked(browserWindow.isExtended());
     	Global.saveWindowVisible("noteInformation", browserWindow.isExtended());
     	logger.log(logger.HIGH, "Leaving NeverNote.toggleNoteInformation");
