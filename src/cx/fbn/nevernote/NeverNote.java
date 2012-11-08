@@ -3217,7 +3217,7 @@ public class NeverNote extends QMainWindow{
     	attributeButton = toolBar.addAction(tr("Attributes")); 
     	QIcon attributeIcon = new QIcon(iconPath+"attribute.png");
     	attributeButton.setIcon(attributeIcon);
-    	attributeButton.triggered.connect(this, "toggleNoteInformation()");
+    	attributeButton.triggered.connect(this, "toggleNoteAttributes()");
     	toggleAttributeButton(Global.isToolbarButtonVisible("attribute"));
     	    	
     	emailButton = toolBar.addAction(tr("Email"));
@@ -4743,7 +4743,6 @@ public class NeverNote extends QMainWindow{
 
 		tabBrowser.setCurrentWidget(newBrowser);
 
-		// ICHANGED
 		if (guid != null && !guid.equals("")) {
 			if (!Global.showDeleted) { // ゴミ箱じゃなければ
 				addHistory();
@@ -5070,20 +5069,34 @@ public class NeverNote extends QMainWindow{
 		waitCursor(false);
 		logger.log(logger.HIGH, "Leaving NeverNote.refreshEvernoteNote");
 	}
+	
+	// ICHANGED
+	@SuppressWarnings("unused")
+	private void toggleNoteAttributes() {
+		menuBar.noteAttributes.setChecked(!menuBar.noteAttributes.isChecked());
+		toggleNoteInformation();
+	}
+	
 	// Save a generated thumbnail
 	private void toggleNoteInformation() {
 		logger.log(logger.HIGH, "Entering NeverNote.toggleNoteInformation");
     	
     	// ICHANGED
+		boolean isChecked = menuBar.noteAttributes.isChecked();
+		
     	for(int i = 0; i < tabBrowser.count(); i++){
     		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
-    		browser.toggleInformation();
+    		boolean isExtended = browser.isExtended();
+    		if((isChecked && !isExtended) || (!isChecked && isExtended)){
+    			browser.toggleInformation();
+    		}
     	}
     	
     	menuBar.noteAttributes.setChecked(browserWindow.isExtended());
     	Global.saveWindowVisible("noteInformation", browserWindow.isExtended());
     	logger.log(logger.HIGH, "Leaving NeverNote.toggleNoteInformation");
     }
+	
 	// Listener triggered when a print button is pressed
     @SuppressWarnings("unused")
 	private void printNote() {
@@ -5480,19 +5493,21 @@ public class NeverNote extends QMainWindow{
     	}
     	
     }
+	
     // Toggle the note editor button bar
     // ICHANGED すべてのタブに
     private void toggleEditorButtonBar() {
+    	boolean isChecked = menuBar.showEditorBar.isChecked();
+    	
     	for(int i = 0; i < tabBrowser.count(); i++){
     		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
-    		
-        	if (browser.buttonsVisible) {
-        		browser.hideButtons();
-        		menuBar.showEditorBar.setChecked(browser.buttonsVisible);
-//        		Global.saveWindowVisible("editorButtonBar", browserWindow.buttonsVisible);
-        	} else {
+    		boolean isVisible = browser.buttonsVisible;
+
+        	if (isChecked && !isVisible) {
         		browser.buttonsVisible = true;
         		showEditorButtons(browser);
+        	} else if(!isChecked && isVisible) {
+        		browser.hideButtons();
         	}
     	}
 
@@ -7032,7 +7047,6 @@ public class NeverNote extends QMainWindow{
     		BrowserWindow browser = ((TabBrowse) tabBrowser.widget(i)).getBrowserWindow();
     		browser.showSource(menuBar.viewSource.isChecked());
     	}
-    	
 	}
 	//*************************************************
 	// Block the program.  This is used for things  
