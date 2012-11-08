@@ -730,6 +730,7 @@ public class NeverNote extends QMainWindow{
 		
 		if (!Global.isWindowVisible("editorButtonBar"))
 			toggleEditorButtonBar();
+		
 		if (!Global.isWindowVisible("leftPanel"))
 			menuBar.hideLeftSide.setChecked(true);
 		if (Global.isWindowVisible("noteInformation"))
@@ -4730,6 +4731,13 @@ public class NeverNote extends QMainWindow{
 		String noteTitle = note.getTitle();
 		int index = tabBrowser.addNewTab(newBrowser, noteTitle);
 		tabWindows.put(index, newBrowser);
+		
+		// ExtendedInformationを必要があれば表示する
+		toggleNoteInformation();
+		// Sourceを必要があれば表示する
+		viewSource();
+		// EditorButtonsBarを必要があれば表示する
+		toggleEditorButtonBar();
 
 		// 履歴記録のハッシュマップを初期化
 		ArrayList<String> histGuids = new ArrayList<String>();
