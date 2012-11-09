@@ -52,6 +52,9 @@ public class ConfigDialog extends QDialog {
 	private final ConfigAppearancePage 		appearancePage;
 	private final ConfigSpellPage			spellPage;
 	private final ConfigIndexPage			indexPage;
+	// ICHANGED
+	private final ConfigRensoListPage		rensoListPage;
+	
     private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	
 	public ConfigDialog(QWidget parent) {
@@ -71,12 +74,17 @@ public class ConfigDialog extends QDialog {
 		indexPage = new ConfigIndexPage(this);
 		debugPage = new ConfigDebugPage(this);
 		spellPage = new ConfigSpellPage(this);
+		// ICHANGED
+		rensoListPage = new ConfigRensoListPage(this);
+		
 		pagesWidget.addWidget(appearancePage);
 		pagesWidget.addWidget(fontPage);
 		pagesWidget.addWidget(indexPage);
 		pagesWidget.addWidget(spellPage);
 		pagesWidget.addWidget(connectionPage);
 		pagesWidget.addWidget(debugPage);
+		// ICHANGED
+		pagesWidget.addWidget(rensoListPage);
 		
 		QPushButton cancelButton = new QPushButton(tr("Cancel"));
 		QPushButton okButton = new QPushButton(tr("OK"));
@@ -276,6 +284,13 @@ public class ConfigDialog extends QDialog {
 		debugButton.setTextAlignment(AlignmentFlag.AlignHCenter.value());
 		debugButton.setFlags(ItemFlag.ItemIsSelectable, ItemFlag.ItemIsEnabled);
 		debugButton.setIcon(new QIcon(iconPath+"debug.jpg"));
+		
+		// ICHANGED
+		QListWidgetItem rensoListButton = new QListWidgetItem(contentsWidget);
+		rensoListButton.setText(tr("Renso Note List"));
+		rensoListButton.setTextAlignment(AlignmentFlag.AlignCenter.value());
+		rensoListButton.setFlags(ItemFlag.ItemIsSelectable, ItemFlag.ItemIsEnabled);
+		rensoListButton.setIcon(new QIcon(iconPath+"rensoNoteList.png"));
 		
 		contentsWidget.currentItemChanged.connect(this, "changePage(QListWidgetItem, QListWidgetItem)");
 	}
