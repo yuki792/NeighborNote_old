@@ -13,6 +13,7 @@ import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QMenu;
 
+import cx.fbn.nevernote.Global;
 import cx.fbn.nevernote.NeverNote;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
@@ -50,11 +51,12 @@ public class RensoNoteList extends QListWidget {
 		
 		// browseHistory<guid, 回数（ポイント）>
 		HashMap<String, Integer> browseHistory = conn.getHistoryTable().getBehaviorHistory("browse", guid);
+		addWeight(browseHistory, Global.getBrowseWeight());
 		mergedHistory = mergeHistory(browseHistory, new HashMap<String, Integer>());
 		
 		// copy&pasteHistory<guid, 回数（ポイント）>
 		HashMap<String, Integer> copyAndPasteHistory = conn.getHistoryTable().getBehaviorHistory("copy & paste", guid);
-		addWeight(copyAndPasteHistory, 2);
+		addWeight(copyAndPasteHistory, Global.getCopyPasteWeight());
 		mergedHistory = mergeHistory(copyAndPasteHistory, mergedHistory);
 		
 		addRensoNoteList(mergedHistory);
@@ -99,9 +101,10 @@ public class RensoNoteList extends QListWidget {
 		
 		// 操作回数が多い順に取り出して連想ノートリストに追加
 		while (!copyHistory.isEmpty()) {
-			int maxNum = 0;
+			int maxNum = -1;
 			String maxGuid = new String();
 			Iterator<String> it = copyHistory.keySet().iterator();
+			
 			while (it.hasNext()) {
 				String nextGuid = it.next();
 				int tmpNum = copyHistory.get(nextGuid);
@@ -110,16 +113,20 @@ public class RensoNoteList extends QListWidget {
 					maxGuid = nextGuid;
 				}
 			}
+			
 			// 次の最大値探索で邪魔なので最大値をHashMapから削除
 			copyHistory.remove(maxGuid);
 
 			// 関連度最大のノートがアクティブか確認
 			Note maxNote = conn.getNoteTable().getNote(maxGuid, false, false,
 					false, false, true);
-			boolean isNoteActive = maxNote.isActive();
-
-			// 存在していれば、ノート情報を取得して連想ノートリストに追加
-			if (isNoteActive) {
+			boolean isNoteActive = false;
+			if(maxNote != null) {
+				isNoteActive = maxNote.isActive();
+			}
+			
+			// 存在していて、かつ関連度0でなければノート情報を取得して連想ノートリストに追加
+			if (isNoteActive && maxNum > 0) {
 				QListWidgetItem item = new QListWidgetItem();
 				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum);
 				item.setSizeHint(new QSize(0, 85));
