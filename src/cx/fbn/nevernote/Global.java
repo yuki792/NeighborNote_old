@@ -720,13 +720,31 @@ public class Global {
 		settings.setValue("recognitionWeight", len);
 		settings.endGroup();    	
     }
+    // IFIXED 
     public static int getRecognitionWeight() {
+		/*
+		 * settings.beginGroup("General");
+		 * Integer len;
+		 * try {
+		 * len = (Integer)settings.value("recognitionWeight", 30);
+		 * } catch (Exception e) {
+		 * len = 80;
+		 * }
+		 * settings.endGroup();
+		 * return len;
+		 */
+    	
 		settings.beginGroup("General");
 		Integer len;
 		try {
-			len = (Integer)settings.value("recognitionWeight", 30);
+			String l = (String)settings.value("recognitionWeight", 30);
+			len = new Integer(l.trim());
 		} catch (Exception e) {
-			len = 80;
+			try {
+				len = (Integer)settings.value("recognitionWeight", 30);
+			} catch (Exception e1) {
+				len = 80;
+			}
 		}
 		settings.endGroup();
 		return len;
