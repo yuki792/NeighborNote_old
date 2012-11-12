@@ -222,6 +222,10 @@ public class ConfigDialog extends QDialog {
 		Global.setDefaultFont(fontPage.getFont());
 		Global.setDefaultFontSize(fontPage.getFontSize());
 		Global.setDatabaseCache(debugPage.getDatabaseCacheSize());
+		
+		// ICHANGED
+		Global.setBrowseWeight(rensoListPage.getBrowseWeight());
+		Global.setCopyPasteWeight(rensoListPage.getcopyPasteWeight());
 				
 		close();
 	}

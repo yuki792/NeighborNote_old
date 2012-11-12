@@ -10,6 +10,8 @@ import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 
+import cx.fbn.nevernote.Global;
+
 public class ConfigRensoListPage extends QWidget {
 	QSlider browseSlider;
 	QSlider copyPasteSlider;
@@ -33,7 +35,7 @@ public class ConfigRensoListPage extends QWidget {
 		
 		browseSlider.valueChanged.connect(browseSpinner, "setValue(int)");
 		browseSpinner.valueChanged.connect(browseSlider, "setValue(int)");
-		browseSlider.setValue(1);			// TODO あとで直す
+		browseSlider.setValue(Global.getBrowseWeight());
 		
 		QHBoxLayout browseLayout = new QHBoxLayout();
 		browseLayout.addWidget(browseSlider);
@@ -54,7 +56,7 @@ public class ConfigRensoListPage extends QWidget {
 		
 		copyPasteSlider.valueChanged.connect(copyPasteSpinner, "setValue(int)");
 		copyPasteSpinner.valueChanged.connect(copyPasteSlider, "setValue(int)");
-		copyPasteSlider.setValue(2);			// TODO あとで直す
+		copyPasteSlider.setValue(Global.getCopyPasteWeight());
 
 		
 		QHBoxLayout copyPasteLayout = new QHBoxLayout();
@@ -75,5 +77,25 @@ public class ConfigRensoListPage extends QWidget {
 		mainLayout.addStretch(1);
 		setLayout(mainLayout);
 		
+	}
+	
+	//*****************************************
+	//* Browse Weight 
+	//*****************************************
+	public void setBrowseWeight(int weight) {
+		browseSpinner.setValue(weight);
+	}
+	public int getBrowseWeight() {
+		return browseSpinner.value();
+	}
+	
+	//*****************************************
+	//* Copy & Paste Weight 
+	//*****************************************
+	public void setcopyPasteWeight(int weight) {
+		copyPasteSpinner.setValue(weight);
+	}
+	public int getcopyPasteWeight() {
+		return copyPasteSpinner.value();
 	}
 }

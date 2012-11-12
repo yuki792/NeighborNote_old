@@ -2054,5 +2054,55 @@ public class Global {
 		settings.endGroup();	
 		databaseCache = value;
     }
+    
+    // ICHANGED
+    // 複数ノート同時閲覧操作に対する重み付け
+    public static void setBrowseWeight(int weight) {
+		settings.beginGroup("General");
+		settings.setValue("browseWeight", weight);
+		settings.endGroup();    	
+    }
+    public static int getBrowseWeight() {
+		settings.beginGroup("General");
+		Integer value;
+		try {
+			String val  = (String)settings.value("browseWeight", 1);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("browseWeight", 1);
+			} catch (Exception e1) {
+				value = 1;
+			}
+		}
+		settings.endGroup();
+		return value;
+    }
+    
+    // ICHANGED
+    // ノート内容のコピー＆ペースト操作に対する重み付け
+    public static void setCopyPasteWeight(int weight) {
+		settings.beginGroup("General");
+		settings.setValue("copyPasteWeight", weight);
+		settings.endGroup();    	
+    }
+    public static int getCopyPasteWeight() {
+		settings.beginGroup("General");
+		Integer value;
+		try {
+			String val  = (String)settings.value("copyPasteWeight", 2);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("copyPasteWeight", 2);
+			} catch (Exception e1) {
+				value = 2;
+			}
+		}
+		settings.endGroup();
+		return value;
+    }
+    
+    
 }
 
