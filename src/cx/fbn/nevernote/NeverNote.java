@@ -5251,6 +5251,10 @@ public class NeverNote extends QMainWindow{
     	    		}
     	    	}
     			listManager.expungeNote(selectedNoteGUIDs.get(i));
+    			
+    			// ICHANGED
+    			conn.getHistoryTable().expungeHistory(selectedNoteGUIDs.get(i));
+    			
     		}
     	}
     	currentNoteGuid = "";

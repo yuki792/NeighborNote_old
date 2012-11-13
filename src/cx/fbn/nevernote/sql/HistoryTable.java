@@ -157,4 +157,19 @@ public class HistoryTable {
 			addHistory(behaviorType, guid1, newGuid);
 		}
 	}
+	
+	public void expungeHistory(String guid) {
+		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
+		boolean check;
+		
+		query.prepare("Delete from History where guid1=:guid1 or guid2=:guid2");
+		query.bindValue(":guid1", guid);
+		query.bindValue(":guid2", guid);
+		
+		check = query.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "historyテーブルからguid=" + guid + "のデータ削除に失敗");
+			logger.log(logger.MEDIUM, query.lastError());
+		}
+	}
 }
