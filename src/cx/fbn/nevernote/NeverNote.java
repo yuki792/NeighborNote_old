@@ -4509,7 +4509,7 @@ public class NeverNote extends QMainWindow{
     	// ICHANGED
     	restoreSelectedNoteInfo();
 
-		logger.log(logger.EXTREME, "Leaving NeverNote.setNoteDirty()");
+		logger.log(logger.EXTREME, "Leaving NeverNote.notePinned()");
     }
     // Wide list was chosen
     public void narrowListView() {
@@ -4644,13 +4644,6 @@ public class NeverNote extends QMainWindow{
     		externalWindows.get(guid).raise();
     		return;
     	}
-    	
-		// TODO シングルクリック時にそのノートを現在のタブで開いているので、↓のif文は常にtrueになり、絶対に外部ウィンドウで開けない。
-		// ICHANGED タブでそのページをすでに開いていたら、一番上に出して終了
-		/*if (tabWindows.containsKey(guid)) {
-			tabBrowser.setCurrentWidget(tabWindows.get(guid));
-			return;
-		}*/
     	
     	Note note = conn.getNoteTable().getNote(guid, true, true, false, true, true);
     	// We have a new external editor to create
@@ -4832,7 +4825,29 @@ public class NeverNote extends QMainWindow{
     		window.getBrowserWindow().setContent(unicode);
 		}
 		
-		// TODO ここでタブに対しても↑と同じ事をやる
+		// ICHANGED ↓↓↓ここから↓↓↓
+		// 他のタブで同じノートを開いていないか探す。もしあったら、内容を更新する。
+		Collection<TabBrowse> tabBrowsers = tabWindows.values();
+		Iterator<TabBrowse> tabIterator = tabBrowsers.iterator();
+		Collection<Integer> tabIndexes = tabWindows.keySet();
+		Iterator<Integer>	indexIterator = tabIndexes.iterator();
+		
+		while (tabIterator.hasNext()) {
+			TabBrowse tab = tabIterator.next();
+			int index = indexIterator.next();
+			String guid = tab.getBrowserWindow().getNote().getGuid();
+			
+			QTextCodec codec = QTextCodec.codecForName("UTF-8");
+			QByteArray unicode = codec.fromUnicode(browserWindow.getContent());
+			
+			if (guid.equals(currentNoteGuid)) {
+				if (index != tabBrowser.currentIndex()) {
+					TabBrowse window = tabWindows.get(index);
+					window.getBrowserWindow().setContent(unicode);
+				}
+			}
+		}
+		// ICHANGED ↑↑↑ここまで↑↑↑
 		
 		// If the note is dirty, then it is unsynchronized by default.
 		if (noteDirty) 

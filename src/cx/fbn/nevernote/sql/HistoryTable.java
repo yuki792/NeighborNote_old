@@ -124,6 +124,7 @@ public class HistoryTable {
 		return behaviorHist;
 	}
 
+	// oldGuidのノートの操作履歴をnewGuidのノートの操作履歴として複製
 	public void duplicateHistory(String newGuid, String oldGuid) {
 		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
 
@@ -158,6 +159,7 @@ public class HistoryTable {
 		}
 	}
 	
+	// guidを含む列をHistoryテーブルから削除
 	public void expungeHistory(String guid) {
 		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
 		boolean check;
