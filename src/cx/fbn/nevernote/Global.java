@@ -2100,12 +2100,12 @@ public class Global {
     // ICHANGED
     // ノート内容のコピー＆ペースト操作に対する重み付け
     public static void setCopyPasteWeight(int weight) {
-		settings.beginGroup("General");
+		settings.beginGroup("RensoNoteList");
 		settings.setValue("copyPasteWeight", weight);
 		settings.endGroup();    	
     }
     public static int getCopyPasteWeight() {
-		settings.beginGroup("General");
+		settings.beginGroup("RensoNoteList");
 		Integer value;
 		try {
 			String val  = (String)settings.value("copyPasteWeight", 2);
@@ -2121,6 +2121,52 @@ public class Global {
 		return value;
     }
     
-    
+    //*******************
+    // ノートのマージ・複製の関連ノートリストへの適用
+    //*******************
+    // ICHANGED
+    public static void setMergeRensoNote(boolean value) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("mergeRensoNoteList", value);
+		settings.endGroup();	
+    }
+    // ICHANGED
+    public static boolean getMergeRensoNote() {
+		settings.beginGroup("RensoNoteList");
+		try {
+			String value = (String)settings.value("mergeRensoNoteList", "true");
+			settings.endGroup();
+			if (value.equals("true"))
+				return true;
+			else
+				return false;
+		} catch (java.lang.ClassCastException e) {
+			Boolean value = (Boolean) settings.value("mergeRensoNoteList", true);
+			settings.endGroup();
+			return value;
+		}
+    }
+    // ICHANGED
+    public static void setDuplicateRensoNote(boolean value) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("duplicateRensoNoteList", value);
+		settings.endGroup();	
+    }
+    // ICHANGED
+    public static boolean getDuplicateRensoNote() {
+		settings.beginGroup("RensoNoteList");
+		try {
+			String value = (String)settings.value("duplicateRensoNoteList", "true");
+			settings.endGroup();
+			if (value.equals("true"))
+				return true;
+			else
+				return false;
+		} catch (java.lang.ClassCastException e) {
+			Boolean value = (Boolean) settings.value("duplicateRensoNoteList", true);
+			settings.endGroup();
+			return value;
+		}
+    }
 }
 

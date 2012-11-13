@@ -53,7 +53,7 @@ public class ConfigDialog extends QDialog {
 	private final ConfigSpellPage			spellPage;
 	private final ConfigIndexPage			indexPage;
 	// ICHANGED
-	private final ConfigRensoListPage		rensoListPage;
+	private final ConfigRensoNoteListPage		rensoNoteListPage;
 	
     private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	
@@ -75,7 +75,7 @@ public class ConfigDialog extends QDialog {
 		debugPage = new ConfigDebugPage(this);
 		spellPage = new ConfigSpellPage(this);
 		// ICHANGED
-		rensoListPage = new ConfigRensoListPage(this);
+		rensoNoteListPage = new ConfigRensoNoteListPage(this);
 		
 		pagesWidget.addWidget(appearancePage);
 		pagesWidget.addWidget(fontPage);
@@ -84,7 +84,7 @@ public class ConfigDialog extends QDialog {
 		pagesWidget.addWidget(connectionPage);
 		pagesWidget.addWidget(debugPage);
 		// ICHANGED
-		pagesWidget.addWidget(rensoListPage);
+		pagesWidget.addWidget(rensoNoteListPage);
 		
 		QPushButton cancelButton = new QPushButton(tr("Cancel"));
 		QPushButton okButton = new QPushButton(tr("OK"));
@@ -224,8 +224,12 @@ public class ConfigDialog extends QDialog {
 		Global.setDatabaseCache(debugPage.getDatabaseCacheSize());
 		
 		// ICHANGED
-		Global.setBrowseWeight(rensoListPage.getBrowseWeight());
-		Global.setCopyPasteWeight(rensoListPage.getcopyPasteWeight());
+		Global.setBrowseWeight(rensoNoteListPage.getBrowseWeight());
+		Global.setCopyPasteWeight(rensoNoteListPage.getcopyPasteWeight());
+		
+		// ICHANGED
+		Global.setMergeRensoNote(rensoNoteListPage.getMergeChecked());
+		Global.setDuplicateRensoNote(rensoNoteListPage.getDuplicateChecked());
 				
 		close();
 	}

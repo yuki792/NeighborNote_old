@@ -5623,7 +5623,9 @@ public class NeverNote extends QMainWindow{
 		
 		// ICHANGED
 		// 操作履歴も複製する
-		conn.getHistoryTable().duplicateHistory(newGuid, oldNote.getGuid());
+		if(Global.getDuplicateRensoNote()) {
+			conn.getHistoryTable().duplicateHistory(newGuid, oldNote.getGuid());
+		}
 		
 		// Add note to the database
 		conn.getNoteTable().addNote(newNote, true);
@@ -5680,11 +5682,13 @@ public class NeverNote extends QMainWindow{
 		currentNoteGuid = masterGuid;
 		
 		// ICHANGED 操作履歴をマージ
-		for (int i = 0; i < sources.size(); i++) {
-			String childGuid = sources.get(i);
-			if(masterGuid != null && childGuid != null){
-				if(!masterGuid.equals(childGuid)){
-					conn.getHistoryTable().updateHistoryGuid(masterGuid, childGuid);
+		if(Global.getMergeRensoNote()) {
+			for (int i = 0; i < sources.size(); i++) {
+				String childGuid = sources.get(i);
+				if(masterGuid != null && childGuid != null) {
+					if(!masterGuid.equals(childGuid)) {
+						conn.getHistoryTable().updateHistoryGuid(masterGuid, childGuid);
+					}
 				}
 			}
 		}
