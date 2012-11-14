@@ -1,0 +1,37 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f8d0044fe38, pid=9786, tid=140242552624896
+#
+# JRE version: 7.0_07-b10
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (23.3-b01 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [libqtjambi.so+0x1ae38]  qtjambi_from_thread(JNIEnv_*, QThread*)+0x28
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f8ce0001800):  JavaThread "Thread-1" [_thread_in_native, id=9841, stack(0x00007f8cc3781000,0x00007f8cc3882000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x0000000000000000
+
+Registers:
+RAX=0x0000000000000000, RBX=0x0000000000000000, RCX=0x0000000000000579, RDX=0x00007f8d084e91c0
+RSP=0x00007f8cc38807d0, RBP=0x00007f8cc3880858, RSI=0x00007f8d0847a460, RDI=0x00007f8ce00019d8
+R8 =0x00007f8d080322b0, R9 =0x0000000000005400, R10=0x00007f8d05017d65, R11=0x00007f8d0f6a9af0
+R12=0x0000000000000000, R13=0x00000000bed1f1b0, R14=0x00007f8cc3880888, R15=0x00007f8ce0001800
+RIP=0x00007f8d0044fe38, EFLAGS=0x0000000000010202, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007f8cc38807d0)
+0x00007f8cc38807d0:   00007f8d05005410 00007f8d0847a460
+0x00007f8cc38807e0:   0000000000000000 00007f8d001b0434
+0x00007f8cc38807f0:   00000000bed1f1b0 00007f8d05017d91
+0x00007f8cc3880800:   00007f8d05005410 0000000000000000

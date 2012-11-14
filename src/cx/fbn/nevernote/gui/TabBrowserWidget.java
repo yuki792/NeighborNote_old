@@ -19,6 +19,13 @@ public class TabBrowserWidget extends QTabWidget {
 		this.setTabToolTip(index, title);
 		return index;
 	}
+	
+	public int insertNewTab(int index, QWidget widget, String title) {
+		int trueIndex = this.insertTab(index, widget, new String());
+		bar.addNewTab(trueIndex, title);
+		this.setTabToolTip(trueIndex, title);
+		return trueIndex;
+	}
 
 	public void setTabTitle(int index, String title) {
 		bar.setTabTitle(index, title);

@@ -2168,5 +2168,27 @@ public class Global {
 			return value;
 		}
     }
+    
+    // ICHANGED
+    // Get/Set 最後に開いていたノート群
+    public static HashMap<Integer, String> getLastViewedTabs() {
+		settings.beginGroup("General");
+		
+		@SuppressWarnings("unchecked")
+		HashMap<Integer, String> tabWindows = (HashMap<Integer, String>) settings.value("lastViewedTabs", null);
+		
+		settings.endGroup();
+		return tabWindows;   	
+    }
+    // ICHANGED
+    public static void setLastViewedTabs(HashMap<Integer, String> tabs) {
+		settings.beginGroup("General");
+		if (tabs != null) {
+			settings.setValue("lastViewedTabs", tabs);
+		} else {
+			settings.setValue("lastViewedTabs", "");
+		}
+		settings.endGroup();
+    }
 }
 
