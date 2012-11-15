@@ -8,6 +8,7 @@ import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
+import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QPalette;
@@ -85,5 +86,14 @@ public class RensoNoteListItem extends QWidget{
 		QPalette p = new QPalette();
 		p.setColor(QPalette.ColorRole.Window, new QColor(255, 255, 255));
 		this.setPalette(p);
+	}
+	
+	@Override
+	protected void mousePressEvent(QMouseEvent e) {
+		QPalette p = new QPalette();
+		p.setColor(QPalette.ColorRole.Window, new QColor(165, 175, 255));
+		this.setPalette(p);
+		
+		super.mousePressEvent(e);
 	}
 }
