@@ -5224,6 +5224,7 @@ public class NeverNote extends QMainWindow{
     					QMessageBox.StandardButton.No)==StandardButton.No.value() && Global.verifyDelete() == true) {
 						// ICHANGED
 						restoreSelectedNoteInfo();
+						
     					return;
     			}
     		}
@@ -5249,6 +5250,7 @@ public class NeverNote extends QMainWindow{
 					QMessageBox.StandardButton.No)==StandardButton.No.value()) {
 	    				// ICHANGED
 						restoreSelectedNoteInfo();
+						
     					return;
     			}
     		}
@@ -5276,6 +5278,31 @@ public class NeverNote extends QMainWindow{
     	currentNoteGuid = "";
     	
     	// ICHANGED　↓↓↓ここから↓↓↓
+		// 削除したノートを外部ウィンドウで開いていたら、閉じる
+		Collection<ExternalBrowse> 	windows = externalWindows.values();
+		Iterator<ExternalBrowse> 	windowIterator = windows.iterator();
+		Collection<String> 			guids = externalWindows.keySet();
+		Iterator<String> 			guidIterator = guids.iterator();
+		List<ExternalBrowse>		closeWindows = new ArrayList<ExternalBrowse>();	// イテレータ操作中に中身をいじっちゃダメなので
+		
+		while (windowIterator.hasNext()) {
+			ExternalBrowse browser = windowIterator.next();
+			String guid = guidIterator.next();
+			
+			for (int i = 0; i < selectedNoteGUIDs.size(); i++) {
+				if (guid.equals(selectedNoteGUIDs.get(i))) {
+					closeWindows.add(browser);
+				}
+			}
+		}
+		
+		for (int i = closeWindows.size() - 1; i >= 0; i--) {
+			closeWindows.get(i).close();
+		}
+		// ICHANGED ↑↑↑ここまで↑↑↑
+		
+    	// ICHANGED　↓↓↓ここから↓↓↓
+    	// 削除したノートをタブで開いていたら、閉じる
 		Collection<TabBrowse> tabBrowsers = tabWindows.values();
 		Iterator<TabBrowse> tabIterator = tabBrowsers.iterator();
 		Collection<Integer> tabIndexes = tabWindows.keySet();
@@ -5297,7 +5324,7 @@ public class NeverNote extends QMainWindow{
 		for(int i = closeIndexes.size() - 1; i >= 0; i--){
 			tabWindowClosing(closeIndexes.get(i));
 		}
-		// ICHANGED ↑↑↑ここまで↑↑↑
+		// ICHANGED ↑↑↑ここまで↑↑↑		
 		
     	// ICHANGED
     	restoreSelectedNoteInfo();
@@ -5714,6 +5741,55 @@ public class NeverNote extends QMainWindow{
 				}
 			}
 		}
+		
+    	// ICHANGED　↓↓↓ここから↓↓↓
+		// マージしたノート(child)を外部ウィンドウで開いていたら、閉じる
+		Collection<ExternalBrowse> 	windows = externalWindows.values();
+		Iterator<ExternalBrowse> 	windowIterator = windows.iterator();
+		Collection<String> 			guids = externalWindows.keySet();
+		Iterator<String> 			guidIterator = guids.iterator();
+		List<ExternalBrowse>		closeWindows = new ArrayList<ExternalBrowse>();	// イテレータ操作中に中身をいじっちゃダメなので
+		
+		while (windowIterator.hasNext()) {
+			ExternalBrowse browser = windowIterator.next();
+			String guid = guidIterator.next();
+			
+			for (int i = 0; i < sources.size(); i++) {
+				if (guid.equals(sources.get(i))) {
+					closeWindows.add(browser);
+				}
+			}
+		}
+		
+		for (int i = closeWindows.size() - 1; i >= 0; i--) {
+			closeWindows.get(i).close();
+		}
+		// ICHANGED ↑↑↑ここまで↑↑↑
+		
+    	// ICHANGED　↓↓↓ここから↓↓↓
+    	// マージしたノート（child）をタブで開いていたら、閉じる
+		Collection<TabBrowse> tabBrowsers = tabWindows.values();
+		Iterator<TabBrowse> tabIterator = tabBrowsers.iterator();
+		Collection<Integer> tabIndexes = tabWindows.keySet();
+		Iterator<Integer>	indexIterator = tabIndexes.iterator();
+		List<Integer> closeIndexes = new ArrayList<Integer>();	//イテレータ操作中に中身をいじっちゃダメなので
+
+		while (tabIterator.hasNext()) {
+			TabBrowse tab = tabIterator.next();
+			int tabIndex = indexIterator.next();
+			String guid = tab.getBrowserWindow().getNote().getGuid();
+			
+			for(int i = 0; i < sources.size(); i++){
+				if(guid.equals(sources.get(i))){
+					closeIndexes.add(tabIndex);
+				}
+			}
+		}
+		
+		for(int i = closeIndexes.size() - 1; i >= 0; i--){
+			tabWindowClosing(closeIndexes.get(i));
+		}
+		// ICHANGED ↑↑↑ここまで↑↑↑		
 		
 		noteIndexUpdated(false);
 		refreshEvernoteNote(true);
