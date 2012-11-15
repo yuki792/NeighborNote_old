@@ -367,7 +367,7 @@ public class NeverNote extends QMainWindow{
 	ClipBoardObserver cbObserver;
 	
 	// ICHANGED
-	String rensoNotePressedItem;
+	String rensoNotePressedItemGuid;
 	
     String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
     	
@@ -3992,8 +3992,7 @@ public class NeverNote extends QMainWindow{
 				String nextGuid = ((TabBrowse) tabBrowser.widget(tabIndex)).getBrowserWindow().getNote().getGuid();
 				// guid1=guid2のデータは登録しない
 				if (!currentNoteGuid.equals(nextGuid)) {
-					conn.getHistoryTable().addHistory("browse",
-							currentNoteGuid, nextGuid);
+					conn.getHistoryTable().addHistory("browse", currentNoteGuid, nextGuid);
 				}
 			}
 		}
@@ -4691,6 +4690,7 @@ public class NeverNote extends QMainWindow{
 	// ** タブウィンドウの機能
 	// ***************************************************************
 	// ***************************************************************
+	@SuppressWarnings("unused")
 	private void openNewTab() {
 		saveNote();
 		openTabEditor(currentNoteGuid);
@@ -4699,9 +4699,9 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED 連想ノートリストから新しいタブで開く
 	@SuppressWarnings("unused")
 	private void openNewTabFromRNL(){
-		if(rensoNotePressedItem != null){
-			currentNoteGuid = rensoNotePressedItem;
-			openNewTab();
+		if(rensoNotePressedItemGuid != null){
+			saveNote();
+			openTabEditor(rensoNotePressedItemGuid);
 		}
 	}
 
@@ -4749,7 +4749,6 @@ public class NeverNote extends QMainWindow{
 				addHistory();
 			}
 		}
-		
 	}
 
 	// ICHANGED タブが閉じられた
@@ -5641,9 +5640,10 @@ public class NeverNote extends QMainWindow{
 		newNote.setResources(resList);
 		
 		// ICHANGED
-		// 操作履歴も複製する
+		// 操作履歴と除外ノートも複製する
 		if(Global.getDuplicateRensoNote()) {
 			conn.getHistoryTable().duplicateHistory(newGuid, oldNote.getGuid());
+			conn.getExcludedTable().duplicateExcludedNotes(newGuid, oldNote.getGuid());
 		}
 		
 		// Add note to the database
@@ -5700,13 +5700,14 @@ public class NeverNote extends QMainWindow{
 		mergeNoteContents(masterGuid, sources);
 		currentNoteGuid = masterGuid;
 		
-		// ICHANGED 操作履歴をマージ
+		// ICHANGED 操作履歴と除外ノートをマージ
 		if(Global.getMergeRensoNote()) {
 			for (int i = 0; i < sources.size(); i++) {
 				String childGuid = sources.get(i);
 				if(masterGuid != null && childGuid != null) {
 					if(!masterGuid.equals(childGuid)) {
-						conn.getHistoryTable().updateHistoryGuid(masterGuid, childGuid);
+						conn.getHistoryTable().mergeHistoryGuid(masterGuid, childGuid);
+						conn.getExcludedTable().mergeHistoryGuid(masterGuid, childGuid);
 					}
 				}
 			}
@@ -7186,10 +7187,10 @@ public class NeverNote extends QMainWindow{
 	private void rensoNoteItemPressed(QListWidgetItem current) {
 		logger.log(logger.HIGH, "Nevernote.rensoNoteSelectionChangeに入った");
 
-		rensoNotePressedItem = null;
+		rensoNotePressedItemGuid = null;
 		// 右クリックだったときの処理
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
-			rensoNotePressedItem = rensoNoteList.getNoteGuid(current);
+			rensoNotePressedItemGuid = rensoNoteList.getNoteGuid(current);
 			return;
 		}
 		
@@ -7265,5 +7266,26 @@ public class NeverNote extends QMainWindow{
 		scrollToGuid(currentNoteGuid);
 		// 再接続
 		noteTableView.selectionModel().selectionChanged.connect(this, "noteTableSelection()");
+	}
+	
+	// ICHANGED
+	// 関連ノートリストからノートを除外する
+	public void excludeNote() {
+		if(rensoNotePressedItemGuid != null){
+			saveNote();
+			excludeNote(rensoNotePressedItemGuid);
+		}
+	}
+	
+	// ICHANGED
+	// 関連ノートリストからノートを除外する
+	private void excludeNote(String guid) {
+		// Historyデータベースから除外するノートのデータを削除
+		conn.getHistoryTable().expungeHistory(guid, currentNoteGuid);
+		
+		// 除外ノートテーブルに追加
+		conn.getExcludedTable().addExclusion(guid, currentNoteGuid);
+		
+		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
 	}
 }

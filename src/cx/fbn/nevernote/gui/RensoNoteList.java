@@ -24,6 +24,7 @@ public class RensoNoteList extends QListWidget {
 	private final HashMap<QListWidgetItem, String> rensoNoteListItems;
 	
 	private QAction openNewTabAction;
+	private QAction excludeNoteAction;
 	private final NeverNote parent;
 
 	public RensoNoteList(DatabaseConnection c, NeverNote p) {
@@ -152,7 +153,13 @@ public class RensoNoteList extends QListWidget {
 		openNewTabAction.setToolTip(tr("Open this note in new tab"));
 		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
 		
+		// このノートを除外するアクション生成
+		excludeNoteAction = new QAction(tr("Exclude"), this);
+		excludeNoteAction.setToolTip(tr("Exclude this note from RensoNoteList"));
+		excludeNoteAction.triggered.connect(parent, "excludeNote()");
+		
 		menu.addAction(openNewTabAction);
+		menu.addAction(excludeNoteAction);
 		
 		menu.exec(event.globalPos());
 	}

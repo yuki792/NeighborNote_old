@@ -756,8 +756,6 @@ public class NoteTable {
         NSqlQuery query = new NSqlQuery(db.getConnection());
         NSqlQuery resQuery = new NSqlQuery(db.getResourceConnection());
         NSqlQuery wordQuery = new NSqlQuery(db.getIndexConnection());
-		// ICHANGED
-		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
 		
 		query.prepare("Update Note set guid=:newGuid, original_guid=:original_guid where guid=:oldGuid");
 
@@ -799,25 +797,12 @@ public class NoteTable {
 			logger.log(logger.MEDIUM, resQuery.lastError());
 		}
 		
-		// ICHANGED
-		histQuery.prepare("Update history set guid1=:newGuid where guid1=:oldGuid");
-		histQuery.bindValue(":newGuid", newGuid);
-		histQuery.bindValue(":oldGuid", oldGuid);
-		check = histQuery.exec();
-		if (!check) {
-			logger.log(logger.MEDIUM, "historyテーブルのguid1のところでguid更新失敗");
-			logger.log(logger.MEDIUM, histQuery.lastError());
-		}
-		histQuery.prepare("Update history set guid2=:newGuid where guid2=:oldGuid");
-		histQuery.bindValue(":newGuid", newGuid);
-		histQuery.bindValue(":oldGuid", oldGuid);
-		check = histQuery.exec();
-		if (!check) {
-			logger.log(logger.MEDIUM, "historyテーブルのguid2のところでguid更新失敗");
-			logger.log(logger.MEDIUM, histQuery.lastError());
-		}
+		// ICHANGED 操作履歴テーブルのguidを更新
+		db.getHistoryTable().updateHistoryGuid(newGuid, oldGuid);
 		
-		logger.log(logger.HIGH, "Leaving NoteTable.updateNoteGuid");
+		// ICHANGED 除外ノートテーブルのguidを更新
+		db.getExcludedTable().updateExcludedNoteGuid(newGuid, oldGuid);
+
 	}
 	// Update a note
 	public void updateNote(Note n) {

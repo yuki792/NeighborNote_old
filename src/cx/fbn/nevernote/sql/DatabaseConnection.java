@@ -45,6 +45,7 @@ public class DatabaseConnection {
 	private SystemIconTable				systemIconTable;
 	// ICHANGED
 	private HistoryTable historyTable;
+	private ExcludedTable excludedTable;
 	
 	private final ApplicationLogger		logger;
 	private Connection					conn;
@@ -80,6 +81,8 @@ public class DatabaseConnection {
 		inkImagesTable = new InkImagesTable(logger, this);
 		// ICHANGED
 		historyTable = new HistoryTable(logger, this);
+		excludedTable = new ExcludedTable(logger, this);
+		
 	}
 	
 	
@@ -168,9 +171,10 @@ public class DatabaseConnection {
 		}
 		
 		// ICHANGED
-		// 操作履歴データベースを作る
+		// 操作履歴テーブルと除外ノートテーブルを作る
 		if (!behaviorDbExists) {
 			createHistoryTables();
+			createExcludedTables();
 		}
 		
 		// If we encrypted/decrypted it the last time, we need to reconnect the tables.
@@ -336,6 +340,11 @@ public class DatabaseConnection {
 		historyTable.createTable();
 	}
 	
+	// ICHANGED
+	public void createExcludedTables() {
+		excludedTable.createTable();
+	}
+	
 	public Connection getConnection() {
 		return conn;
 	}
@@ -397,6 +406,11 @@ public class DatabaseConnection {
 	// ICHANGED
 	public HistoryTable getHistoryTable() {
 		return historyTable;
+	}
+	
+	// ICHANGED
+	public ExcludedTable getExcludedTable() {
+		return excludedTable;
 	}
 
 	//****************************************************************

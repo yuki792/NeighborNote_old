@@ -35,31 +35,47 @@ public class HistoryTable {
 	// Historyテーブルにアイテムを1つ追加
 	public void addHistory(String behaviorType, String guid1, String guid2) {
 		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
-		query.prepare("Insert Into History (behaviorType, guid1, guid2) Values(:behaviorType, :guid1, :guid2)");
-		query.bindValue(":behaviorType", behaviorType);
-		query.bindValue(":guid1", guid1);
-		query.bindValue(":guid2", guid2);
-		if (!query.exec()) {
-			logger.log(logger.MEDIUM, "Historyテーブルへのアイテム追加に失敗");
-			logger.log(logger.MEDIUM, query.lastError());
+		boolean excludedCheck = false;
+		
+		// TODO ここで、除外ノートに指定されていないかチェックする
+		excludedCheck = db.getExcludedTable().existNote(guid1, guid2);
+		
+		if (!excludedCheck) {
+			query.prepare("Insert Into History (behaviorType, guid1, guid2) Values(:behaviorType, :guid1, :guid2)");
+			query.bindValue(":behaviorType", behaviorType);
+			query.bindValue(":guid1", guid1);
+			query.bindValue(":guid2", guid2);
+			if (!query.exec()) {
+				logger.log(logger.MEDIUM, "Historyテーブルへのアイテム追加に失敗");
+				logger.log(logger.MEDIUM, query.lastError());
+			}
 		}
+	}
+	
+	// masterGuidとchildGuidをマージ
+	public void mergeHistoryGuid(String masterGuid, String childGuid) {
+		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
+		boolean check = false;
+		
+		// マージ後に重複してしまうデータを先に削除
+		histQuery.prepare("Delete from history where (guid1=:oldGuid1 and guid2=:newGuid1) or (guid1=:newGuid2 and guid2=:oldGuid2)");
+		histQuery.bindValue(":oldGuid1", masterGuid);
+		histQuery.bindValue(":newGuid1", childGuid);
+		histQuery.bindValue(":oldGuid2", masterGuid);
+		histQuery.bindValue(":newGuid2", childGuid);
+		check = histQuery.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "historyテーブルの重複削除で失敗");
+			logger.log(logger.MEDIUM, histQuery.lastError());
+		}
+		
+		updateHistoryGuid(masterGuid, childGuid);
 	}
 	
 	// HistoryテーブルのGuidを更新
 	public void updateHistoryGuid(String newGuid, String oldGuid){
 		NSqlQuery histQuery = new NSqlQuery(db.getBehaviorConnection());
 		boolean check = false;
-		
-		histQuery.prepare("Delete from history where (guid1=:oldGuid1 and guid2=:newGuid1) or (guid1=:newGuid2 and guid2=:oldGuid2)");
-		histQuery.bindValue(":oldGuid1", oldGuid);
-		histQuery.bindValue(":newGuid1", newGuid);
-		histQuery.bindValue(":oldGuid2", oldGuid);
-		histQuery.bindValue(":newGuid2", newGuid);
-		check = histQuery.exec();
-		if(!check){
-			logger.log(logger.MEDIUM, "historyテーブルの重複削除で失敗");
-			logger.log(logger.MEDIUM, histQuery.lastError());
-		}
 		
 		histQuery.prepare("Update history set guid1=:newGuid where guid1=:oldGuid");
 		histQuery.bindValue(":newGuid", newGuid);
@@ -85,7 +101,8 @@ public class HistoryTable {
 		HashMap<String, Integer> behaviorHist = new HashMap<String, Integer>();
 
 		// guid1=guidの履歴一覧を取得
-		query.prepare("Select guid2 from History where behaviorType='" + behaviorType + "' and guid1=:guid1");
+		query.prepare("Select guid2 from History where behaviorType=:behaviorType and guid1=:guid1");
+		query.bindValue(":behaviorType", behaviorType);
 		query.bindValue(":guid1", guid);
 		if (!query.exec()) {
 			logger.log(logger.MEDIUM,
@@ -104,7 +121,8 @@ public class HistoryTable {
 		}
 
 		// guid2=guidの履歴一覧を取得
-		query.prepare("Select guid1 from History where behaviorType='" + behaviorType + "' and guid2=:guid2");
+		query.prepare("Select guid1 from History where behaviorType=:behaviorType and guid2=:guid2");
+		query.bindValue(":behaviorType", behaviorType);
 		query.bindValue(":guid2", guid);
 		if (!query.exec()) {
 			logger.log(logger.MEDIUM,
@@ -171,6 +189,33 @@ public class HistoryTable {
 		check = query.exec();
 		if(!check){
 			logger.log(logger.MEDIUM, "historyテーブルからguid=" + guid + "のデータ削除に失敗");
+			logger.log(logger.MEDIUM, query.lastError());
+		}
+	}
+	
+	// guid1とguid2を指定してHistoryテーブルから削除
+	public void expungeHistory(String guid1, String guid2) {
+		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
+		boolean check;
+		
+		query.prepare("Delete from History where guid1=:guid1 and guid2=:guid2");
+		query.bindValue(":guid1", guid1);
+		query.bindValue(":guid2", guid2);
+		
+		check = query.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "historyテーブルからguid1=" + guid1 + "かつguid2=" + guid2 + "のデータ削除に失敗");
+			logger.log(logger.MEDIUM, query.lastError());
+		}
+		
+		// guid1とguid2が逆のパターンも削除
+		query.prepare("Delete from History where guid1=:guid1 and guid2=:guid2");
+		query.bindValue(":guid1", guid2);
+		query.bindValue(":guid2", guid1);
+		
+		check = query.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "historyテーブルからguid1=" + guid2 + "かつguid2=" + guid1 + "のデータ削除に失敗");
 			logger.log(logger.MEDIUM, query.lastError());
 		}
 	}
