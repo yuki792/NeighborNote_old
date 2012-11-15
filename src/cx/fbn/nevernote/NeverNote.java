@@ -891,8 +891,10 @@ public class NeverNote extends QMainWindow{
     		}
     	}
 		
-		if (Global.checkVersionUpgrade())
-			checkForUpdates();
+		if (Global.checkVersionUpgrade()) {
+			// ICHANGED TODO とりあえず封印
+			// checkForUpdates();
+		}
 	}
 	
 	
