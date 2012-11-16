@@ -4133,11 +4133,10 @@ public class NeverNote extends QMainWindow{
 		String tempNoteGuid = new String();
 		
 		// ICHANGED
-		// TODO これなんだっけ？ 
-		/* int currentIndex = tabBrowser.currentIndex();
+		int currentIndex = tabBrowser.currentIndex();
 		ArrayList<String> histGuids = historyGuids.get(currentIndex);
 		histGuids.clear();
-		historyPosition.put(currentIndex, 0); */
+		historyPosition.put(currentIndex, 0);
 		
 		prevButton.setEnabled(false);
 		nextButton.setEnabled(false);
