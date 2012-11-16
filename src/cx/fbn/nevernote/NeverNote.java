@@ -4744,7 +4744,7 @@ public class NeverNote extends QMainWindow{
 		histGuids.add(guid);
 		historyPosition.put(index, histGuids.size());
 
-		tabBrowser.setCurrentWidget(newBrowser);
+		tabBrowser.setCurrentIndex(index);
 
 		if (guid != null && !guid.equals("")) {
 			if (!Global.showDeleted) { // ゴミ箱じゃなければ
