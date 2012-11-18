@@ -5792,6 +5792,10 @@ public class NeverNote extends QMainWindow{
 		// ICHANGED ↑↑↑ここまで↑↑↑		
 		
 		noteIndexUpdated(false);
+		// IFIXED 
+		// ICHANGED マージ後の新しいノートコンテンツを表示するためキャッシュを削除
+		noteCache.remove(masterGuid);
+		
 		refreshEvernoteNote(true);
 		waitCursor(false);
 	}
