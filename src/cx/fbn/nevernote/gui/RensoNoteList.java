@@ -139,7 +139,7 @@ public class RensoNoteList extends QListWidget {
 			// 存在していて、かつ関連度0でなければノート情報を取得して連想ノートリストに追加
 			if (isNoteActive && maxNum > 0) {
 				QListWidgetItem item = new QListWidgetItem();
-				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum);
+				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, conn);
 				item.setSizeHint(new QSize(0, 85));
 				this.addItem(item);
 				this.setItemWidget(item, myItem);
