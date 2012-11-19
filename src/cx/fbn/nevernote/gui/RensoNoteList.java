@@ -60,6 +60,11 @@ public class RensoNoteList extends QListWidget {
 		addWeight(copyAndPasteHistory, Global.getCopyPasteWeight());
 		mergedHistory = mergeHistory(copyAndPasteHistory, mergedHistory);
 		
+		// addNewNoteHistory<guid, 回数（ポイント）>
+		HashMap<String, Integer> addNewNoteHistory = conn.getHistoryTable().getBehaviorHistory("addNewNote", guid);
+		addWeight(addNewNoteHistory, Global.getAddNewNoteWeight());
+		mergedHistory = mergeHistory(addNewNoteHistory, mergedHistory);
+		
 		addRensoNoteList(mergedHistory);
 
 		logger.log(logger.HIGH, "Leaving RensoNoteList.refreshRensoNoteList");

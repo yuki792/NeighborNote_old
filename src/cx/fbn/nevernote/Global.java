@@ -2121,6 +2121,30 @@ public class Global {
 		return value;
     }
     
+    // ICHANGED
+    // 新規ノート追加操作に対する重み付け
+    public static void setAddNewNoteWeight(int weight) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("addNewNoteWeight", weight);
+		settings.endGroup();    	
+    }
+	public static int getAddNewNoteWeight() {
+		settings.beginGroup("RensoNoteList");
+		Integer value;
+		try {
+			String val  = (String)settings.value("addNewNoteWeight", 5);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("addNewNoteWeight", 5);
+			} catch (Exception e1) {
+				value = 5;
+			}
+		}
+		settings.endGroup();
+		return value;
+	}
+    
     //*******************
     // ノートのマージ・複製の関連ノートリストへの適用
     //*******************

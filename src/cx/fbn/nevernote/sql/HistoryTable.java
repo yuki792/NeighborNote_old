@@ -37,7 +37,15 @@ public class HistoryTable {
 		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
 		boolean excludedCheck = false;
 		
-		// TODO ここで、除外ノートに指定されていないかチェックする
+		if (behaviorType == null) {
+			return;
+		}
+		
+		if (guid1.equals(guid2)) {
+			return;
+		}
+		
+		// 除外ノートに指定されていないかチェックする
 		excludedCheck = db.getExcludedTable().existNote(guid1, guid2);
 		
 		if (!excludedCheck) {

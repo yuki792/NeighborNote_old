@@ -16,13 +16,16 @@ import cx.fbn.nevernote.Global;
 public class ConfigRensoNoteListPage extends QWidget {
 	QSlider browseSlider;
 	QSlider copyPasteSlider;
+	QSlider addNewNoteSlider;
 	QSpinBox browseSpinner;
 	QSpinBox copyPasteSpinner;
+	QSpinBox addNewNoteSpinner;
 	QCheckBox mergeCheck;
 	QCheckBox duplicateCheck;
 	
 	public ConfigRensoNoteListPage(QWidget parent) {
 		// 操作履歴への重み付け
+		// browseHistory
 		browseSlider = new QSlider();
 		browseSlider.setOrientation(Qt.Orientation.Horizontal);
 		browseSlider.setRange(0, 10);
@@ -44,6 +47,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 		browseLayout.addWidget(browseSpinner);
 		
 		
+		// copyPasteHistory
 		copyPasteSlider = new QSlider();
 		copyPasteSlider.setOrientation(Qt.Orientation.Horizontal);
 		copyPasteSlider.setRange(0, 10);
@@ -65,11 +69,35 @@ public class ConfigRensoNoteListPage extends QWidget {
 		copyPasteLayout.addWidget(copyPasteSlider);
 		copyPasteLayout.addWidget(copyPasteSpinner);
 		
+		
+		// addNewNoteHistory
+		addNewNoteSlider = new QSlider();
+		addNewNoteSlider.setOrientation(Qt.Orientation.Horizontal);
+		addNewNoteSlider.setRange(0, 10);
+		addNewNoteSlider.setSingleStep(1);
+		addNewNoteSlider.setTickPosition(QSlider.TickPosition.TicksAbove);
+		addNewNoteSlider.setTickInterval(1);
+		addNewNoteSlider.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
+
+		addNewNoteSpinner = new QSpinBox();
+		addNewNoteSpinner.setRange(0,10);
+		addNewNoteSpinner.setSingleStep(1);
+		
+		addNewNoteSlider.valueChanged.connect(addNewNoteSpinner, "setValue(int)");
+		addNewNoteSpinner.valueChanged.connect(addNewNoteSlider, "setValue(int)");
+		addNewNoteSlider.setValue(Global.getAddNewNoteWeight());
+		
+		QHBoxLayout addNewNoteLayout = new QHBoxLayout();
+		addNewNoteLayout.addWidget(addNewNoteSlider);
+		addNewNoteLayout.addWidget(addNewNoteSpinner);
+		
+		
 		QFormLayout styleLayout = new QFormLayout();
 		styleLayout.setHorizontalSpacing(10);
 		styleLayout.setVerticalSpacing(30);
 		styleLayout.addRow(tr("Browse Weight"), browseLayout);
 		styleLayout.addRow(tr("Copy&Paste Weight"), copyPasteLayout);
+		styleLayout.addRow(tr("Add New Note Weight"), addNewNoteLayout);
 
 		QGroupBox weightingGroup = new QGroupBox(tr("Weighting"));
 		weightingGroup.setLayout(styleLayout);
@@ -105,8 +133,15 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	//* Copy & Paste Weight 
 	//*****************************************
-	public int getcopyPasteWeight() {
+	public int getCopyPasteWeight() {
 		return copyPasteSpinner.value();
+	}
+	
+	//*****************************************
+	//* Add New Note Weight 
+	//*****************************************
+	public int getAddNewNoteWeight() {
+		return addNewNoteSpinner.value();
 	}
 
 	//*****************************************

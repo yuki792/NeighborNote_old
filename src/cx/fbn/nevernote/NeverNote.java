@@ -5438,6 +5438,9 @@ public class NeverNote extends QMainWindow{
     	listManager.addNote(newNote, metadata);
 //    	noteTableView.insertRow(newNote, true, -1);
     	
+    	// ICHANGED
+    	String prevCurrentNoteGuid = currentNoteGuid;
+    	
     	currentNote = newNote;
     	currentNoteGuid = currentNote.getGuid();
     	// IFIXED こいつのせいで、ノート追加時にcurrentNoteGuidが更新されないので消す
@@ -5448,6 +5451,9 @@ public class NeverNote extends QMainWindow{
     	browserWindow.titleLabel.setFocus();
     	browserWindow.titleLabel.selectAll();
 //    	notebookTree.updateCounts(listManager.getNotebookIndex(), listManager.getNotebookCounter());
+    	
+    	// ICHANGED 新規に作成したノートとそれまで開いていたノートの関連性を追加
+    	conn.getHistoryTable().addHistory("addNewNote", prevCurrentNoteGuid, currentNoteGuid);
     	
     	// If the window is hidden, then we want to popup this in an external window & 
     	if (!isVisible())
