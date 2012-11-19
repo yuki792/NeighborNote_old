@@ -2144,6 +2144,30 @@ public class Global {
 		settings.endGroup();
 		return value;
 	}
+	
+	// ICHANGED
+	// 連想ノートクリック操作に対する重み付け
+    public static void setRensoItemClickWeight(int weight) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("rensoItemClickWeight", weight);
+		settings.endGroup();    	
+    }
+	public static int getRensoItemClickWeight() {
+		settings.beginGroup("RensoNoteList");
+		Integer value;
+		try {
+			String val  = (String)settings.value("rensoItemClickWeight", 3);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("rensoItemClickWeight", 3);
+			} catch (Exception e1) {
+				value = 3;
+			}
+		}
+		settings.endGroup();
+		return value;
+	}
     
     //*******************
     // ノートのマージ・複製の関連ノートリストへの適用
@@ -2192,5 +2216,6 @@ public class Global {
 			return value;
 		}
     }
+
 }
 

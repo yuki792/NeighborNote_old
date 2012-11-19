@@ -4702,8 +4702,13 @@ public class NeverNote extends QMainWindow{
 	@SuppressWarnings("unused")
 	private void openNewTabFromRNL(){
 		if(rensoNotePressedItemGuid != null){
+			String prevCurrentNoteGuid = new String(currentNoteGuid);
+			
 			saveNote();
 			openTabEditor(rensoNotePressedItemGuid);
+			
+			// 連想ノートリストアイテムクリック操作を記録
+			conn.getHistoryTable().addHistory("rensoItemClick", prevCurrentNoteGuid, rensoNotePressedItemGuid);
 		}
 	}
 
@@ -5439,7 +5444,7 @@ public class NeverNote extends QMainWindow{
 //    	noteTableView.insertRow(newNote, true, -1);
     	
     	// ICHANGED
-    	String prevCurrentNoteGuid = currentNoteGuid;
+    	String prevCurrentNoteGuid = new String(currentNoteGuid);
     	
     	currentNote = newNote;
     	currentNoteGuid = currentNote.getGuid();
@@ -7284,6 +7289,8 @@ public class NeverNote extends QMainWindow{
 		
 		saveNote();
 
+		String prevCurrentNoteGuid = new String(currentNoteGuid);
+		
 		// 選択されたノート（current）のguidをcurrentnoteguidにセット
 		currentNoteGuid = rensoNoteList.getNoteGuid(current);
 
@@ -7331,6 +7338,9 @@ public class NeverNote extends QMainWindow{
 			downButton.setEnabled(true);
 		else
 			downButton.setEnabled(false);
+		
+		// 連想ノートリストアイテムクリック操作を記録
+		conn.getHistoryTable().addHistory("rensoItemClick", prevCurrentNoteGuid, currentNoteGuid);
 
 		// 連想ノートリストを更新
 		rensoNoteList.refreshRensoNoteList(currentNoteGuid);

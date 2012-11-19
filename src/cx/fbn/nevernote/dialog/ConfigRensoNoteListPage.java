@@ -14,14 +14,18 @@ import com.trolltech.qt.gui.QWidget;
 import cx.fbn.nevernote.Global;
 
 public class ConfigRensoNoteListPage extends QWidget {
-	QSlider browseSlider;
-	QSlider copyPasteSlider;
-	QSlider addNewNoteSlider;
-	QSpinBox browseSpinner;
-	QSpinBox copyPasteSpinner;
-	QSpinBox addNewNoteSpinner;
-	QCheckBox mergeCheck;
-	QCheckBox duplicateCheck;
+	private final QSlider browseSlider;
+	private final QSlider copyPasteSlider;
+	private final QSlider addNewNoteSlider;
+	private final QSlider rensoItemClickSlider;
+	
+	private final QSpinBox browseSpinner;
+	private final QSpinBox copyPasteSpinner;
+	private final QSpinBox addNewNoteSpinner;
+	private final QSpinBox rensoItemClickSpinner;
+	
+	private final QCheckBox mergeCheck;
+	private final QCheckBox duplicateCheck;
 	
 	public ConfigRensoNoteListPage(QWidget parent) {
 		// 操作履歴への重み付け
@@ -92,12 +96,35 @@ public class ConfigRensoNoteListPage extends QWidget {
 		addNewNoteLayout.addWidget(addNewNoteSpinner);
 		
 		
+		// rensoItemClickHistory
+		rensoItemClickSlider = new QSlider();
+		rensoItemClickSlider.setOrientation(Qt.Orientation.Horizontal);
+		rensoItemClickSlider.setRange(0, 10);
+		rensoItemClickSlider.setSingleStep(1);
+		rensoItemClickSlider.setTickPosition(QSlider.TickPosition.TicksAbove);
+		rensoItemClickSlider.setTickInterval(1);
+		rensoItemClickSlider.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
+
+		rensoItemClickSpinner = new QSpinBox();
+		rensoItemClickSpinner.setRange(0,10);
+		rensoItemClickSpinner.setSingleStep(1);
+		
+		rensoItemClickSlider.valueChanged.connect(rensoItemClickSpinner, "setValue(int)");
+		rensoItemClickSpinner.valueChanged.connect(rensoItemClickSlider, "setValue(int)");
+		rensoItemClickSlider.setValue(Global.getRensoItemClickWeight());
+		
+		QHBoxLayout rensoItemClickLayout = new QHBoxLayout();
+		rensoItemClickLayout.addWidget(rensoItemClickSlider);
+		rensoItemClickLayout.addWidget(rensoItemClickSpinner);
+		
+		
 		QFormLayout styleLayout = new QFormLayout();
 		styleLayout.setHorizontalSpacing(10);
 		styleLayout.setVerticalSpacing(30);
 		styleLayout.addRow(tr("Browse Weight"), browseLayout);
 		styleLayout.addRow(tr("Copy&Paste Weight"), copyPasteLayout);
 		styleLayout.addRow(tr("Add New Note Weight"), addNewNoteLayout);
+		styleLayout.addRow(tr("Renso Item Click Weight"), rensoItemClickLayout);
 
 		QGroupBox weightingGroup = new QGroupBox(tr("Weighting"));
 		weightingGroup.setLayout(styleLayout);
@@ -142,6 +169,13 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	public int getAddNewNoteWeight() {
 		return addNewNoteSpinner.value();
+	}
+	
+	//*****************************************
+	//* Renso Item Click Weight
+	//*****************************************
+	public int getRensoItemClickWeight() {
+		return rensoItemClickSpinner.value();
 	}
 
 	//*****************************************
