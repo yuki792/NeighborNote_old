@@ -2216,6 +2216,33 @@ public class Global {
 			return value;
 		}
     }
+    
+    // ICHANGED
+    // 連想ノートリストからノートを除外するときに確認メッセージを表示するかどうか
+    public static boolean verifyExclude() {
+		settings.beginGroup("RensoNoteList");
+		try {
+			String text = (String)settings.value("verifyExclude", "true");
+			settings.endGroup();
+			if (text.equalsIgnoreCase("true"))
+				return true;
+			else
+				return false;
+		} catch (java.lang.ClassCastException e) {
+			Boolean value = (Boolean) settings.value("verifyExclude", true);
+			settings.endGroup();
+			return value;
+		}
+    }
+    // ICHANGED
+    public static void setVerifyExclude(boolean val) {
+		settings.beginGroup("RensoNoteList");
+		if (val)
+			settings.setValue("verifyExclude", "true");
+		else
+			settings.setValue("verifyExclude", "false");
+		settings.endGroup();
+    }
 
 }
 

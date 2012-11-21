@@ -7379,6 +7379,24 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	// 関連ノートリストからノートを除外する
 	private void excludeNote(String guid) {
+		
+		if (Global.verifyExclude()) {
+			String msg;
+			Note note = conn.getNoteTable().getNote(guid, false, false, false, false, false);
+			String title = note.getTitle();
+			if (title != null) {
+				msg = new String(tr("Exclude note \"") +title +"\"?");
+			} else {  				
+				msg = new String(tr("Exclude note selected note?"));
+			}
+			
+			if (QMessageBox.question(this, tr("Confirmation"), msg,
+					QMessageBox.StandardButton.Yes, 
+					QMessageBox.StandardButton.No)==StandardButton.No.value() && Global.verifyDelete() == true) {
+					return;
+			}
+		}
+		
 		// Historyデータベースから除外するノートのデータを削除
 		conn.getHistoryTable().expungeHistory(guid, currentNoteGuid);
 		

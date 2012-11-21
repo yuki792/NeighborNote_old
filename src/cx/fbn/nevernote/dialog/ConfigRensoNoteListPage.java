@@ -26,6 +26,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 	
 	private final QCheckBox mergeCheck;
 	private final QCheckBox duplicateCheck;
+	private final QCheckBox verifyExclude;
 	
 	public ConfigRensoNoteListPage(QWidget parent) {
 		// 操作履歴への重み付け
@@ -134,12 +135,15 @@ public class ConfigRensoNoteListPage extends QWidget {
 		mergeCheck.setChecked(Global.getMergeRensoNote());
 		duplicateCheck = new QCheckBox(tr("When you duplicate the notes, also duplicate RensoNoteList"));
 		duplicateCheck.setChecked(Global.getDuplicateRensoNote());
+		verifyExclude = new QCheckBox(tr("Verify when you exclude the note"));
+		verifyExclude.setChecked(Global.verifyExclude());
 		
 		QVBoxLayout mergeDuplicateLayout = new QVBoxLayout();
 		mergeDuplicateLayout.addWidget(mergeCheck);
 		mergeDuplicateLayout.addWidget(duplicateCheck);
+		mergeDuplicateLayout.addWidget(verifyExclude);
 		
-		QGroupBox mergeDuplicateGroup = new QGroupBox(tr("Merge and Duplicate"));
+		QGroupBox mergeDuplicateGroup = new QGroupBox(tr("Others"));
 		mergeDuplicateGroup.setLayout(mergeDuplicateLayout);
 		
 		QVBoxLayout mainLayout = new QVBoxLayout();
@@ -190,5 +194,12 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	public boolean getDuplicateChecked() {
 		return duplicateCheck.isChecked();
+	}
+	
+	//*****************************************
+	//* VerifyExcludeCheck
+	//*****************************************
+	public boolean getVerifyExcludeChecked() {
+		return verifyExclude.isChecked();
 	}
 }
