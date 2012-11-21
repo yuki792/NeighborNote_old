@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
@@ -14,6 +15,7 @@ import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QPalette;
+import com.trolltech.qt.gui.QTextOption;
 import com.trolltech.qt.gui.QWidget;
 
 import cx.fbn.nevernote.Global;
@@ -21,11 +23,12 @@ import cx.fbn.nevernote.sql.DatabaseConnection;
 
 public class RensoNoteListItem extends QWidget{
 	private final DatabaseConnection conn;
-	String noteGuid;
-	String noteTitle;
-	int relationPoints;
-	String noteUpdated;
-	String tagNames;
+	private final String noteGuid;
+	private final String noteTitle;
+	private final int relationPoints;
+	private final String noteCreated;
+	private final String tagNames;
+	private String noteContent;
 	
 	public RensoNoteListItem(Note note, int relationPoints, DatabaseConnection c){
 		
@@ -34,8 +37,8 @@ public class RensoNoteListItem extends QWidget{
 		
 		this.noteTitle = new String(note.getTitle());
 		this.relationPoints = relationPoints;
-		SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		this.noteUpdated = new StringBuilder(simple.format(note.getUpdated())).toString();
+		SimpleDateFormat simple = new SimpleDateFormat("yyyy/MM/dd");
+		this.noteCreated = new StringBuilder(simple.format(note.getCreated())).toString();
 		
 		StringBuilder sb = new StringBuilder();
 
@@ -47,6 +50,12 @@ public class RensoNoteListItem extends QWidget{
 		}
 
 		this.tagNames = new String(sb);
+		
+		// this.noteContent = new String(note.getContent());
+		this.noteContent = conn.getNoteTable().getNoteContentNoUTFConversion(note.getGuid());
+		this.noteContent = this.noteContent.replaceAll("<.+?>", "");
+		String kaigyo = System.getProperty("line.separator");
+		this.noteContent = this.noteContent.replaceAll(kaigyo, "");
 		
 		QPalette p = new QPalette();
 		p.setColor(QPalette.ColorRole.Window, new QColor(255, 255, 255));
@@ -63,25 +72,21 @@ public class RensoNoteListItem extends QWidget{
 		painter.setPen(QColor.lightGray);
 		painter.drawLine(0, rect().height() - 1, rect().width() - 1, rect().height() - 1);
 		
-		// 項目名
-		// painter.setPen(QColor.blue);
-		// painter.setFont(new QFont("Arial", 8));
-		// painter.drawText(3, 3, 50, 15, Qt.AlignmentFlag.AlignRight.value(), tr("Title:"));
-		// painter.drawText(3, 23, 50, 15, Qt.AlignmentFlag.AlignRight.value(), tr("Relation:"));
-		// painter.drawText(3, 43, 50, 15, Qt.AlignmentFlag.AlignRight.value(), tr("Updated:"));
-		// painter.drawText(3, 63, 50, 15, Qt.AlignmentFlag.AlignRight.value(), tr("Tags:"));
-		
 		// 項目の中身
 		painter.setPen(QColor.black);
-		QFont titleFont = new QFont("Arial", 10);
-		titleFont.setBold(true);
+		QFont titleFont = new QFont("Arial", 11);
 		QFont normalFont = new QFont("Arial", 10);
 		painter.setFont(titleFont);
-		painter.drawText(85, 3, size().width() - 55, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle);
+		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + ")");
 		painter.setFont(normalFont);
-		painter.drawText(85, 23, size().width() - 55, 20, Qt.AlignmentFlag.AlignLeft.value(), String.valueOf(relationPoints) + tr(" points"));
-		painter.drawText(85, 43, size().width() - 55, 20, Qt.AlignmentFlag.AlignLeft.value(), noteUpdated);
-		painter.drawText(85, 63, size().width() - 55, 20, Qt.AlignmentFlag.AlignLeft.value(), tagNames);
+		painter.setPen(new QColor(60, 65, 255));
+		painter.drawText(85, 23, size().width() - 85, 17, Qt.AlignmentFlag.AlignLeft.value(), noteCreated);
+		painter.setPen(QColor.black);
+		painter.drawText(155, 23, size().width() - 155, 17, Qt.AlignmentFlag.AlignLeft.value(), tagNames);
+		QTextOption option = new QTextOption();
+		option.setAlignment(Qt.AlignmentFlag.AlignLeft);
+		option.setUseDesignMetrics(true);
+		painter.drawText(new QRectF(85, 40, width() - 85, painter.fontMetrics().height() * 3), noteContent, option);
 		
 		// サムネイル
 		QImage img;
@@ -93,9 +98,9 @@ public class RensoNoteListItem extends QWidget{
 		} else {
 			img = new QImage(thumbnailName);
 		}
-		painter.drawImage(2, 2, img, 0, 0, 80, rect().height() - 6);
+		painter.drawImage(2, 4, img, 0, 0, 80, rect().height() - 10);
 		painter.setPen(QColor.lightGray);
-		painter.drawRect(2, 2, 80, rect().height() - 6);
+		painter.drawRect(2, 4, 80, rect().height() - 10);
 		
 		painter.end();
 	}

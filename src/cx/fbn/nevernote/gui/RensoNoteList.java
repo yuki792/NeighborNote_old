@@ -129,7 +129,7 @@ public class RensoNoteList extends QListWidget {
 			copyHistory.remove(maxGuid);
 
 			// 関連度最大のノートがアクティブか確認
-			Note maxNote = conn.getNoteTable().getNote(maxGuid, false, false,
+			Note maxNote = conn.getNoteTable().getNote(maxGuid, true, false,
 					false, false, true);
 			boolean isNoteActive = false;
 			if(maxNote != null) {
@@ -140,7 +140,7 @@ public class RensoNoteList extends QListWidget {
 			if (isNoteActive && maxNum > 0) {
 				QListWidgetItem item = new QListWidgetItem();
 				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, conn);
-				item.setSizeHint(new QSize(0, 85));
+				item.setSizeHint(new QSize(0, 90));
 				this.addItem(item);
 				this.setItemWidget(item, myItem);
 				rensoNoteListItems.put(item, maxGuid);
