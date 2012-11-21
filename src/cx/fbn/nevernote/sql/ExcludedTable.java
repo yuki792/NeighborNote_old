@@ -138,4 +138,20 @@ public class ExcludedTable {
 			addExclusion(guid1, newGuid);
 		}
 	}
+
+	// guidを含む列をExcludedNotesテーブルから削除
+	public void expungeExcludedNote(String guid) {
+		NSqlQuery query = new NSqlQuery(db.getBehaviorConnection());
+		boolean check;
+		
+		query.prepare("Delete from ExcludedNotes where guid1=:guid1 or guid2=:guid2");
+		query.bindValue(":guid1", guid);
+		query.bindValue(":guid2", guid);
+		
+		check = query.exec();
+		if(!check){
+			logger.log(logger.MEDIUM, "ExcludedNotesテーブルからguid=" + guid + "のデータ削除に失敗");
+			logger.log(logger.MEDIUM, query.lastError());
+		}
+	}
 }

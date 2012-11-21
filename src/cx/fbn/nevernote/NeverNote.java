@@ -5277,6 +5277,7 @@ public class NeverNote extends QMainWindow{
     			
     			// ICHANGED
     			conn.getHistoryTable().expungeHistory(selectedNoteGUIDs.get(i));
+    			conn.getExcludedTable().expungeExcludedNote(selectedNoteGUIDs.get(i));
     			
     		}
     	}

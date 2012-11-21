@@ -54,6 +54,7 @@ public class RensoNoteListItem extends QWidget{
 		// this.noteContent = new String(note.getContent());
 		this.noteContent = conn.getNoteTable().getNoteContentNoUTFConversion(note.getGuid());
 		this.noteContent = this.noteContent.replaceAll("<.+?>", "");
+		this.noteContent = this.noteContent.replaceAll("\\s{2,}", " ");
 		String kaigyo = System.getProperty("line.separator");
 		this.noteContent = this.noteContent.replaceAll(kaigyo, "");
 		
