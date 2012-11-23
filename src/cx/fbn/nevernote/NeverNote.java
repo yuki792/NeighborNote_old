@@ -7234,72 +7234,85 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	// タブが変更された
 	private void tabWindowChanged(int index) {
-		if (index >= 0) {
-			saveNote();
-			TabBrowse tab = (TabBrowse) tabBrowser.widget(index);
-
-			currentNoteGuid = tab.getBrowserWindow().getNote().getGuid();
-
-			// 選択ノートを更新
-			selectedNoteGUIDs.clear();
-			selectedNoteGUIDs.add(currentNoteGuid);
-
-			// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
-			noteTableView.selectionModel().selectionChanged.disconnect(this,"noteTableSelection()");
-			scrollToGuid(currentNoteGuid);
-			// 再接続
-			noteTableView.selectionModel().selectionChanged.connect(this,"noteTableSelection()");
-
-			menuBar.noteDuplicateAction.setEnabled(true);
-			menuBar.noteOnlineHistoryAction.setEnabled(true);
-			menuBar.noteMergeAction.setEnabled(true);
-			
-			if (Global.showDeleted) {
-				menuBar.noteDuplicateAction.setEnabled(false);
-			}
-			if (!Global.isConnected) {
-				menuBar.noteOnlineHistoryAction.setEnabled(false);
-			}
-			menuBar.noteMergeAction.setEnabled(false);
-			int row = noteTableView.selectionModel().selectedRows().get(0).row();
-			if (row == 0)
-				upButton.setEnabled(false);
-			else
-				upButton.setEnabled(true);
-			if (row < listManager.getNoteTableModel().rowCount() - 1)
-				downButton.setEnabled(true);
-			else
-				downButton.setEnabled(false);
-
-			browserWindow.noteSignal.noteChanged.disconnect(this,"setNoteDirty()");
-			browserWindow.focusLost.disconnect(this, "saveNote()");
-
-			browserWindow = tab.getBrowserWindow();
-
-			browserWindow.noteSignal.noteChanged.connect(this, "setNoteDirty()");
-			browserWindow.focusLost.connect(this, "saveNote()");
-			menuBar.refreshTargetWindow();
-			
-			int currentIndex = tabBrowser.currentIndex();
-			ArrayList<String> histGuids = historyGuids.get(currentIndex);
-			int histPosition = historyPosition.get(currentIndex);
-
-			// prev, nextボタンの有効・無効化
-			nextButton.setEnabled(true);
-			prevButton.setEnabled(true);
-
-			if (histPosition <= 1){
-				prevButton.setEnabled(false);
-			}
-			if (histPosition == histGuids.size()){
-				nextButton.setEnabled(false);
-			}
-
-			refreshEvernoteNote(true);
-
-			// 連想ノートリストを更新
-			rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		if (index < 0) {
+			return;
 		}
+
+		TabBrowse tab = (TabBrowse) tabBrowser.widget(index);
+		
+		// browserWindowを更新
+		browserWindow.noteSignal.noteChanged.disconnect(this,"setNoteDirty()");
+		browserWindow.focusLost.disconnect(this, "saveNote()");
+		browserWindow = tab.getBrowserWindow();
+		browserWindow.noteSignal.noteChanged.connect(this, "setNoteDirty()");
+		browserWindow.focusLost.connect(this, "saveNote()");
+		// メニューバーのボタンを新しいbrowserWindowに合わせる
+		menuBar.refreshTargetWindow();
+		
+		// 現在ゴミ箱かつ移るタブがアクティブなら通常テーブルに、現在通常テーブルかつこれから非アクティブのタブに移るならゴミ箱を表示させる
+		// trashTree.itemSelectionChangedシグナルを発生させてtrashTreeSelection()スロットを呼ばせる
+		boolean nextIsActive = tab.getBrowserWindow().getNote().isActive();
+		if (Global.showDeleted && nextIsActive) {
+			trashTree.clearSelection();
+		} else if (!Global.showDeleted && !nextIsActive) {
+			trashTree.setCurrentItem(trashTree.getTrashItem());
+		}
+		
+		saveNote();
+		
+		String nextGuid = tab.getBrowserWindow().getNote().getGuid();;
+		currentNoteGuid = nextGuid;
+
+		// 選択ノートを更新
+		selectedNoteGUIDs.clear();
+		selectedNoteGUIDs.add(currentNoteGuid);
+
+		// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
+		noteTableView.selectionModel().selectionChanged.disconnect(this,"noteTableSelection()");
+		scrollToGuid(currentNoteGuid);
+		// 再接続
+		noteTableView.selectionModel().selectionChanged.connect(this,"noteTableSelection()");
+
+		menuBar.noteDuplicateAction.setEnabled(true);
+		menuBar.noteOnlineHistoryAction.setEnabled(true);
+		menuBar.noteMergeAction.setEnabled(true);
+		
+		if (Global.showDeleted) {
+			menuBar.noteDuplicateAction.setEnabled(false);
+		}
+		if (!Global.isConnected) {
+			menuBar.noteOnlineHistoryAction.setEnabled(false);
+		}
+		menuBar.noteMergeAction.setEnabled(false);
+		int row = noteTableView.selectionModel().selectedRows().get(0).row();
+		if (row == 0)
+			upButton.setEnabled(false);
+		else
+			upButton.setEnabled(true);
+		if (row < listManager.getNoteTableModel().rowCount() - 1)
+			downButton.setEnabled(true);
+		else
+			downButton.setEnabled(false);
+		
+		int currentIndex = tabBrowser.currentIndex();
+		ArrayList<String> histGuids = historyGuids.get(currentIndex);
+		int histPosition = historyPosition.get(currentIndex);
+
+		// prev, nextボタンの有効・無効化
+		nextButton.setEnabled(true);
+		prevButton.setEnabled(true);
+
+		if (histPosition <= 1){
+			prevButton.setEnabled(false);
+		}
+		if (histPosition == histGuids.size()){
+			nextButton.setEnabled(false);
+		}
+
+		refreshEvernoteNote(true);
+
+		// 連想ノートリストを更新
+		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
 	}
 
 	// ICHANGED
