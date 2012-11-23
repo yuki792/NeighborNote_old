@@ -736,10 +736,15 @@ public class NeverNote extends QMainWindow{
 		if (Global.isWindowVisible("noteInformation"))
 			toggleNoteInformation();
 		quotaBar.setVisible(Global.isWindowVisible("quota"));
-		if (!quotaBar.isVisible())
+		// IFIXED quotaBar.isVisible() → Global.isWindowVisible("quota")
+		// なぜかquotaBar.isVisible()が常にfalseを返すようなので修正
+		if (!Global.isWindowVisible("quota"))
 			menuBar.hideQuota.setChecked(false);
+		
 		searchField.setVisible(Global.isWindowVisible("searchField"));
-		if (!searchField.isVisible())
+		// IFIXED !searchField.isVisible() → !Global.isWindowVisible("searchField")
+		// なぜかsearchField.isVisible()が常にfalseを返すようなので修正
+		if (!Global.isWindowVisible("searchField"))
 			menuBar.hideSearch.setChecked(false);
 		
 		if (searchField.isHidden() && quotaBar.isHidden() && zoomSpinner.isHidden() && notebookTree.isHidden())
