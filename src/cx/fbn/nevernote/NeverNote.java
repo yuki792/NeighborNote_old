@@ -3859,6 +3859,12 @@ public class NeverNote extends QMainWindow{
 		saveNote();
 		
 		// ICHANGED
+		if (noteTableView.selectionModel().selectedRows().size() == 0) {
+			scrollToGuid(currentNoteGuid);
+			return;
+		}
+		
+		// ICHANGED
 		// 右クリックだったときの処理
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
 			// 選択されたノート（current）のguidをcurrentnoteguidにセット
