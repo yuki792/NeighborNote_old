@@ -4706,7 +4706,13 @@ public class NeverNote extends QMainWindow{
 	@SuppressWarnings("unused")
 	private void openNewTab() {
 		saveNote();
-		openTabEditor(currentNoteGuid);
+
+		// selectedNoteGUIDsをディープコピー
+		List<String> copySelected = new ArrayList<String>(selectedNoteGUIDs);
+		
+		for (int i=0; i < copySelected.size() ; i++) {
+			openTabEditor(copySelected.get(i));
+		}
 	}
 	
 	// ICHANGED 連想ノートリストから新しいタブで開く
