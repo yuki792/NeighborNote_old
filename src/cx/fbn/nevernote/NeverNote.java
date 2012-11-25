@@ -3574,6 +3574,11 @@ public class NeverNote extends QMainWindow{
         	
         	listManager.loadNotesIndex();
         	noteIndexUpdated(false);
+        	
+    		// ICHANGED ゴミ箱から元の画面に戻す。連想ノートリストをONに。
+    		if (!rensoNoteListDock.isEnabled()) {
+    			rensoNoteListDock.setEnabled(true);
+    		}
     	}  	
    }
     // Show/Hide trash window
@@ -5733,6 +5738,11 @@ public class NeverNote extends QMainWindow{
 		}
 		notebookTreeSelection();
 		refreshEvernoteNote(true);
+		
+		// ICHANGED ゴミ箱から元の画面に戻す。連想ノートリストをONに。
+		if (!rensoNoteListDock.isEnabled()) {
+			rensoNoteListDock.setEnabled(true);
+		}
 	}
 	// Merge notes
 	@SuppressWarnings("unused")
