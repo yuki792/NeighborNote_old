@@ -7234,11 +7234,19 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	// タブが変更された
 	private void tabWindowChanged(int index) {
-		if (index < 0) {
+		if (index < 0 || index >= tabBrowser.count()) {
 			return;
 		}
+		
+		saveNote();
 
 		TabBrowse tab = (TabBrowse) tabBrowser.widget(index);
+		currentNoteGuid = tab.getBrowserWindow().getNote().getGuid();
+		currentNote = tab.getBrowserWindow().getNote();
+
+		// 選択ノートを更新
+		selectedNoteGUIDs.clear();
+		selectedNoteGUIDs.add(currentNoteGuid);
 		
 		// browserWindowを更新
 		browserWindow.noteSignal.noteChanged.disconnect(this,"setNoteDirty()");
@@ -7250,22 +7258,12 @@ public class NeverNote extends QMainWindow{
 		menuBar.refreshTargetWindow();
 		
 		// 現在ゴミ箱かつ移るタブがアクティブなら通常テーブルに、現在通常テーブルかつこれから非アクティブのタブに移るならゴミ箱を表示させる
-		// trashTree.itemSelectionChangedシグナルを発生させてtrashTreeSelection()スロットを呼ばせる
 		boolean nextIsActive = tab.getBrowserWindow().getNote().isActive();
 		if (Global.showDeleted && nextIsActive) {
-			trashTree.clearSelection();
+			switchNoteTable(false);
 		} else if (!Global.showDeleted && !nextIsActive) {
-			trashTree.setCurrentItem(trashTree.getTrashItem());
+			switchNoteTable(true);
 		}
-		
-		saveNote();
-		
-		String nextGuid = tab.getBrowserWindow().getNote().getGuid();;
-		currentNoteGuid = nextGuid;
-
-		// 選択ノートを更新
-		selectedNoteGUIDs.clear();
-		selectedNoteGUIDs.add(currentNoteGuid);
 
 		// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
 		noteTableView.selectionModel().selectionChanged.disconnect(this,"noteTableSelection()");
@@ -7313,6 +7311,53 @@ public class NeverNote extends QMainWindow{
 
 		// 連想ノートリストを更新
 		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+	}
+	
+	// ICHANGD
+	// 生存ノートテーブル→ゴミ箱（またはその逆）に切り替える
+	private void switchNoteTable(boolean toDeleted) {
+    	clearNotebookFilter();
+    	clearTagFilter();
+    	clearAttributeFilter();
+    	clearSavedSearchFilter();
+    	
+    	listManager.getSelectedNotebooks().clear();
+    	listManager.getSelectedTags().clear();
+    	listManager.setSelectedSavedSearch("");
+    
+    	// toggle the add buttons
+    	newButton.setEnabled(!newButton.isEnabled());
+    	menuBar.noteAdd.setEnabled(newButton.isEnabled());
+    	menuBar.noteAdd.setVisible(true);
+    	
+    	if (!toDeleted) {	// 生存ノートテーブルへ
+    		trashTree.itemSelectionChanged.disconnect(this, "trashTreeSelection()");
+    		trashTree.clearSelection();
+    		trashTree.itemSelectionChanged.connect(this, "trashTreeSelection()");
+    		Global.showDeleted = false;
+    		menuBar.noteRestoreAction.setEnabled(false);
+    		menuBar.noteRestoreAction.setVisible(false);
+    		// ICHANGED ゴミ箱から元の画面に戻す。連想ノートリストをONに。
+    		rensoNoteListDock.setEnabled(true);
+    	} else {	// ゴミ箱へ
+    		trashTree.itemSelectionChanged.disconnect(this, "trashTreeSelection()");
+    		trashTree.setCurrentItem(trashTree.getTrashItem());
+    		trashTree.itemSelectionChanged.connect(this, "trashTreeSelection()");
+    		Global.showDeleted = true;
+    		menuBar.noteRestoreAction.setEnabled(true);
+    		menuBar.noteRestoreAction.setVisible(true);
+    		// ICHANGED ゴミ箱を開く。連想ノートリストをOFFに。
+    		rensoNoteListDock.setEnabled(false);
+    	}
+    	
+    	listManager.loadNotesIndex();
+    	// noteTableViewの選択を変更するとselectionChangedが発生してしまうので一度切断
+    	noteTableView.selectionModel().selectionChanged.disconnect(this,"noteTableSelection()");
+    	noteIndexUpdated(false);
+    	// 再接続
+    	noteTableView.selectionModel().selectionChanged.connect(this,"noteTableSelection()");
+    	
+    	browserWindow.setReadOnly(!newButton.isEnabled());
 	}
 
 	// ICHANGED
