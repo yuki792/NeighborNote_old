@@ -56,7 +56,8 @@ public class MainMenuBar extends QMenuBar {
 	public QAction			noteImportAction;			// Import notes
 	public QAction			noteCopyAsUrlAction;		// Copy the note as a URL
 	// ICHANGED
-	public QAction noteOpenNewTab; // 新しいタブで開く
+	public QAction 			noteOpenNewTab; 			// 新しいタブで開く
+	public QAction			noteAddNewTab;				// 新しいタブでノート追加
 	
 	public QAction			editFind;					// find text in the current note
 	public QAction			editUndo;					// Undo last change
@@ -265,6 +266,12 @@ public class MainMenuBar extends QMenuBar {
 		noteOpenNewTab.setToolTip(tr("Open this note in new tab"));
 		noteOpenNewTab.triggered.connect(parent, "openNewTab()");
 		setupShortcut(noteOpenNewTab, "File_Note_Open_New_Tab");
+		
+		// ICHANGED 新しいタブでノート追加アクション生成
+		noteAddNewTab = new QAction(tr("Add in New Tab"), this);
+		noteAddNewTab.setToolTip(tr("Add a new note in new tab"));
+		noteAddNewTab.triggered.connect(parent, "noteAddNewTab()");
+		setupShortcut(noteAddNewTab, "File_Note_Add_New_Tab");
 	
 		editFind = new QAction(tr("Find In Note"), this);
 		editFind.setToolTip(tr("Find a string in the current note"));
@@ -782,6 +789,9 @@ public class MainMenuBar extends QMenuBar {
 		noteMenu.addAction(noteOpenNewTab);
 		
 		noteMenu.addAction(noteAdd);
+		// ICHANGED
+		noteMenu.addAction(noteAddNewTab);
+		
 		noteMenu.addAction(noteDelete);
 		//noteMenu.addAction(noteCopyAsUrlAction);
 		noteMenu.addAction(noteReindex);

@@ -59,6 +59,7 @@ public class TableView extends QTableView {
     private QAction	mergeNotesAction;
 	// ICHANGED
 	private QAction openNewTabAction;
+	private QAction addNoteNewTabAction;
     
     // Note title colors
     private QAction	noteTitleColorWhite;
@@ -375,6 +376,11 @@ public class TableView extends QTableView {
 		openNewTabAction = t;
 	}
 	
+	// ICHANGED
+	public void setAddNoteNewTabAction(QAction t) {
+		addNoteNewTabAction = t;
+	}
+	
 	@Override
 	public void keyPressEvent(QKeyEvent e) {
 		if (e.matches(StandardKey.MoveToStartOfDocument)) {
@@ -401,6 +407,8 @@ public class TableView extends QTableView {
 			menu.addAction(restoreAction);
 		} else {
 			menu.addAction(addAction);
+			// ICHANGED
+			menu.addAction(addNoteNewTabAction);
 		}
 		// ICHANGED
 		menu.addSeparator();

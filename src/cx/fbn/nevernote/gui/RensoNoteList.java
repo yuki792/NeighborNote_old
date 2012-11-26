@@ -47,6 +47,9 @@ public class RensoNoteList extends QListWidget {
 		if (!this.isEnabled()) {
 			return;
 		}
+		if (guid == null || guid.equals("")) {
+			return;
+		}
 
 		HashMap<String, Integer> mergedHistory = new HashMap<String, Integer>();
 		
