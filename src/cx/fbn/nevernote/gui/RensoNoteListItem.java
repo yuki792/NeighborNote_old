@@ -76,7 +76,7 @@ public class RensoNoteListItem extends QWidget{
 		// 項目の中身
 		painter.setPen(QColor.black);
 		QFont titleFont = new QFont("Arial", 11);
-		QFont normalFont = new QFont("Arial", 10);
+		QFont normalFont = new QFont("Arial", 9);
 		painter.setFont(titleFont);
 		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + ")");
 		painter.setFont(normalFont);
