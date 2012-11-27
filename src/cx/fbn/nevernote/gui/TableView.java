@@ -59,6 +59,7 @@ public class TableView extends QTableView {
     private QAction	mergeNotesAction;
 	// ICHANGED
 	private QAction openNewTabAction;
+	private QAction addNoteNewTabAction;
     
     // Note title colors
     private QAction	noteTitleColorWhite;
@@ -375,6 +376,11 @@ public class TableView extends QTableView {
 		openNewTabAction = t;
 	}
 	
+	// ICHANGED
+	public void setAddNoteNewTabAction(QAction t) {
+		addNoteNewTabAction = t;
+	}
+	
 	@Override
 	public void keyPressEvent(QKeyEvent e) {
 		if (e.matches(StandardKey.MoveToStartOfDocument)) {
@@ -397,14 +403,17 @@ public class TableView extends QTableView {
 		// ICHANGED QMenu から NoteTableContextMenu へ
 		NoteTableContextMenu menu = new NoteTableContextMenu(this);
 		
+		// ICHANGED
+		menu.addAction(openNewTabAction);
+		
+		// ICHANGED
+		menu.addSeparator();
 		if (Global.showDeleted) {
 			menu.addAction(restoreAction);
 		} else {
 			menu.addAction(addAction);
+			menu.addAction(addNoteNewTabAction);
 		}
-		// ICHANGED
-		menu.addSeparator();
-		menu.addAction(openNewTabAction);
 		menu.addSeparator();
 		
 		menu.addAction(deleteAction);

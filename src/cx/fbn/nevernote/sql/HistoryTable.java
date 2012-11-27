@@ -40,7 +40,12 @@ public class HistoryTable {
 		if (behaviorType == null) {
 			return;
 		}
-		
+		if (guid1 == null || guid1.equals("")) {
+			return;
+		}
+		if (guid2 == null || guid2.equals("")) {
+			return;
+		}
 		if (guid1.equals(guid2)) {
 			return;
 		}
