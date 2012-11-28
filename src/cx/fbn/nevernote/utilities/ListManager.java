@@ -493,7 +493,7 @@ public class ListManager  {
 			String tagName = tags.get(i);
 			for (int j = 0; j < tagIndex.size(); j++) {
 				if (tagIndex.get(j).getName().equalsIgnoreCase(tagName)) {
-					conn.getHistoryTable().addSameTaggedHistory(noteGuid, tagIndex.get(j).getGuid());
+					conn.getHistoryTable().addSameTagHistory(noteGuid, tagIndex.get(j).getGuid());
 				}
 			}
 		}

@@ -236,7 +236,7 @@ public class HistoryTable {
 	}
 	
 	// 同じタグが付けられたノート間の履歴を登録
-	public void addSameTaggedHistory(String noteGuid, String tagGuid) {
+	public void addSameTagHistory(String noteGuid, String tagGuid) {
 		if (noteGuid == null || noteGuid.equals("")) {
 			return;
 		}
@@ -254,11 +254,11 @@ public class HistoryTable {
 		}
 		
 		// すでにそのタグが付いているノートを取得
-		List<String> sameTaggedNoteGuids = new ArrayList<String>(db.getNoteTable().noteTagsTable.getTagNotes(tagGuid));
+		List<String> sameTagNoteGuids = new ArrayList<String>(db.getNoteTable().noteTagsTable.getTagNotes(tagGuid));
 		
-		for (int i = 0; i < sameTaggedNoteGuids.size(); i++) {
-			String guid = sameTaggedNoteGuids.get(i);
-			addHistory("sameTagged", noteGuid, guid);
+		for (int i = 0; i < sameTagNoteGuids.size(); i++) {
+			String guid = sameTagNoteGuids.get(i);
+			addHistory("sameTag", noteGuid, guid);
 		}
 	}
 }
