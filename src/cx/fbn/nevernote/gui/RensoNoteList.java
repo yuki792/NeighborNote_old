@@ -73,6 +73,12 @@ public class RensoNoteList extends QListWidget {
 		addWeight(rensoItemClickHistory, Global.getRensoItemClickWeight());
 		mergedHistory = mergeHistory(rensoItemClickHistory, mergedHistory);
 		
+		// sameTaggedHistory<guid, 回数（ポイント）>
+		HashMap<String, Integer> sameTaggedHistory = conn.getHistoryTable().getBehaviorHistory("sameTagged", guid);
+		// TODO addWeight(sameTaggedHistory, Global.getSameTaggedWeight());
+		mergedHistory = mergeHistory(sameTaggedHistory, mergedHistory);
+		
+		
 		addRensoNoteList(mergedHistory);
 
 		logger.log(logger.HIGH, "Leaving RensoNoteList.refreshRensoNoteList");

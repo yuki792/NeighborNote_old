@@ -1,7 +1,9 @@
 // ICHANGED
 package cx.fbn.nevernote.sql;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import cx.fbn.nevernote.sql.driver.NSqlQuery;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
@@ -230,6 +232,33 @@ public class HistoryTable {
 		if(!check){
 			logger.log(logger.MEDIUM, "historyテーブルからguid1=" + guid2 + "かつguid2=" + guid1 + "のデータ削除に失敗");
 			logger.log(logger.MEDIUM, query.lastError());
+		}
+	}
+	
+	// 同じタグが付けられたノート間の履歴を登録
+	public void addSameTaggedHistory(String noteGuid, String tagGuid) {
+		if (noteGuid == null || noteGuid.equals("")) {
+			return;
+		}
+		if (tagGuid == null || tagGuid.equals("")) {
+			return;
+		}
+		
+		// そのタグが新しいタグでないなら終了
+		List<String> prevTags = new ArrayList<String>(db.getNoteTable().noteTagsTable.getNoteTags(noteGuid));
+		for (int i = 0; i < prevTags.size(); i++) {
+			System.out.println(prevTags.get(i));
+			if (tagGuid.equals(prevTags.get(i))) {
+				return;
+			}
+		}
+		
+		// すでにそのタグが付いているノートを取得
+		List<String> sameTaggedNoteGuids = new ArrayList<String>(db.getNoteTable().noteTagsTable.getTagNotes(tagGuid));
+		
+		for (int i = 0; i < sameTaggedNoteGuids.size(); i++) {
+			String guid = sameTaggedNoteGuids.get(i);
+			addHistory("sameTagged", noteGuid, guid);
 		}
 	}
 }

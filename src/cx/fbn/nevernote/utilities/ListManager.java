@@ -488,6 +488,16 @@ public class ListManager  {
 	// Save Note Tags
 	public void saveNoteTags(String noteGuid, List<String> tags) {
 		logger.log(logger.HIGH, "Entering ListManager.saveNoteTags");
+		// ICHANGED　同じタグが付けられた履歴を記録（必ずdeleteNoteTagの前にやる）
+		for (int i = 0; i < tags.size(); i++) {
+			String tagName = tags.get(i);
+			for (int j = 0; j < tagIndex.size(); j++) {
+				if (tagIndex.get(j).getName().equalsIgnoreCase(tagName)) {
+					conn.getHistoryTable().addSameTaggedHistory(noteGuid, tagIndex.get(j).getGuid());
+				}
+			}
+		}
+		
 		String tagName;
 		conn.getNoteTable().noteTagsTable.deleteNoteTag(noteGuid);
 		List<String> tagGuids = new ArrayList<String>();
