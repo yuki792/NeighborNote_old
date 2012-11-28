@@ -2108,13 +2108,13 @@ public class Global {
 		settings.beginGroup("RensoNoteList");
 		Integer value;
 		try {
-			String val  = (String)settings.value("copyPasteWeight", 2);
+			String val  = (String)settings.value("copyPasteWeight", 3);
 			value = new Integer(val.trim());
 		} catch (Exception e) {
 			try {
-				value = (Integer)settings.value("copyPasteWeight", 2);
+				value = (Integer)settings.value("copyPasteWeight", 3);
 			} catch (Exception e1) {
-				value = 2;
+				value = 3;
 			}
 		}
 		settings.endGroup();
@@ -2132,13 +2132,13 @@ public class Global {
 		settings.beginGroup("RensoNoteList");
 		Integer value;
 		try {
-			String val  = (String)settings.value("addNewNoteWeight", 5);
+			String val  = (String)settings.value("addNewNoteWeight", 1);
 			value = new Integer(val.trim());
 		} catch (Exception e) {
 			try {
-				value = (Integer)settings.value("addNewNoteWeight", 5);
+				value = (Integer)settings.value("addNewNoteWeight", 1);
 			} catch (Exception e1) {
-				value = 5;
+				value = 1;
 			}
 		}
 		settings.endGroup();
@@ -2156,13 +2156,37 @@ public class Global {
 		settings.beginGroup("RensoNoteList");
 		Integer value;
 		try {
-			String val  = (String)settings.value("rensoItemClickWeight", 3);
+			String val  = (String)settings.value("rensoItemClickWeight", 10);
 			value = new Integer(val.trim());
 		} catch (Exception e) {
 			try {
-				value = (Integer)settings.value("rensoItemClickWeight", 3);
+				value = (Integer)settings.value("rensoItemClickWeight", 10);
 			} catch (Exception e1) {
-				value = 3;
+				value = 10;
+			}
+		}
+		settings.endGroup();
+		return value;
+	}
+	
+	// ICHANGED
+	// タグ付け操作に対する重み付け
+    public static void setSameTagWeight(int weight) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("sameTagWeight", weight);
+		settings.endGroup();    	
+    }
+	public static int getSameTagWeight() {
+		settings.beginGroup("RensoNoteList");
+		Integer value;
+		try {
+			String val  = (String)settings.value("sameTagWeight", 2);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("sameTagWeight", 2);
+			} catch (Exception e1) {
+				value = 2;
 			}
 		}
 		settings.endGroup();

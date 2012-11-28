@@ -75,7 +75,7 @@ public class RensoNoteList extends QListWidget {
 		
 		// sameTagHistory<guid, 回数（ポイント）>
 		HashMap<String, Integer> sameTagHistory = conn.getHistoryTable().getBehaviorHistory("sameTag", guid);
-		// TODO addWeight(sameTagHistory, Global.getSameTagWeight());
+		addWeight(sameTagHistory, Global.getSameTagWeight());
 		mergedHistory = mergeHistory(sameTagHistory, mergedHistory);
 		
 		

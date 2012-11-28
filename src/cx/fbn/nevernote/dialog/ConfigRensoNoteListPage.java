@@ -18,11 +18,13 @@ public class ConfigRensoNoteListPage extends QWidget {
 	private final QSlider copyPasteSlider;
 	private final QSlider addNewNoteSlider;
 	private final QSlider rensoItemClickSlider;
+	private final QSlider sameTagSlider;
 	
 	private final QSpinBox browseSpinner;
 	private final QSpinBox copyPasteSpinner;
 	private final QSpinBox addNewNoteSpinner;
 	private final QSpinBox rensoItemClickSpinner;
+	private final QSpinBox sameTagSpinner;
 	
 	private final QCheckBox mergeCheck;
 	private final QCheckBox duplicateCheck;
@@ -118,6 +120,27 @@ public class ConfigRensoNoteListPage extends QWidget {
 		rensoItemClickLayout.addWidget(rensoItemClickSlider);
 		rensoItemClickLayout.addWidget(rensoItemClickSpinner);
 		
+		// sameTagHistory
+		sameTagSlider = new QSlider();
+		sameTagSlider.setOrientation(Qt.Orientation.Horizontal);
+		sameTagSlider.setRange(0, 10);
+		sameTagSlider.setSingleStep(1);
+		sameTagSlider.setTickPosition(QSlider.TickPosition.TicksAbove);
+		sameTagSlider.setTickInterval(1);
+		sameTagSlider.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
+
+		sameTagSpinner = new QSpinBox();
+		sameTagSpinner.setRange(0,10);
+		sameTagSpinner.setSingleStep(1);
+		
+		sameTagSlider.valueChanged.connect(sameTagSpinner, "setValue(int)");
+		sameTagSpinner.valueChanged.connect(sameTagSlider, "setValue(int)");
+		sameTagSlider.setValue(Global.getSameTagWeight());
+		
+		QHBoxLayout sameTagLayout = new QHBoxLayout();
+		sameTagLayout.addWidget(sameTagSlider);
+		sameTagLayout.addWidget(sameTagSpinner);
+		
 		
 		QFormLayout styleLayout = new QFormLayout();
 		styleLayout.setHorizontalSpacing(10);
@@ -126,6 +149,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 		styleLayout.addRow(tr("Copy&Paste Weight"), copyPasteLayout);
 		styleLayout.addRow(tr("Add New Note Weight"), addNewNoteLayout);
 		styleLayout.addRow(tr("Renso Item Click Weight"), rensoItemClickLayout);
+		styleLayout.addRow(tr("Same Tag Weight"), sameTagLayout);
 
 		QGroupBox weightingGroup = new QGroupBox(tr("Weighting"));
 		weightingGroup.setLayout(styleLayout);
@@ -180,6 +204,13 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	public int getRensoItemClickWeight() {
 		return rensoItemClickSpinner.value();
+	}
+	
+	//*****************************************
+	//* Same Tag Weight
+	//*****************************************
+	public int getSameTagWeight() {
+		return sameTagSpinner.value();
 	}
 
 	//*****************************************
