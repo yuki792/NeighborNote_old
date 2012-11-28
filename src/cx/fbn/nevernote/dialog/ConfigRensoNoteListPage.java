@@ -18,11 +18,13 @@ public class ConfigRensoNoteListPage extends QWidget {
 	private final QSlider copyPasteSlider;
 	private final QSlider addNewNoteSlider;
 	private final QSlider rensoItemClickSlider;
+	private final QSlider sameNotebookSlider;
 	
 	private final QSpinBox browseSpinner;
 	private final QSpinBox copyPasteSpinner;
 	private final QSpinBox addNewNoteSpinner;
 	private final QSpinBox rensoItemClickSpinner;
+	private final QSpinBox sameNotebookSpinner;
 	
 	private final QCheckBox mergeCheck;
 	private final QCheckBox duplicateCheck;
@@ -118,6 +120,27 @@ public class ConfigRensoNoteListPage extends QWidget {
 		rensoItemClickLayout.addWidget(rensoItemClickSlider);
 		rensoItemClickLayout.addWidget(rensoItemClickSpinner);
 		
+		// sameNotebookHistory
+		sameNotebookSlider = new QSlider();
+		sameNotebookSlider.setOrientation(Qt.Orientation.Horizontal);
+		sameNotebookSlider.setRange(0, 10);
+		sameNotebookSlider.setSingleStep(1);
+		sameNotebookSlider.setTickPosition(QSlider.TickPosition.TicksAbove);
+		sameNotebookSlider.setTickInterval(1);
+		sameNotebookSlider.setFocusPolicy(Qt.FocusPolicy.StrongFocus);
+
+		sameNotebookSpinner = new QSpinBox();
+		sameNotebookSpinner.setRange(0,10);
+		sameNotebookSpinner.setSingleStep(1);
+		
+		sameNotebookSlider.valueChanged.connect(sameNotebookSpinner, "setValue(int)");
+		sameNotebookSpinner.valueChanged.connect(sameNotebookSlider, "setValue(int)");
+		sameNotebookSlider.setValue(Global.getSameNotebookWeight());
+		
+		QHBoxLayout sameNotebookLayout = new QHBoxLayout();
+		sameNotebookLayout.addWidget(sameNotebookSlider);
+		sameNotebookLayout.addWidget(sameNotebookSpinner);
+		
 		
 		QFormLayout styleLayout = new QFormLayout();
 		styleLayout.setHorizontalSpacing(10);
@@ -126,6 +149,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 		styleLayout.addRow(tr("Copy&Paste Weight"), copyPasteLayout);
 		styleLayout.addRow(tr("Add New Note Weight"), addNewNoteLayout);
 		styleLayout.addRow(tr("Renso Item Click Weight"), rensoItemClickLayout);
+		styleLayout.addRow(tr("Same Notebook Weight"), sameNotebookLayout);
 
 		QGroupBox weightingGroup = new QGroupBox(tr("Weighting"));
 		weightingGroup.setLayout(styleLayout);
@@ -180,6 +204,13 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	public int getRensoItemClickWeight() {
 		return rensoItemClickSpinner.value();
+	}
+	
+	//*****************************************
+	//* Same Notebook Weight
+	//*****************************************
+	public int getSameNotebookWeight() {
+		return sameNotebookSpinner.value();
 	}
 
 	//*****************************************

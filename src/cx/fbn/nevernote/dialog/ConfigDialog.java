@@ -228,6 +228,7 @@ public class ConfigDialog extends QDialog {
 		Global.setCopyPasteWeight(rensoNoteListPage.getCopyPasteWeight());
 		Global.setAddNewNoteWeight(rensoNoteListPage.getAddNewNoteWeight());
 		Global.setRensoItemClickWeight(rensoNoteListPage.getRensoItemClickWeight());
+		Global.setSameNotebookWeight(rensoNoteListPage.getSameNotebookWeight());
 		
 		// ICHANGED
 		Global.setMergeRensoNote(rensoNoteListPage.getMergeChecked());

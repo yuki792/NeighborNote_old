@@ -75,7 +75,7 @@ public class RensoNoteList extends QListWidget {
 		
 		// sameNotebookNoteHistory<guid, 回数（ポイント）>
 		HashMap<String, Integer> sameNotebookHistory = conn.getHistoryTable().getBehaviorHistory("sameNotebook", guid);
-		// TODO addWeight(sameNotebookHistory, Global.getSameNotebookWeight());
+		addWeight(sameNotebookHistory, Global.getSameNotebookWeight());
 		mergedHistory = mergeHistory(sameNotebookHistory, mergedHistory);
 		
 		addRensoNoteList(mergedHistory);
