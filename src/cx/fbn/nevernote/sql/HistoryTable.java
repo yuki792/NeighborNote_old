@@ -261,4 +261,24 @@ public class HistoryTable {
 			addHistory("sameTag", noteGuid, guid);
 		}
 	}
+	
+	// 同じノートブックに入れられたノート間の履歴を登録
+	public void addSameNotebookHistory(String noteGuid, String notebookGuid) {
+		if (noteGuid == null || noteGuid.equals("")) {
+			return;
+		}
+		if (notebookGuid == null || notebookGuid.equals("")) {
+			return;
+		}
+		
+		// すでにそのノートブックに属しているノートを取得
+		List<String> sameNotebookNoteGuids = new ArrayList<String>(db.getNoteTable().getNotesByNotebook(notebookGuid));
+		
+		for (int i = 0; i < sameNotebookNoteGuids.size(); i++) {
+			String guid = sameNotebookNoteGuids.get(i);
+			if (!noteGuid.equals(guid)) {
+				addHistory("sameNotebook", noteGuid, guid);
+			}
+		}
+	}
 }

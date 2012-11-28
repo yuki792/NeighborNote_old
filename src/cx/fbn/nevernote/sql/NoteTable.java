@@ -964,9 +964,10 @@ public class NoteTable {
 		return notes;	
 	}
 	// Get a list of notes that need to be updated
+	// IFIXED バグで空のリストを返すだけのメソッドになっていたのを修正
 	public List <String> getNotesByNotebook(String notebookGuid) {
 		List<String> notes = new ArrayList<String>();
-		List<String> index = new ArrayList<String>();
+		// IFIXED List<String> index = new ArrayList<String>();
 		
 		boolean check;			
         NSqlQuery query = new NSqlQuery(db.getConnection());
@@ -979,7 +980,8 @@ public class NoteTable {
 		
 		// Get a list of the notes
 		while (query.next()) {
-			index.add(query.valueString(0)); 
+			// IFIXED index.add(query.valueString(0));
+			notes.add(query.valueString(0));
 		}	
 		
 		return notes;	

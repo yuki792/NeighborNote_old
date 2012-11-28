@@ -2192,6 +2192,30 @@ public class Global {
 		settings.endGroup();
 		return value;
 	}
+	
+	// ICHANGED
+	// ノートブック変更操作に対する重み付け
+    public static void setSameNotebookWeight(int weight) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("sameNotebookWeight", weight);
+		settings.endGroup();    	
+    }
+	public static int getSameNotebookWeight() {
+		settings.beginGroup("RensoNoteList");
+		Integer value;
+		try {
+			String val  = (String)settings.value("sameNotebookWeight", 2);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("sameNotebookWeight", 2);
+			} catch (Exception e1) {
+				value = 2;
+			}
+		}
+		settings.endGroup();
+		return value;
+	}
     
     //*******************
     // ノートのマージ・複製の関連ノートリストへの適用

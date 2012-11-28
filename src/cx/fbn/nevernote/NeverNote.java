@@ -2069,6 +2069,8 @@ public class NeverNote extends QMainWindow{
 	// A note's notebook has been updated
 	@SuppressWarnings("unused")
 	private void updateNoteNotebook(String guid, String notebookGuid) {
+		// ICHANGED 同じノートブックに入れられたノート間の履歴を登録
+		conn.getHistoryTable().addSameNotebookHistory(guid, notebookGuid);
 		
 		// Update the list manager
 		listManager.updateNoteNotebook(guid, notebookGuid);
