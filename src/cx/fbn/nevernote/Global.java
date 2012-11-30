@@ -195,7 +195,9 @@ public class Global {
 	
     // Do initial setup 
     public static void setup(StartupConfig startupConfig) throws InitializationException  {
-        settings = new QSettings("fbn.cx", startupConfig.getName());
+    	// ICHANGED 設定値の保存先を変更
+        settings = new QSettings("NeighborNote.ini", QSettings.Format.IniFormat);
+        
         disableViewing = startupConfig.getDisableViewing();
         syncOnly = startupConfig.isSyncOnly();
 
