@@ -2080,12 +2080,12 @@ public class Global {
     // ICHANGED
     // 複数ノート同時閲覧操作に対する重み付け
     public static void setBrowseWeight(int weight) {
-		settings.beginGroup("General");
+		settings.beginGroup("RensoNoteList");
 		settings.setValue("browseWeight", weight);
 		settings.endGroup();    	
     }
     public static int getBrowseWeight() {
-		settings.beginGroup("General");
+		settings.beginGroup("RensoNoteList");
 		Integer value;
 		try {
 			String val  = (String)settings.value("browseWeight", 1);
