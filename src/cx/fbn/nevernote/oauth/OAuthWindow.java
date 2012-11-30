@@ -86,7 +86,7 @@ public class OAuthWindow extends QDialog {
 
 
 		// Build the window
-		setWindowTitle(tr("Please Grant Nixnote Access"));
+		setWindowTitle(tr("Please Grant NeighborNote Access"));
 		setWindowIcon(new QIcon(iconPath+"icons/password.png"));
 		grid = new QGridLayout();
 		setLayout(grid);

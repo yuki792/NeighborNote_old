@@ -54,7 +54,7 @@ public class ExternalBrowse extends QMdiSubWindow {
 	// ICHANGED cbObserver引数を追加
 	public ExternalBrowse(DatabaseConnection c, ClipBoardObserver cbObserver) {
 		setAttribute(WidgetAttribute.WA_QuitOnClose, false);
-		setWindowTitle(tr("NixNote"));
+		setWindowTitle(tr("NeighborNote"));
 		conn = c;
 		// ICHANGED
 		this.cbObserver = cbObserver;  
@@ -97,7 +97,7 @@ public class ExternalBrowse extends QMdiSubWindow {
     
     @SuppressWarnings("unused")
 	private void titleChanged(String value) {
-    	setWindowTitle(tr("NixNote - ") +value);
+    	setWindowTitle(tr("NeighborNote - ") +value);
     }
     
 	@SuppressWarnings("unused")

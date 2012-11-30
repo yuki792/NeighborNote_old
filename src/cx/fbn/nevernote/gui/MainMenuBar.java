@@ -673,7 +673,7 @@ public class MainMenuBar extends QMenuBar {
 		checkForUpdates.setEnabled(false);
 		
 		aboutAction = new QAction(tr("About"), this);
-		aboutAction.setToolTip(tr("About NixNote"));
+		aboutAction.setToolTip(tr("About NeighborNote"));
 		aboutAction.triggered.connect(parent, "about()"); 
 		setupShortcut(aboutAction, "About_About");
 		

@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Name=NeighborNote
+Comment=Use with Evernote to remember everything
+GenericName=Evernote-clone
+Exec=/usr/share/neighbornote/neighbornote.sh
+Icon=/usr/share/neighbornote/neighbornote.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Network;
+Name[ja_JP]=neighbornote.desktop

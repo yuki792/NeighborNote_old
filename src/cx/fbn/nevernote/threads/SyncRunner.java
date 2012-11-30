@@ -99,7 +99,7 @@ public class SyncRunner extends QObject implements Runnable {
 	public volatile boolean	 		keepRunning;
 	public volatile String			authToken;
 	private long					evernoteUpdateCount;
-	private final String userAgent = "NixNote/" + System.getProperty("os.name")
+	private final String userAgent = "NeighborNote/" + System.getProperty("os.name")
 							+"/"+System.getProperty("java.vendor") + "/"
 							+ System.getProperty("java.version") +";";
 	
@@ -1550,7 +1550,7 @@ public class SyncRunner extends QObject implements Runnable {
 		
 	    boolean versionOk = false;
 		try {
-			versionOk = userStore.checkVersion("NixNote", 
+			versionOk = userStore.checkVersion("NeighborNote", 
 	            com.evernote.edam.userstore.Constants.EDAM_VERSION_MAJOR, 
 	              com.evernote.edam.userstore.Constants.EDAM_VERSION_MINOR);
 		} catch (TException e) {

@@ -386,8 +386,8 @@ public class NeverNote extends QMainWindow{
 		conn = dbConn;		
 		if (conn.getConnection() == null) {
 			String msg = new String(tr("Unable to connect to the database.\n\nThe most probable reason is that some other process\n" +
-				"is accessing the database or NixNote is already running.\n\n" +
-				"Please end any other process or shutdown the other NixNote before starting.\n\nExiting program."));
+				"is accessing the database or NeighborNote is already running.\n\n" +
+				"Please end any other process or shutdown the other NeighborNote before starting.\n\nExiting program."));
 			
             QMessageBox.critical(null, tr("Database Connection Error") ,msg);
 			System.exit(16);
@@ -422,7 +422,7 @@ public class NeverNote extends QMainWindow{
 		QApplication.setStyle(Global.getStyle());
 		if (Global.useStandardPalette())
 			QApplication.setPalette(QApplication.style().standardPalette());
-        setWindowTitle(tr("NixNote"));
+        setWindowTitle(tr("NeighborNote"));
 
         mainLeftRightSplitter = new QSplitter();
 		// ICHANGED
@@ -775,7 +775,7 @@ public class NeverNote extends QMainWindow{
 		
 		
 		trayIcon = new QSystemTrayIcon(this);
-		trayIcon.setToolTip(tr("NixNote"));
+		trayIcon.setToolTip(tr("NeighborNote"));
 		trayIcon.setContextMenu(trayMenu);
 		trayIcon.activated.connect(this, "trayActivated(com.trolltech.qt.gui.QSystemTrayIcon$ActivationReason)");
 
@@ -2936,7 +2936,7 @@ public class NeverNote extends QMainWindow{
     	logger.log(logger.HIGH, "Entering NeverNote.compactDatabase");
    		if (QMessageBox.question(this, tr("Confirmation"), tr("This will free unused space in the database, "+
    				"but please be aware that depending upon the size of your database this can be time consuming " +
-   				"and NixNote will be unresponsive until it is complete.  Do you wish to continue?"),
+   				"and NeighborNote will be unresponsive until it is complete.  Do you wish to continue?"),
    				QMessageBox.StandardButton.Yes, 
 				QMessageBox.StandardButton.No)==StandardButton.No.value() && Global.verifyDelete() == true) {
 							return;
@@ -2986,10 +2986,11 @@ public class NeverNote extends QMainWindow{
 	@SuppressWarnings("unused")
 	private void about() {
 		logger.log(logger.HIGH, "Entering NeverNote.about");
+		// ICHANGED based on...の記述を付加
 		QMessageBox.about(this, 
-						tr("About NixNote"),
-						tr("<h4><center><b>NixNote</b></center></h4><hr><center>Version ")
-						+Global.version
+						tr("About NeighborNote"),
+						tr("<h4><center><b>NeighborNote</b></center></h4><hr><center>Version ")
+						+Global.version + "(based on NixNote 1.4)"
 						//+"1.2.120724"
 						+tr("<hr>"
 								+"Open Source Evernote Client.<br><br>" 
@@ -5089,7 +5090,7 @@ public class NeverNote extends QMainWindow{
 			if (formatter.formatError) {
 				waitCursor(false);
 			     QMessageBox.information(this, tr("Error"),
-						tr("NixNote had issues formatting this note." +
+						tr("NeighborNote had issues formatting this note." +
 						" To protect your data this note is being marked as read-only."));	
 			     waitCursor(true);
 			}
@@ -5982,7 +5983,7 @@ public class NeverNote extends QMainWindow{
 				}
 			}
 			msg = tr("An error has happened while saving the note \"") +title+
-			tr("\".\n\nThis is probably due to a document that is too complex for NixNote to process.  "+
+			tr("\".\n\nThis is probably due to a document that is too complex for NeighborNote to process.  "+
 			"As a result, changes to the note may not be saved properly in the database."+
 			"\n\nA cached copy is being preserved so you can recover any data, but data may" +
 			"\nbe lost.  Please review the note to recover any critical data before restarting.");
@@ -6485,7 +6486,7 @@ public class NeverNote extends QMainWindow{
 			thumbnailRunner.interrupt = true;
 			indexRunner.addWork("SCAN");
 		}
-		logger.log(logger.EXTREME, "Leaving NixNote index timer");
+		logger.log(logger.EXTREME, "Leaving NeighborNote index timer");
 	}
 
 	@SuppressWarnings("unused")
@@ -6519,7 +6520,7 @@ public class NeverNote extends QMainWindow{
 			tagDeadCount++;
 			if (tagDeadCount > MAX && !disableTagThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), tr("It appears as the tag counter thread has died.  I recommend "+
-				"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+				"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableTagThreadCheck = true;
 			}
 		} else
@@ -6530,7 +6531,7 @@ public class NeverNote extends QMainWindow{
 			notebookThreadDeadCount++;
 			if (notebookThreadDeadCount > MAX && !disableNotebookThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), tr("It appears as the notebook counter thread has died.  I recommend "+
-					"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+					"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableNotebookThreadCheck=true;
 			}
 		} else
@@ -6541,7 +6542,7 @@ public class NeverNote extends QMainWindow{
 			trashDeadCount++;
 			if (trashDeadCount > MAX && !disableTrashThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), ("It appears as the trash counter thread has died.  I recommend "+
-					"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+					"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableTrashThreadCheck = true;
 			}
 		} else
@@ -6552,7 +6553,7 @@ public class NeverNote extends QMainWindow{
 			saveThreadDeadCount++;
 			if (saveThreadDeadCount > MAX && !disableSaveThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), tr("It appears as the note saver thread has died.  I recommend "+
-					"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+					"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableSaveThreadCheck = true;
 			}
 		} else
@@ -6562,7 +6563,7 @@ public class NeverNote extends QMainWindow{
 			syncThreadDeadCount++;
 			if (syncThreadDeadCount > MAX && !disableSyncThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), tr("It appears as the synchronization thread has died.  I recommend "+
-					"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+					"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableSyncThreadCheck = true;
 			}
 		} else
@@ -6572,7 +6573,7 @@ public class NeverNote extends QMainWindow{
 			indexThreadDeadCount++;
 			if (indexThreadDeadCount > MAX && !disableIndexThreadCheck) {
 				QMessageBox.information(this, tr("A thread has died."), tr("It appears as the index thread has died.  I recommend "+
-					"checking stopping NixNote, saving the logs for later viewing, and restarting.  Sorry."));
+					"checking stopping NeighborNote, saving the logs for later viewing, and restarting.  Sorry."));
 				disableIndexThreadCheck = true;
 			}
 		} else
