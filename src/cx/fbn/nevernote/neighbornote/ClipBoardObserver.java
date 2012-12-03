@@ -4,29 +4,32 @@ import com.trolltech.qt.gui.QApplication;
 
 public class ClipBoardObserver {
 	private String SourceGuid;
-	private boolean internalFlg;
+	private boolean internalFlg;	// アプリケーション内コピーかどうかのフラグ
 	
-	public ClipBoardObserver(){
+	public ClipBoardObserver() {
 		SourceGuid = new String("");
 		internalFlg = false;
 		QApplication.clipboard().dataChanged.connect(this, "clipboardDataChanged()");
 	}
 	
-	public void setCopySourceGuid(String guid){
-		SourceGuid = guid;
-		internalFlg = true;
+	public void setCopySourceGuid(String guid, String text) {		
+		if (!text.equals("")) {
+			SourceGuid = guid;
+			internalFlg = true;
+		}
 	}
 	
-	public String getSourceGuid(){
-		if(SourceGuid == ""){
+	public String getSourceGuid() {
+		if (SourceGuid.equals("")) {
 			return null;
 		}
 		return SourceGuid;
 	}
 	
 	@SuppressWarnings("unused")
-	private void clipboardDataChanged(){
-		if(!internalFlg){
+	private void clipboardDataChanged() {
+		// 外部アプリケーションでコピー・カットが行われた時のための対処
+		if (!internalFlg) {
 			SourceGuid = "";
 		}
 		internalFlg = false;
