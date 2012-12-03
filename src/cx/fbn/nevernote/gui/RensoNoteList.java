@@ -1,8 +1,10 @@
 // ICHANGED
 package cx.fbn.nevernote.gui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.evernote.edam.type.Note;
@@ -22,10 +24,12 @@ public class RensoNoteList extends QListWidget {
 	private final DatabaseConnection conn;
 	private final ApplicationLogger logger;
 	private final HashMap<QListWidgetItem, String> rensoNoteListItems;
+	private final List<RensoNoteListItem> rensoNoteListTrueItems;
 	
-	private QAction openNewTabAction;
-	private QAction excludeNoteAction;
+	private final QAction openNewTabAction;
+	private final QAction excludeNoteAction;
 	private final NeverNote parent;
+	private final QMenu menu;
 
 	public RensoNoteList(DatabaseConnection c, NeverNote p) {
 		logger = new ApplicationLogger("rensoNoteList.log");
@@ -34,6 +38,21 @@ public class RensoNoteList extends QListWidget {
 		conn = c;
 		this.parent = p;
 		rensoNoteListItems = new HashMap<QListWidgetItem, String>();
+		rensoNoteListTrueItems = new ArrayList<RensoNoteListItem>();
+		
+		// コンテキストメニュー作成
+		menu = new QMenu(this);
+		// 新しいタブで開くアクション生成
+		openNewTabAction = new QAction(tr("Open in New Tab"), this);
+		openNewTabAction.setToolTip(tr("Open this note in new tab"));
+		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
+		// このノートを除外するアクション生成
+		excludeNoteAction = new QAction(tr("Exclude"), this);
+		excludeNoteAction.setToolTip(tr("Exclude this note from RensoNoteList"));
+		excludeNoteAction.triggered.connect(parent, "excludeNote()");
+		menu.addAction(openNewTabAction);
+		menu.addAction(excludeNoteAction);
+		menu.aboutToHide.connect(this, "contextMenuHidden()");
 		
 		logger.log(logger.HIGH, "rensoNoteList setup complete");
 	}
@@ -43,6 +62,7 @@ public class RensoNoteList extends QListWidget {
 
 		this.clear();
 		rensoNoteListItems.clear();
+		rensoNoteListTrueItems.clear();
 
 		if (!this.isEnabled()) {
 			return;
@@ -152,11 +172,12 @@ public class RensoNoteList extends QListWidget {
 			// 存在していて、かつ関連度0でなければノート情報を取得して連想ノートリストに追加
 			if (isNoteActive && maxNum > 0) {
 				QListWidgetItem item = new QListWidgetItem();
-				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, conn);
+				RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, conn, this);
 				item.setSizeHint(new QSize(0, 90));
 				this.addItem(item);
 				this.setItemWidget(item, myItem);
 				rensoNoteListItems.put(item, maxGuid);
+				rensoNoteListTrueItems.add(myItem);
 			}
 		}
 	}
@@ -168,23 +189,21 @@ public class RensoNoteList extends QListWidget {
 	
 	// 関連ノートリストの右クリックメニュー
 	@Override
-	public void contextMenuEvent(QContextMenuEvent event){
-		QMenu menu = new QMenu(this);
-		
-		// 新しいタブで開くアクション生成
-		openNewTabAction = new QAction(tr("Open in New Tab"), this);
-		openNewTabAction.setToolTip(tr("Open this note in new tab"));
-		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
-		
-		// このノートを除外するアクション生成
-		excludeNoteAction = new QAction(tr("Exclude"), this);
-		excludeNoteAction.setToolTip(tr("Exclude this note from RensoNoteList"));
-		excludeNoteAction.triggered.connect(parent, "excludeNote()");
-		
-		menu.addAction(openNewTabAction);
-		menu.addAction(excludeNoteAction);
-		
+	public void contextMenuEvent(QContextMenuEvent event){		
 		menu.exec(event.globalPos());
 	}
 	
+	// コンテキストメニューが表示されているかどうか
+	public boolean isContextMenuVisible() {
+		return menu.isVisible();
+	}
+	
+	// コンテキストメニューが閉じられた時
+	@SuppressWarnings("unused")
+	private void contextMenuHidden() {
+		for (int i = 0; i < rensoNoteListTrueItems.size(); i++) {
+			RensoNoteListItem item = rensoNoteListTrueItems.get(i);
+			item.setDefaultBackground();
+		}
+	}
 }

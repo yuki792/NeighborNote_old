@@ -29,10 +29,12 @@ public class RensoNoteListItem extends QWidget{
 	private final String noteCreated;
 	private final String tagNames;
 	private String noteContent;
+	private final RensoNoteList parent;
 	
-	public RensoNoteListItem(Note note, int relationPoints, DatabaseConnection c){
+	public RensoNoteListItem(Note note, int relationPoints, DatabaseConnection c, RensoNoteList parent){
 		
 		this.conn = c;
+		this.parent = parent;
 		this.noteGuid = new String(note.getGuid());
 		
 		this.noteTitle = new String(note.getTitle());
@@ -108,16 +110,18 @@ public class RensoNoteListItem extends QWidget{
 	
 	@Override
 	protected void enterEvent(QEvent e){
-		QPalette p = new QPalette();
-		p.setColor(QPalette.ColorRole.Window, new QColor(225, 235, 255));
-		this.setPalette(p);
+		if (!parent.isContextMenuVisible()) {
+			QPalette p = new QPalette();
+			p.setColor(QPalette.ColorRole.Window, new QColor(225, 235, 255));
+			this.setPalette(p);
+		}
 	}
 	
 	@Override
 	protected void leaveEvent(QEvent e){
-		QPalette p = new QPalette();
-		p.setColor(QPalette.ColorRole.Window, new QColor(255, 255, 255));
-		this.setPalette(p);
+		if (!parent.isContextMenuVisible()) {
+			setDefaultBackground();
+		}
 	}
 	
 	@Override
@@ -127,5 +131,11 @@ public class RensoNoteListItem extends QWidget{
 		this.setPalette(p);
 		
 		super.mousePressEvent(e);
+	}
+	
+	public void setDefaultBackground() {
+		QPalette p = new QPalette();
+		p.setColor(QPalette.ColorRole.Window, new QColor(255, 255, 255));
+		this.setPalette(p);
 	}
 }
