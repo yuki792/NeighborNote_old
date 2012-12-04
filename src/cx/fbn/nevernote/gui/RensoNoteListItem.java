@@ -77,19 +77,22 @@ public class RensoNoteListItem extends QWidget{
 		
 		// 項目の中身
 		painter.setPen(QColor.black);
-		QFont titleFont = new QFont("Arial", 11);
-		QFont normalFont = new QFont("Arial", 9);
+		QFont titleFont = new QFont();
+		titleFont.setPixelSize(15);
+		titleFont.setBold(true);
+		QFont normalFont = new QFont();
+		normalFont.setPixelSize(12);
 		painter.setFont(titleFont);
 		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + ")");
 		painter.setFont(normalFont);
 		painter.setPen(new QColor(60, 65, 255));
-		painter.drawText(85, 23, size().width() - 85, 17, Qt.AlignmentFlag.AlignLeft.value(), noteCreated);
+		painter.drawText(85, 23, 75, 17, Qt.AlignmentFlag.AlignLeft.value(), noteCreated);
 		painter.setPen(QColor.black);
-		painter.drawText(155, 23, size().width() - 155, 17, Qt.AlignmentFlag.AlignLeft.value(), tagNames);
+		painter.drawText(165, 23, size().width() - 165, 17, Qt.AlignmentFlag.AlignLeft.value(), tagNames);
 		QTextOption option = new QTextOption();
 		option.setAlignment(Qt.AlignmentFlag.AlignLeft);
 		option.setUseDesignMetrics(true);
-		painter.drawText(new QRectF(85, 40, width() - 85, painter.fontMetrics().height() * 3), noteContent, option);
+		painter.drawText(new QRectF(85, 40, width() - 85, 40), noteContent, option);
 		
 		// サムネイル
 		QImage img;
