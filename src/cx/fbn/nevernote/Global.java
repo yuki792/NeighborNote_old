@@ -2295,6 +2295,29 @@ public class Global {
 			settings.setValue("verifyExclude", "false");
 		settings.endGroup();
     }
-
+    
+	// ICHANGED
+	// 連想ノートリスト最大表示アイテム数
+    public static void setRensoListItemMaximum(int maximum) {
+		settings.beginGroup("RensoNoteList");
+		settings.setValue("rensoListMaximum", maximum);
+		settings.endGroup();    	
+    }
+	public static int getRensoListItemMaximum() {
+		settings.beginGroup("RensoNoteList");
+		Integer value;
+		try {
+			String val  = (String)settings.value("rensoListMaximum", 20);
+			value = new Integer(val.trim());
+		} catch (Exception e) {
+			try {
+				value = (Integer)settings.value("rensoListMaximum", 20);
+			} catch (Exception e1) {
+				value = 20;
+			}
+		}
+		settings.endGroup();
+		return value;
+	}
 }
 

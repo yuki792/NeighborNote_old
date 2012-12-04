@@ -27,6 +27,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 	private final QSpinBox rensoItemClickSpinner;
 	private final QSpinBox sameTagSpinner;
 	private final QSpinBox sameNotebookSpinner;
+	private final QSpinBox rensoListItemMaximumSpinner;
 	
 	private final QCheckBox mergeCheck;
 	private final QCheckBox duplicateCheck;
@@ -162,7 +163,7 @@ public class ConfigRensoNoteListPage extends QWidget {
 		
 		QHBoxLayout sameNotebookLayout = new QHBoxLayout();
 		sameNotebookLayout.addWidget(sameNotebookSlider);
-		sameNotebookLayout.addWidget(sameNotebookSpinner);		
+		sameNotebookLayout.addWidget(sameNotebookSpinner);	
 		
 		QFormLayout styleLayout = new QFormLayout();
 		styleLayout.setHorizontalSpacing(10);
@@ -185,17 +186,28 @@ public class ConfigRensoNoteListPage extends QWidget {
 		verifyExclude = new QCheckBox(tr("Verify when you exclude the note"));
 		verifyExclude.setChecked(Global.verifyExclude());
 		
-		QVBoxLayout mergeDuplicateLayout = new QVBoxLayout();
-		mergeDuplicateLayout.addWidget(mergeCheck);
-		mergeDuplicateLayout.addWidget(duplicateCheck);
-		mergeDuplicateLayout.addWidget(verifyExclude);
+		// 連想ノートリスト最大アイテム表示数
+		rensoListItemMaximumSpinner = new QSpinBox();
+		rensoListItemMaximumSpinner.setRange(1,100);
+		rensoListItemMaximumSpinner.setSingleStep(1);
+		rensoListItemMaximumSpinner.setValue(Global.getRensoListItemMaximum());
+		QFormLayout fLayout = new QFormLayout();
+		fLayout.setHorizontalSpacing(100);
+		fLayout.addRow(tr("Renso Note List Item Maximum"), rensoListItemMaximumSpinner);
 		
-		QGroupBox mergeDuplicateGroup = new QGroupBox(tr("Others"));
-		mergeDuplicateGroup.setLayout(mergeDuplicateLayout);
+		// その他のレイアウト
+		QVBoxLayout othersLayout = new QVBoxLayout();
+		othersLayout.addWidget(mergeCheck);
+		othersLayout.addWidget(duplicateCheck);
+		othersLayout.addWidget(verifyExclude);
+		othersLayout.addLayout(fLayout);
+		
+		QGroupBox othersGroup = new QGroupBox(tr("Others"));
+		othersGroup.setLayout(othersLayout);
 		
 		QVBoxLayout mainLayout = new QVBoxLayout();
 		mainLayout.addWidget(weightingGroup);
-		mainLayout.addWidget(mergeDuplicateGroup);
+		mainLayout.addWidget(othersGroup);
 		mainLayout.addStretch(1);
 		setLayout(mainLayout);
 		
@@ -262,5 +274,12 @@ public class ConfigRensoNoteListPage extends QWidget {
 	//*****************************************
 	public boolean getVerifyExcludeChecked() {
 		return verifyExclude.isChecked();
+	}
+
+	//*****************************************
+	//* RensoNoteListItemMaximum
+	//*****************************************
+	public int getRensoListItemMaximum() {
+		return rensoListItemMaximumSpinner.value();
 	}
 }

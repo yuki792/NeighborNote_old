@@ -235,7 +235,8 @@ public class ConfigDialog extends QDialog {
 		Global.setMergeRensoNote(rensoNoteListPage.getMergeChecked());
 		Global.setDuplicateRensoNote(rensoNoteListPage.getDuplicateChecked());
 		Global.setVerifyExclude(rensoNoteListPage.getVerifyExcludeChecked());
-				
+		Global.setRensoListItemMaximum(rensoNoteListPage.getRensoListItemMaximum());
+		
 		close();
 	}
 	
