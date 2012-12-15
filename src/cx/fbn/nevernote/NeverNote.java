@@ -5356,6 +5356,7 @@ public class NeverNote extends QMainWindow{
     			// ICHANGED
     			conn.getHistoryTable().expungeHistory(selectedNoteGUIDs.get(i));
     			conn.getExcludedTable().expungeExcludedNote(selectedNoteGUIDs.get(i));
+    			conn.getStaredTable().expungeStaredNote(selectedNoteGUIDs.get(i));
     			
     		}
     	}
@@ -5763,10 +5764,11 @@ public class NeverNote extends QMainWindow{
 		newNote.setResources(resList);
 		
 		// ICHANGED
-		// 操作履歴と除外ノートも複製する
+		// 操作履歴と除外ノートとスター付きノートも複製する
 		if(Global.getDuplicateRensoNote()) {
 			conn.getHistoryTable().duplicateHistory(newGuid, oldNote.getGuid());
 			conn.getExcludedTable().duplicateExcludedNotes(newGuid, oldNote.getGuid());
+			conn.getStaredTable().duplicateStaredNotes(newGuid, oldNote.getGuid());
 		}
 		
 		// Add note to the database
@@ -5828,7 +5830,7 @@ public class NeverNote extends QMainWindow{
 		mergeNoteContents(masterGuid, sources);
 		currentNoteGuid = masterGuid;
 		
-		// ICHANGED 操作履歴と除外ノートをマージ
+		// ICHANGED 操作履歴と除外ノートとスター付きノートをマージ
 		if(Global.getMergeRensoNote()) {
 			for (int i = 0; i < sources.size(); i++) {
 				String childGuid = sources.get(i);
@@ -5836,6 +5838,7 @@ public class NeverNote extends QMainWindow{
 					if(!masterGuid.equals(childGuid)) {
 						conn.getHistoryTable().mergeHistoryGuid(masterGuid, childGuid);
 						conn.getExcludedTable().mergeHistoryGuid(masterGuid, childGuid);
+						conn.getStaredTable().mergeHistoryGuid(masterGuid, childGuid);
 					}
 				}
 			}
@@ -7531,8 +7534,9 @@ public class NeverNote extends QMainWindow{
 	
 	// ICHANGED
 	// 関連ノートリストからノートを除外する
-	public void excludeNote() {
-		if(rensoNotePressedItemGuid != null){
+	@SuppressWarnings("unused")
+	private void excludeNote() {
+		if (rensoNotePressedItemGuid != null) {
 			saveNote();
 			excludeNote(rensoNotePressedItemGuid);
 		}
@@ -7541,7 +7545,6 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	// 関連ノートリストからノートを除外する
 	private void excludeNote(String guid) {
-		
 		if (Global.verifyExclude()) {
 			String msg;
 			Note note = conn.getNoteTable().getNote(guid, false, false, false, false, false);
@@ -7566,5 +7569,49 @@ public class NeverNote extends QMainWindow{
 		conn.getExcludedTable().addExclusion(guid, currentNoteGuid);
 		
 		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+	}
+	
+	// ICHANGED
+	// 関連ノートリストのノートにスターを付ける
+	@SuppressWarnings("unused")
+	private void starNote() {
+		if (rensoNotePressedItemGuid != null) {
+			saveNote();
+			starNote(rensoNotePressedItemGuid);
+		}
+	}
+	
+	// ICHANGED
+	// 関連ノートリストのノートにスターを付ける
+	private void starNote(String guid) {
+		// スター付きノートテーブルに追加
+		conn.getStaredTable().addStaredItem(currentNoteGuid, guid);
+		
+		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+	}
+	
+	// ICHANGED
+	// 関連ノートリストのノートからスターを外す
+	@SuppressWarnings("unused")
+	private void unstarNote() {
+		if (rensoNotePressedItemGuid != null) {
+			saveNote();
+			unstarNote(rensoNotePressedItemGuid);
+		}
+	}
+	
+	// ICHANGED
+	// 関連ノートリストのノートからスターを外す
+	private void unstarNote(String guid) {
+		// スター付きノートテーブルから削除
+		conn.getStaredTable().removeStaredItem(currentNoteGuid, guid);
+		
+		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+	}
+	
+	// ICHANGED
+	// currentNoteGuidを返す
+	public String getCurrentNoteGuid() {
+		return currentNoteGuid;
 	}
 }

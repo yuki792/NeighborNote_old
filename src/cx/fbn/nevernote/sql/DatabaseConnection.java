@@ -46,6 +46,7 @@ public class DatabaseConnection {
 	// ICHANGED
 	private HistoryTable historyTable;
 	private ExcludedTable excludedTable;
+	private StaredTable staredTable;
 	
 	private final ApplicationLogger		logger;
 	private Connection					conn;
@@ -82,6 +83,7 @@ public class DatabaseConnection {
 		// ICHANGED
 		historyTable = new HistoryTable(logger, this);
 		excludedTable = new ExcludedTable(logger, this);
+		staredTable = new StaredTable(logger, this);
 		
 	}
 	
@@ -171,10 +173,11 @@ public class DatabaseConnection {
 		}
 		
 		// ICHANGED
-		// 操作履歴テーブルと除外ノートテーブルを作る
+		// 操作履歴テーブルと除外ノートテーブルとスター付きノートテーブルを作る
 		if (!behaviorDbExists) {
 			createHistoryTables();
 			createExcludedTables();
+			createStaredTables();
 		}
 		
 		// If we encrypted/decrypted it the last time, we need to reconnect the tables.
@@ -345,6 +348,11 @@ public class DatabaseConnection {
 		excludedTable.createTable();
 	}
 	
+	// ICHANGED
+	public void createStaredTables() {
+		staredTable.createTable();
+	}
+	
 	public Connection getConnection() {
 		return conn;
 	}
@@ -411,6 +419,11 @@ public class DatabaseConnection {
 	// ICHANGED
 	public ExcludedTable getExcludedTable() {
 		return excludedTable;
+	}
+	
+	// ICHANGED
+	public StaredTable getStaredTable() {
+		return staredTable;
 	}
 
 	//****************************************************************

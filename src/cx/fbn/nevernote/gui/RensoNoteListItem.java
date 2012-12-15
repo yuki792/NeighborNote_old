@@ -30,11 +30,15 @@ public class RensoNoteListItem extends QWidget{
 	private final String tagNames;
 	private String noteContent;
 	private final RensoNoteList parent;
+	private final boolean isStared;
 	
-	public RensoNoteListItem(Note note, int relationPoints, DatabaseConnection c, RensoNoteList parent){
+	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	
+	public RensoNoteListItem(Note note, int relationPoints, boolean isStared, DatabaseConnection c, RensoNoteList parent){
 		
 		this.conn = c;
 		this.parent = parent;
+		this.isStared = isStared;
 		this.noteGuid = new String(note.getGuid());
 		
 		this.noteTitle = new String(note.getTitle());
@@ -107,6 +111,13 @@ public class RensoNoteListItem extends QWidget{
 		painter.drawImage(2, 4, img, 0, 0, 80, rect().height() - 10);
 		painter.setPen(QColor.lightGray);
 		painter.drawRect(2, 4, 80, rect().height() - 10);
+		
+		// スター
+		if (isStared) {
+			QImage starImage = new QImage(iconPath+"star.png");
+			starImage = starImage.scaled(30, 30, Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation);
+			painter.drawImage(0, 0, starImage, 0, 0, starImage.width(), starImage.height());
+		}
 		
 		painter.end();
 	}

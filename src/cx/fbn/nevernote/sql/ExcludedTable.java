@@ -95,7 +95,7 @@ public class ExcludedTable {
 		excludedNotesQuery.bindValue(":guid2_2", guid2);
 		
 		if (!excludedNotesQuery.exec()) {
-			logger.log(logger.MEDIUM, "Historyテーブルからguid1=" + guid1 + "かつguid2=" + guid2 + "（またはその逆）のアイテムの存在確認失敗");
+			logger.log(logger.MEDIUM, "ExcludedNotesテーブルからguid1=" + guid1 + "かつguid2=" + guid2 + "（またはその逆）のアイテムの存在確認失敗");
 			logger.log(logger.MEDIUM, excludedNotesQuery.lastError());
 		}
 		

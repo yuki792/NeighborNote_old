@@ -802,7 +802,9 @@ public class NoteTable {
 		
 		// ICHANGED 除外ノートテーブルのguidを更新
 		db.getExcludedTable().updateExcludedNoteGuid(newGuid, oldGuid);
-
+		
+		// ICHANGED スター付きノートテーブルのguidを更新
+		db.getStaredTable().updateStaredNoteGuid(newGuid, oldGuid);
 	}
 	// Update a note
 	public void updateNote(Note n) {

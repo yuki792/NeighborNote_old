@@ -9,7 +9,9 @@ import java.util.Set;
 
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.Qt.MouseButton;
 import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QContextMenuEvent;
 import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
@@ -25,8 +27,11 @@ public class RensoNoteList extends QListWidget {
 	private final ApplicationLogger logger;
 	private final HashMap<QListWidgetItem, String> rensoNoteListItems;
 	private final List<RensoNoteListItem> rensoNoteListTrueItems;
+	private String rensoNotePressedItemGuid;
 	
 	private final QAction openNewTabAction;
+	private final QAction starAction;
+	private final QAction unstarAction;
 	private final QAction excludeNoteAction;
 	private final NeverNote parent;
 	private final QMenu menu;
@@ -40,16 +45,27 @@ public class RensoNoteList extends QListWidget {
 		rensoNoteListItems = new HashMap<QListWidgetItem, String>();
 		rensoNoteListTrueItems = new ArrayList<RensoNoteListItem>();
 		
+		this.itemPressed.connect(this, "rensoNoteItemPressed(QListWidgetItem)");
+		
 		// コンテキストメニュー作成
 		menu = new QMenu(this);
 		// 新しいタブで開くアクション生成
 		openNewTabAction = new QAction(tr("Open in New Tab"), this);
 		openNewTabAction.setToolTip(tr("Open this note in new tab"));
 		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
+		// スターをつけるアクション生成
+		starAction = new QAction(tr("STAR"), this);
+		starAction.setToolTip(tr("Star this item"));
+		starAction.triggered.connect(parent, "starNote()");
+		// スターを外すアクション生成
+		unstarAction = new QAction(tr("UNSTAR"), this);
+		unstarAction.setToolTip(tr("Unstar this item"));
+		unstarAction.triggered.connect(parent, "unstarNote()");
 		// このノートを除外するアクション生成
 		excludeNoteAction = new QAction(tr("Exclude"), this);
 		excludeNoteAction.setToolTip(tr("Exclude this note from RensoNoteList"));
 		excludeNoteAction.triggered.connect(parent, "excludeNote()");
+		// コンテキストメニューに登録
 		menu.addAction(openNewTabAction);
 		menu.addAction(excludeNoteAction);
 		menu.aboutToHide.connect(this, "contextMenuHidden()");
@@ -154,6 +170,18 @@ public class RensoNoteList extends QListWidget {
 				while (it.hasNext()) {
 					String nextGuid = it.next();
 					int tmpNum = copyHistory.get(nextGuid);
+					
+					// スター付きを見つけたら、その時点でそのノートを最大ノートとして表示させる
+					boolean isStared;
+					String currentNoteGuid = new String(parent.getCurrentNoteGuid());
+					isStared = conn.getStaredTable().existNote(currentNoteGuid, nextGuid);
+					if (isStared) {
+						maxNum = tmpNum;
+						maxGuid = nextGuid;
+						break;
+					}
+					
+					// スター付きでないなら、最大ノート探索する
 					if (tmpNum > maxNum) {
 						maxNum = tmpNum;
 						maxGuid = nextGuid;
@@ -172,8 +200,13 @@ public class RensoNoteList extends QListWidget {
 				
 				// 存在していて、かつ関連度0でなければノート情報を取得して連想ノートリストに追加
 				if (isNoteActive && maxNum > 0) {
+					// スター付きか確認
+					boolean isStared;
+					String currentNoteGuid = new String(parent.getCurrentNoteGuid());
+					isStared = conn.getStaredTable().existNote(currentNoteGuid, maxGuid);
+					
 					QListWidgetItem item = new QListWidgetItem();
-					RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, conn, this);
+					RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, isStared, conn, this);
 					item.setSizeHint(new QSize(0, 90));
 					this.addItem(item);
 					this.setItemWidget(item, myItem);
@@ -193,7 +226,26 @@ public class RensoNoteList extends QListWidget {
 	
 	// 関連ノートリストの右クリックメニュー
 	@Override
-	public void contextMenuEvent(QContextMenuEvent event){		
+	public void contextMenuEvent(QContextMenuEvent event){
+		// STAR, UNSTARがあれば、一度消す
+		List<QAction> menuActions = new ArrayList<QAction>(menu.actions());
+		if (menuActions.contains(starAction)) {
+			menu.removeAction(starAction);
+		}
+		if (menuActions.contains(unstarAction)) {
+			menu.removeAction(unstarAction);
+		}
+		
+		// 対象アイテムがスター付きなら「UNSTAR」、スター無しなら「STAR」を追加
+		String currentNoteGuid = parent.getCurrentNoteGuid();
+		boolean isExist = conn.getStaredTable().existNote(currentNoteGuid, rensoNotePressedItemGuid);
+		if (isExist) {
+			menu.insertAction(excludeNoteAction, unstarAction);
+		} else {
+			menu.insertAction(excludeNoteAction, starAction);
+		}
+		
+		// コンテキストメニューを表示
 		menu.exec(event.globalPos());
 	}
 	
@@ -208,6 +260,16 @@ public class RensoNoteList extends QListWidget {
 		for (int i = 0; i < rensoNoteListTrueItems.size(); i++) {
 			RensoNoteListItem item = rensoNoteListTrueItems.get(i);
 			item.setDefaultBackground();
+		}
+	}
+	
+	// ユーザが連想ノートリストのアイテムを選択した時の処理
+	@SuppressWarnings("unused")
+	private void rensoNoteItemPressed(QListWidgetItem current) {
+		rensoNotePressedItemGuid = null;
+		// 右クリックだったときの処理
+		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
+			rensoNotePressedItemGuid = getNoteGuid(current);
 		}
 	}
 }
