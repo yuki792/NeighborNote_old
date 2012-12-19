@@ -13,9 +13,26 @@ public class NoteTableContextMenu extends QMenu {
 		this.parent = tableView;
 	}
 
+	
 	@Override
 	protected void mousePressEvent(QMouseEvent event){
 		super.mousePressEvent(event);
+
+		int x = event.x();
+		int y = event.y();
+
+		if(x < 0 || this.width() < x){
+			parent.restoreSelectedNoteInfo();
+		}else if(y < 0 || this.height() < y){
+			parent.restoreSelectedNoteInfo();
+		}
+	}
+	
+	// ノートテーブルでマウス右ボタンを押してコンテキストメニューを出し、そのままコンテキストメニュー上を通過してコンテキストメニュー外でボタンを離すと
+	// コンテキストメニューが閉じてしまう問題への対処
+	@Override
+	protected void mouseReleaseEvent(QMouseEvent event){
+		super.mouseReleaseEvent(event);
 
 		int x = event.x();
 		int y = event.y();
