@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QSize;
@@ -13,16 +12,16 @@ import com.trolltech.qt.core.Qt.MouseButton;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QContextMenuEvent;
-import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QMenu;
 
 import cx.fbn.nevernote.Global;
 import cx.fbn.nevernote.NeverNote;
+import cx.fbn.nevernote.neighbornote.RensoNoteListItem;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 import cx.fbn.nevernote.utilities.ApplicationLogger;
 
-public class RensoNoteList extends QListWidget {
+public class RensoNoteList extends RelationCalculator {
 	private final DatabaseConnection conn;
 	private final ApplicationLogger logger;
 	private final HashMap<QListWidgetItem, String> rensoNoteListItems;
@@ -37,6 +36,7 @@ public class RensoNoteList extends QListWidget {
 	private final QMenu menu;
 
 	public RensoNoteList(DatabaseConnection c, NeverNote p) {
+		super(c);
 		logger = new ApplicationLogger("rensoNoteList.log");
 		logger.log(logger.HIGH, "Setting up rensoNoteList");
 
@@ -54,11 +54,11 @@ public class RensoNoteList extends QListWidget {
 		openNewTabAction.setToolTip(tr("Open this note in new tab"));
 		openNewTabAction.triggered.connect(parent, "openNewTabFromRNL()");
 		// スターをつけるアクション生成
-		starAction = new QAction(tr("STAR"), this);
+		starAction = new QAction(tr("Star"), this);
 		starAction.setToolTip(tr("Star this item"));
 		starAction.triggered.connect(parent, "starNote()");
 		// スターを外すアクション生成
-		unstarAction = new QAction(tr("UNSTAR"), this);
+		unstarAction = new QAction(tr("Unstar"), this);
 		unstarAction.setToolTip(tr("Unstar this item"));
 		unstarAction.triggered.connect(parent, "unstarNote()");
 		// このノートを除外するアクション生成
@@ -86,72 +86,11 @@ public class RensoNoteList extends QListWidget {
 		if (guid == null || guid.equals("")) {
 			return;
 		}
-
-		HashMap<String, Integer> mergedHistory = new HashMap<String, Integer>();
 		
-		// browseHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> browseHistory = conn.getHistoryTable().getBehaviorHistory("browse", guid);
-		addWeight(browseHistory, Global.getBrowseWeight());
-		mergedHistory = mergeHistory(browseHistory, new HashMap<String, Integer>());
-		
-		// copy&pasteHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> copyAndPasteHistory = conn.getHistoryTable().getBehaviorHistory("copy & paste", guid);
-		addWeight(copyAndPasteHistory, Global.getCopyPasteWeight());
-		mergedHistory = mergeHistory(copyAndPasteHistory, mergedHistory);
-		
-		// addNewNoteHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> addNewNoteHistory = conn.getHistoryTable().getBehaviorHistory("addNewNote", guid);
-		addWeight(addNewNoteHistory, Global.getAddNewNoteWeight());
-		mergedHistory = mergeHistory(addNewNoteHistory, mergedHistory);
-		
-		// rensoItemClickHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> rensoItemClickHistory = conn.getHistoryTable().getBehaviorHistory("rensoItemClick", guid);
-		addWeight(rensoItemClickHistory, Global.getRensoItemClickWeight());
-		mergedHistory = mergeHistory(rensoItemClickHistory, mergedHistory);
-		
-		// sameTagHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> sameTagHistory = conn.getHistoryTable().getBehaviorHistory("sameTag", guid);
-		addWeight(sameTagHistory, Global.getSameTagWeight());
-		mergedHistory = mergeHistory(sameTagHistory, mergedHistory);
-		
-		// sameNotebookNoteHistory<guid, 回数（ポイント）>
-		HashMap<String, Integer> sameNotebookHistory = conn.getHistoryTable().getBehaviorHistory("sameNotebook", guid);
-		addWeight(sameNotebookHistory, Global.getSameNotebookWeight());
-		mergedHistory = mergeHistory(sameNotebookHistory, mergedHistory);
-		
+		HashMap<String, Integer> mergedHistory = calculateRensoNotes(guid);
 		addRensoNoteList(mergedHistory);
 
 		logger.log(logger.HIGH, "Leaving RensoNoteList.refreshRensoNoteList");
-	}
-	
-	// 操作回数に重み付けする
-	private void addWeight(HashMap<String, Integer> history, int weight){
-		Set<String> keySet = history.keySet();
-		Iterator<String> hist_iterator = keySet.iterator();
-		while(hist_iterator.hasNext()){
-			String key = hist_iterator.next();
-			history.put(key, history.get(key) * weight);
-		}
-	}
-	
-	// 引数1と引数2をマージしたハッシュマップを返す
-	private HashMap<String, Integer> mergeHistory(HashMap<String, Integer> History1, HashMap<String, Integer> History2){
-		HashMap<String, Integer> mergedHistory = new HashMap<String, Integer>();
-		
-		mergedHistory.putAll(History1);
-		
-		Set<String> keySet = History2.keySet();
-		Iterator<String> hist2_iterator = keySet.iterator();
-		while(hist2_iterator.hasNext()){
-			String key = hist2_iterator.next();
-			if(mergedHistory.containsKey(key)){
-				mergedHistory.put(key, mergedHistory.get(key) + History2.get(key));
-			}else {
-				mergedHistory.put(key, History2.get(key));
-			}
-		}
-
-		return mergedHistory;
 	}
 	
 	private void addRensoNoteList(HashMap<String, Integer> History){		

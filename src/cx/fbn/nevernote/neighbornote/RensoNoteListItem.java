@@ -1,5 +1,5 @@
 // ICHANGED
-package cx.fbn.nevernote.gui;
+package cx.fbn.nevernote.neighbornote;
 
 import java.text.SimpleDateFormat;
 
@@ -19,25 +19,35 @@ import com.trolltech.qt.gui.QTextOption;
 import com.trolltech.qt.gui.QWidget;
 
 import cx.fbn.nevernote.Global;
+import cx.fbn.nevernote.gui.RensoNoteList;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 
 public class RensoNoteListItem extends QWidget{
 	private final DatabaseConnection conn;
-	private final String noteGuid;
-	private final String noteTitle;
-	private final int relationPoints;
-	private final String noteCreated;
-	private final String tagNames;
-	private String noteContent;
 	private final RensoNoteList parent;
-	private final boolean isStared;
+	
+	private String noteGuid;
+	private String noteTitle;
+	private int relationPoints;
+	private String noteCreated;
+	private String tagNames;
+	private String noteContent;
+	private boolean isStared;
 	
 	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	
 	public RensoNoteListItem(Note note, int relationPoints, boolean isStared, DatabaseConnection c, RensoNoteList parent){
-		
 		this.conn = c;
 		this.parent = parent;
+		
+		initialize(note, relationPoints, isStared);
+	}
+	
+	public RensoNoteListItem(Note note, int relationPoints, boolean isStared, DatabaseConnection c) {
+		this(note, relationPoints, isStared, c, null);
+	}
+	
+	private void initialize(Note note, int relationPoints, boolean isStared) {
 		this.isStared = isStared;
 		this.noteGuid = new String(note.getGuid());
 		
@@ -70,7 +80,7 @@ public class RensoNoteListItem extends QWidget{
 		this.setAutoFillBackground(true);
 		this.setBackgroundRole(QPalette.ColorRole.Window);
 	}
-	
+
 	@Override
 	protected void paintEvent(QPaintEvent event){
 		QPainter painter = new QPainter(this);
@@ -87,7 +97,7 @@ public class RensoNoteListItem extends QWidget{
 		QFont normalFont = new QFont();
 		normalFont.setPixelSize(12);
 		painter.setFont(titleFont);
-		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + ")");
+		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + " pt)");
 		painter.setFont(normalFont);
 		painter.setPen(new QColor(60, 65, 255));
 		painter.drawText(85, 23, 75, 17, Qt.AlignmentFlag.AlignLeft.value(), noteCreated);
@@ -124,6 +134,9 @@ public class RensoNoteListItem extends QWidget{
 	
 	@Override
 	protected void enterEvent(QEvent e){
+		if (parent == null) {
+			return;
+		}
 		if (!parent.isContextMenuVisible()) {
 			QPalette p = new QPalette();
 			p.setColor(QPalette.ColorRole.Window, new QColor(225, 235, 255));
@@ -133,6 +146,9 @@ public class RensoNoteListItem extends QWidget{
 	
 	@Override
 	protected void leaveEvent(QEvent e){
+		if (parent == null) {
+			return;
+		}
 		if (!parent.isContextMenuVisible()) {
 			setDefaultBackground();
 		}

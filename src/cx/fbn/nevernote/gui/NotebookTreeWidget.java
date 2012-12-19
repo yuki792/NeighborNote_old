@@ -408,7 +408,7 @@ public class NotebookTreeWidget extends QTreeWidget {
 		if (data.hasFormat("application/x-nevernote-notebook")) {
 			return false;
 		}
-		
+		System.out.println("drop");
 		// This is really dead code.  it is the beginning of logic to create stacks by
 		// dragging.
 		if (data.hasFormat("application/x-nevernote-notebook")) {

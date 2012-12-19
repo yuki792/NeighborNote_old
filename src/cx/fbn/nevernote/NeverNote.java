@@ -104,7 +104,6 @@ import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDesktopServices;
 import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QDockWidget;
 import com.trolltech.qt.gui.QFileDialog;
 import com.trolltech.qt.gui.QFileDialog.AcceptMode;
 import com.trolltech.qt.gui.QFileDialog.FileMode;
@@ -178,7 +177,7 @@ import cx.fbn.nevernote.gui.DateAttributeFilterTable;
 import cx.fbn.nevernote.gui.ExternalBrowse;
 import cx.fbn.nevernote.gui.MainMenuBar;
 import cx.fbn.nevernote.gui.NotebookTreeWidget;
-import cx.fbn.nevernote.gui.RensoNoteList;
+import cx.fbn.nevernote.gui.RensoDockWidget;
 import cx.fbn.nevernote.gui.SavedSearchTreeWidget;
 import cx.fbn.nevernote.gui.SearchPanel;
 import cx.fbn.nevernote.gui.TabBrowse;
@@ -360,8 +359,7 @@ public class NeverNote extends QMainWindow{
 	// ICHANGED
 	private final TabBrowserWidget tabBrowser; // ブラウザウィンドウをタブ化
 	private final HashMap<Integer, TabBrowse> tabWindows; // タブウィンドウ
-	private final RensoNoteList rensoNoteList; // 連想ノートリスト
-	private final QDockWidget rensoNoteListDock; // 連想ノートリストドックウィジェット
+	private final RensoDockWidget rensoNoteListDock; // 連想ノートリストドックウィジェット
 	
 	// ICHANGED
 	ClipBoardObserver cbObserver;
@@ -619,13 +617,9 @@ public class NeverNote extends QMainWindow{
         
 		// ICHANGED
 		// 連想ノートリストをセットアップ
-		rensoNoteList = new RensoNoteList(conn, this);
-		rensoNoteList.itemPressed.connect(this,
-				"rensoNoteItemPressed(QListWidgetItem)");
-		rensoNoteListDock = new QDockWidget(tr("Renso Note List"), this);
-		rensoNoteListDock.setWidget(rensoNoteList);
+		rensoNoteListDock = new RensoDockWidget(this, conn);
 		addDockWidget(DockWidgetArea.RightDockWidgetArea, rensoNoteListDock);
-
+		
 		if (Global.getListView() == Global.View_List_Wide) {
 			browserIndexSplitter.addWidget(noteTableView);
 			// ICHANGED
@@ -4001,7 +3995,7 @@ public class NeverNote extends QMainWindow{
 
 		// ICHANGED
 		// 連想ノートリストを更新
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 		
 		logger.log(logger.HIGH, "Leaving NeverNote.noteTableSelection");
     }
@@ -7390,7 +7384,7 @@ public class NeverNote extends QMainWindow{
 		refreshEvernoteNote(true);
 
 		// 連想ノートリストを更新
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 	}
 	
 	// ICHANGD
@@ -7449,7 +7443,7 @@ public class NeverNote extends QMainWindow{
 		rensoNotePressedItemGuid = null;
 		// 右クリックだったときの処理
 		if (QApplication.mouseButtons().isSet(MouseButton.RightButton)) {
-			rensoNotePressedItemGuid = rensoNoteList.getNoteGuid(current);
+			rensoNotePressedItemGuid = rensoNoteListDock.getRensoNoteList().getNoteGuid(current);
 			return;
 		}
 		
@@ -7458,7 +7452,7 @@ public class NeverNote extends QMainWindow{
 		String prevCurrentNoteGuid = new String(currentNoteGuid);
 		
 		// 選択されたノート（current）のguidをcurrentnoteguidにセット
-		currentNoteGuid = rensoNoteList.getNoteGuid(current);
+		currentNoteGuid = rensoNoteListDock.getRensoNoteList().getNoteGuid(current);
 
 		// 選択ノートを更新
 		selectedNoteGUIDs.clear();
@@ -7509,13 +7503,13 @@ public class NeverNote extends QMainWindow{
 		conn.getHistoryTable().addHistory("rensoItemClick", prevCurrentNoteGuid, currentNoteGuid);
 
 		// 連想ノートリストを更新
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 
 		logger.log(logger.HIGH, "Nevernote.rensoNoteSelectionChangeを出た");
 	}
 	
 	// ICHANGED
-	public void restoreSelectedNoteInfo(){		
+	public void restoreSelectedNoteInfo(){
 		// 現在のタブからguid取得
     	// currentNoteGuid = browserWindow.getNote().getGuid();	↓と同じはずだけど敢えて使わない
 		int currentTabIndex = tabBrowser.currentIndex();
@@ -7568,7 +7562,7 @@ public class NeverNote extends QMainWindow{
 		// 除外ノートテーブルに追加
 		conn.getExcludedTable().addExclusion(guid, currentNoteGuid);
 		
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 	}
 	
 	// ICHANGED
@@ -7587,7 +7581,7 @@ public class NeverNote extends QMainWindow{
 		// スター付きノートテーブルに追加
 		conn.getStaredTable().addStaredItem(currentNoteGuid, guid);
 		
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 	}
 	
 	// ICHANGED
@@ -7606,7 +7600,7 @@ public class NeverNote extends QMainWindow{
 		// スター付きノートテーブルから削除
 		conn.getStaredTable().removeStaredItem(currentNoteGuid, guid);
 		
-		rensoNoteList.refreshRensoNoteList(currentNoteGuid);
+		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 	}
 	
 	// ICHANGED
