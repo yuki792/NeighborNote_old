@@ -7562,6 +7562,9 @@ public class NeverNote extends QMainWindow{
 		// 除外ノートテーブルに追加
 		conn.getExcludedTable().addExclusion(guid, currentNoteGuid);
 		
+		// スターが付けられていたら、その情報も削除
+		conn.getStaredTable().removeStaredItem(currentNoteGuid, guid);
+		
 		rensoNoteListDock.getRensoNoteList().refreshRensoNoteList(currentNoteGuid);
 	}
 	
