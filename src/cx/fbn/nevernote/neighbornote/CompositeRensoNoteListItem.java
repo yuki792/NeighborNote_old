@@ -3,6 +3,7 @@ package cx.fbn.nevernote.neighbornote;
 
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPalette;
@@ -35,21 +36,23 @@ public class CompositeRensoNoteListItem extends RensoNoteListItem {
 	
 	@Override
 	protected void mousePressEvent(QMouseEvent e) {
-		// TODO 左ボタンの時だけー
-		super.mousePressEvent(e);
-		test();
+		// 左クリックの時だけ
+		if (e.button() == Qt.MouseButton.LeftButton) {
+			super.mousePressEvent(e);
+			itemSelectionChanged();
+		}
 	}
 	
 	@Override
 	protected void mouseDoubleClickEvent(QMouseEvent e) {
-		// もしかして、右ダブルクリックにも反応するのか？？
-		System.out.println("だぶるくりっくー");
-		
-		super.mouseDoubleClickEvent(e);
-		test();
+		// 左ダブルクリックの時だけ
+		if (e.button() == Qt.MouseButton.LeftButton) {
+			super.mouseDoubleClickEvent(e);
+			itemSelectionChanged();
+		}
 	}
 	
-	private void test() {
+	private void itemSelectionChanged() {
 		selected = !selected;
 		
 		if (selected) {

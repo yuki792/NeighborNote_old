@@ -267,7 +267,7 @@ public class ConfigDialog extends QDialog {
 		formatsButton.setText(tr("Appearance"));
 		formatsButton.setTextAlignment(AlignmentFlag.AlignHCenter.value());
 		formatsButton.setFlags(ItemFlag.ItemIsSelectable, ItemFlag.ItemIsEnabled);
-		formatsButton.setIcon(new QIcon(iconPath+"appearance.jpg"));
+		formatsButton.setIcon(new QIcon(iconPath+"appearance.png"));
 		
 		QListWidgetItem fontButton = new QListWidgetItem(contentsWidget);
 		fontButton.setText(tr("Fonts"));
