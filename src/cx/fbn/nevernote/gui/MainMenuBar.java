@@ -58,6 +58,7 @@ public class MainMenuBar extends QMenuBar {
 	// ICHANGED
 	public QAction 			noteOpenNewTab; 			// 新しいタブで開く
 	public QAction			noteAddNewTab;				// 新しいタブでノート追加
+	public QAction			noteAddCompositeSearch;		// 複合連想検索にノート追加
 	
 	public QAction			editFind;					// find text in the current note
 	public QAction			editUndo;					// Undo last change
@@ -272,6 +273,12 @@ public class MainMenuBar extends QMenuBar {
 		noteAddNewTab.setToolTip(tr("Add a new note in new tab"));
 		noteAddNewTab.triggered.connect(parent, "noteAddNewTab()");
 		setupShortcut(noteAddNewTab, "File_Note_Add_New_Tab");
+		
+		// ICHANGED ノートを複合連想検索に追加アクション生成
+		noteAddCompositeSearch = new QAction(tr("Add Composite Search"), this);
+		noteAddCompositeSearch.setToolTip(tr("Add this note to Composite Renso Search"));
+		noteAddCompositeSearch.triggered.connect(parent, "noteAddCompositeSearch()");
+		setupShortcut(noteAddCompositeSearch, "File_Note_Composite_Search");
 	
 		editFind = new QAction(tr("Find In Note"), this);
 		editFind.setToolTip(tr("Find a string in the current note"));
@@ -802,6 +809,8 @@ public class MainMenuBar extends QMenuBar {
 		noteMenu.addAction(noteOnlineHistoryAction);
 		noteMenu.addAction(noteDuplicateAction);
 		noteMenu.addAction(noteMergeAction);
+		// ICHANGED
+		noteMenu.addAction(noteAddCompositeSearch);
 
 				
 		notebookMenu.addAction(notebookAddAction);

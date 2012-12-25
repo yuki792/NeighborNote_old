@@ -7,26 +7,28 @@ import java.util.List;
 import com.evernote.edam.type.Note;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QMimeData;
-import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QListWidget;
 import com.trolltech.qt.gui.QListWidgetItem;
 
 import cx.fbn.nevernote.dialog.CompositeRensoWindow;
+import cx.fbn.nevernote.neighbornote.CompositeRensoElementItem;
 import cx.fbn.nevernote.sql.DatabaseConnection;
 
 public class CompositeRensoElementList extends QListWidget {
 	private final DatabaseConnection conn;
 	private final CompositeRensoWindow parent;
 	
-	private final HashMap<String, String> listItems;	// <Guid, Title>
+	private final HashMap<QListWidgetItem, String> listItems;	// <Item, Guid>
+	private final HashMap<String, CompositeRensoElementItem> listTrueItems;	// <Guid, TrueItem>
 	
 	public CompositeRensoElementList(DatabaseConnection conn, CompositeRensoWindow parent) {
 		this.conn = conn;
 		this.parent = parent;
 		
-		listItems = new HashMap<String, String>();
+		listItems = new HashMap<QListWidgetItem, String>();
+		listTrueItems = new HashMap<String, CompositeRensoElementItem>();
 		
 		setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection);
 		setAcceptDrops(true);
@@ -46,28 +48,38 @@ public class CompositeRensoElementList extends QListWidget {
 				
 				addElement(n.getTitle(), guid);
 			}
-			enableButtons();
 			// parent.executeCompositeRenso();
 			return true;
 		}
 		return false;
 	}
 	
+	// オーバーロードメソッド
+	public void addElement(String guid) {
+		Note n = conn.getNoteTable().getNote(guid, false, false, false, false, false);
+		addElement(n.getTitle(), guid);
+	}
+	
 	private void addElement(String title, String guid) {
 		// まだリストに追加されていなければ、追加
-		if (!listItems.containsKey(guid)) {
-			addItem(title);
-			listItems.put(guid, title);
+		if (!listItems.containsValue(guid)) {
+			QListWidgetItem item = new QListWidgetItem();
+			CompositeRensoElementItem myItem = new CompositeRensoElementItem(guid, title);
+			addItem(item);
+			setItemWidget(item, myItem);
+			listItems.put(item, guid);
+			listTrueItems.put(guid, myItem);
+			enableButtons();
 		}
 	}
 
 	public void deleteSelectedItems() {
 		List<QListWidgetItem> selectedItems = selectedItems();
-		List<QModelIndex> selectedIndexes = selectedIndexes();
 		for (int i = 0; i < selectedItems.size(); i++) {
-			String title = selectedItems.get(i).text();
-			takeItem(selectedIndexes.get(i).row());	// リストから削除
-			listItems.remove(title);
+			int row = row(selectedItems.get(i));
+			takeItem(row);	// リストから削除
+			String deletedGuid = listItems.remove(selectedItems.get(i));
+			listTrueItems.remove(deletedGuid);
 		}
 		enableButtons();
 	}
@@ -75,6 +87,7 @@ public class CompositeRensoElementList extends QListWidget {
 	public void clearItems() {
 		clear();
 		listItems.clear();
+		listTrueItems.clear();
 		enableButtons();
 	}
 	
@@ -94,7 +107,7 @@ public class CompositeRensoElementList extends QListWidget {
 		}
 	}
 
-	public HashMap<String, String> getListItems() {
+	public HashMap<QListWidgetItem, String> getListItems() {
 		return listItems;
 	}
 }

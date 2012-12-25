@@ -160,10 +160,10 @@ public class CompositeRensoWindow extends QDialog {
 			compositeRensoNoteList.clear();
 			return;
 		}
-		HashMap<String, String> elements = compositeRensoElementList.getListItems();
+		HashMap<QListWidgetItem, String> elements = compositeRensoElementList.getListItems();
 		List<String> elementGuids = new ArrayList<String>();
 		
-		Collection<String> guids = elements.keySet();
+		Collection<String> guids = elements.values();
 		Iterator<String> iterator = guids.iterator();
 		while (iterator.hasNext()) {
 			elementGuids.add(iterator.next());
@@ -185,6 +185,11 @@ public class CompositeRensoWindow extends QDialog {
 
 	public QPushButton getSearchButton() {
 		return searchButton;
+	}
+
+	public void addElementNote(String guid) {
+		compositeRensoElementList.addElement(guid);
+		
 	}
 
 }

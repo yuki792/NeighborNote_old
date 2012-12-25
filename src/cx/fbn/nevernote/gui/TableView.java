@@ -60,6 +60,7 @@ public class TableView extends QTableView {
 	// ICHANGED
 	private QAction openNewTabAction;
 	private QAction addNoteNewTabAction;
+	private QAction noteAddCompositeSearch;
     
     // Note title colors
     private QAction	noteTitleColorWhite;
@@ -381,6 +382,11 @@ public class TableView extends QTableView {
 		addNoteNewTabAction = t;
 	}
 	
+	// ICHANGED
+	public void setnoteAddCompositeSearchAction(QAction c) {
+		noteAddCompositeSearch = c;
+	}
+	
 	@Override
 	public void keyPressEvent(QKeyEvent e) {
 		if (e.matches(StandardKey.MoveToStartOfDocument)) {
@@ -441,6 +447,8 @@ public class TableView extends QTableView {
 	    
 	    notePinned = new QAction(titleColorMenu);
 	    menu.addAction(notePinned);
+	    // ICHANGED
+	    menu.addAction(noteAddCompositeSearch);
     
 	    noteTitleColorWhite.setText(tr("White"));
 	    noteTitleColorRed.setText(tr("Red"));

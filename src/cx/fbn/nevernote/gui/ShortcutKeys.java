@@ -35,8 +35,9 @@ public class ShortcutKeys {
 	public String File_Note_Restore;			// Undelete a note
 	public String File_Note_Duplicate;			// duplicate a note
 	// ICHANGED
-	public String File_Note_Open_New_Tab;			// 新しいタブでノートを開く
-	public String File_Note_Add_New_Tab;			// 新しいタブでノート追加
+	public String File_Note_Open_New_Tab;		// 新しいタブでノートを開く
+	public String File_Note_Add_New_Tab;		// 新しいタブでノート追加
+	public String File_Note_Composite_Search;	// ノートを複合連想検索に追加
 	
 	public String File_Notebook_Add;			// Add a notebook
 	public String File_Notebook_Edit;			// Edit an existing notebook
@@ -134,6 +135,7 @@ public class ShortcutKeys {
 		// ICHANGED
 		File_Note_Add_New_Tab = new String();		// 新しいタブでノートを開く
 		File_Note_Open_New_Tab = new String();		// 新しいタブでノート追加
+		File_Note_Composite_Search = new String();	// ノートを複合連想検索に追加
 		
 		File_Notebook_Add = new String();			// Add a notebook
 		File_Notebook_Edit = new String();			// Edit an existing notebook
@@ -234,6 +236,7 @@ public class ShortcutKeys {
 		// ICHANGED
 		loadKey("File_Note_Add_New_Tab", File_Note_Add_New_Tab);
 		loadKey("File_Note_Open_New_Tab", File_Note_Open_New_Tab);
+		loadKey("File_Note_Composite_Search", File_Note_Composite_Search);
 		
 		loadKey("Edit_Find_In_Note", Edit_Find_In_Note);
 		loadKey("Edit_Undo", Edit_Undo);

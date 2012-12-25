@@ -700,6 +700,8 @@ public class NeverNote extends QMainWindow{
 		
 		// ICHANGED noteTableViewに新しいタブでノート追加を追加
 		noteTableView.setAddNoteNewTabAction(menuBar.noteAddNewTab);
+		// ICHANGED noteTableViewにノートを複合連想検索に追加を追加
+		noteTableView.setnoteAddCompositeSearchAction(menuBar.noteAddCompositeSearch);
 		
 		noteTableView.setDeleteAction(menuBar.noteDelete);
 		noteTableView.setRestoreAction(menuBar.noteRestoreAction);
@@ -7610,5 +7612,35 @@ public class NeverNote extends QMainWindow{
 	// currentNoteGuidを返す
 	public String getCurrentNoteGuid() {
 		return currentNoteGuid;
+	}
+	
+	// ICHANGED
+	// ノートを複合連想検索に追加
+	@SuppressWarnings("unused")
+	private void noteAddCompositeSearch() {
+		// selectedNoteGUIDsをディープコピー
+		List<String> copySelected = new ArrayList<String>(selectedNoteGUIDs);
+		
+		for (int i=0; i < copySelected.size() ; i++) {
+			noteAddCompositeSearch(copySelected.get(i));
+		}
+		
+		restoreSelectedNoteInfo();
+	}
+	
+	// ICHANGED
+	// ノートを複合連想検索に追加（連想ノートリストから）
+	@SuppressWarnings("unused")
+	private void noteAddCompositeSearchFromRNL() {
+		if(rensoNotePressedItemGuid != null){
+			String prevCurrentNoteGuid = new String(currentNoteGuid);
+			noteAddCompositeSearch(rensoNotePressedItemGuid);
+		}
+	}
+	
+	// ICHANGED
+	// ノートを複合連想検索に追加
+	private void noteAddCompositeSearch(String guid) {
+		rensoNoteListDock.addCompositeSearchElement(guid);
 	}
 }

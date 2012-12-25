@@ -68,4 +68,8 @@ public class RensoDockWidget extends QDockWidget {
 	public NeverNote getParent() {
 		return parent;
 	}
+	
+	public void addCompositeSearchElement(String guid) {
+		compositeRensoWindow.addElementNote(guid);
+	}
 }

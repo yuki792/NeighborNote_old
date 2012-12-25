@@ -32,6 +32,7 @@ public class RensoNoteList extends RelationCalculator {
 	private final QAction starAction;
 	private final QAction unstarAction;
 	private final QAction excludeNoteAction;
+	private final QAction noteAddCompositeSearchAction;
 	private final NeverNote parent;
 	private final QMenu menu;
 
@@ -65,9 +66,14 @@ public class RensoNoteList extends RelationCalculator {
 		excludeNoteAction = new QAction(tr("Exclude"), this);
 		excludeNoteAction.setToolTip(tr("Exclude this note from RensoNoteList"));
 		excludeNoteAction.triggered.connect(parent, "excludeNote()");
+		// ノートを複合連想検索に追加アクション生成
+		noteAddCompositeSearchAction = new QAction(tr("Add Composite Search"), this);
+		noteAddCompositeSearchAction.setToolTip(tr("Add this note to Composite Renso Search"));
+		noteAddCompositeSearchAction.triggered.connect(parent, "noteAddCompositeSearchFromRNL()");
 		// コンテキストメニューに登録
 		menu.addAction(openNewTabAction);
 		menu.addAction(excludeNoteAction);
+		menu.addAction(noteAddCompositeSearchAction);
 		menu.aboutToHide.connect(this, "contextMenuHidden()");
 		
 		logger.log(logger.HIGH, "rensoNoteList setup complete");
