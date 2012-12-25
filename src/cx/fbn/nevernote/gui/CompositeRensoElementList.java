@@ -35,7 +35,6 @@ public class CompositeRensoElementList extends QListWidget {
 
 	@Override
 	protected boolean dropMimeData(int index, QMimeData data, Qt.DropAction action) {
-		System.out.println("drop");
 		// ノートがリストにドロップされた場合(NotebookTreeWidgetのdropMimeData()を参考)
 		if (data.hasFormat("application/x-nevernote-note")) {
 			QByteArray d = data.data("application/x-nevernote-note");
@@ -47,8 +46,8 @@ public class CompositeRensoElementList extends QListWidget {
 				
 				addElement(n.getTitle(), guid);
 			}
-			enableDeleteButtons();
-			parent.executeCompositeRenso();
+			enableButtons();
+			// parent.executeCompositeRenso();
 			return true;
 		}
 		return false;
@@ -70,22 +69,28 @@ public class CompositeRensoElementList extends QListWidget {
 			takeItem(selectedIndexes.get(i).row());	// リストから削除
 			listItems.remove(title);
 		}
-		enableDeleteButtons();
+		enableButtons();
 	}
 
 	public void clearItems() {
 		clear();
 		listItems.clear();
-		enableDeleteButtons();
+		enableButtons();
 	}
 	
-	private void enableDeleteButtons() {
-		if (count() > 0) {
+	// 削除、全クリア、検索ボタン有効（非有効）化
+	private void enableButtons() {
+		if (count() >= 1) {
 			parent.getDeleteButton().setEnabled(true);
 			parent.getAllClearButton().setEnabled(true);
 		} else {
 			parent.getDeleteButton().setEnabled(false);
 			parent.getAllClearButton().setEnabled(false);
+		}
+		if (count() >= 2) {
+			parent.getSearchButton().setEnabled(true);
+		} else {
+			parent.getSearchButton().setEnabled(false);
 		}
 	}
 

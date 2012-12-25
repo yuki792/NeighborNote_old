@@ -35,12 +35,16 @@ public class CompositeRensoNoteListItem extends RensoNoteListItem {
 	
 	@Override
 	protected void mousePressEvent(QMouseEvent e) {
+		// TODO 左ボタンの時だけー
 		super.mousePressEvent(e);
 		test();
 	}
 	
 	@Override
 	protected void mouseDoubleClickEvent(QMouseEvent e) {
+		// もしかして、右ダブルクリックにも反応するのか？？
+		System.out.println("だぶるくりっくー");
+		
 		super.mouseDoubleClickEvent(e);
 		test();
 	}

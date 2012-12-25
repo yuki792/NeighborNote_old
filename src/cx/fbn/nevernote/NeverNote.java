@@ -4735,7 +4735,7 @@ public class NeverNote extends QMainWindow{
 	}
 
 	// ICHANGED
-	private void openTabEditor(String guid) {
+	public void openTabEditor(String guid) {
 		
 		Note note = conn.getNoteTable().getNote(guid, true, true, false, true, true);
 		// 新しいタブエディタを作成

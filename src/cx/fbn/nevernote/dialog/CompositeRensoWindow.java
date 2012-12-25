@@ -10,9 +10,8 @@ import java.util.List;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QHBoxLayout;
-import com.trolltech.qt.gui.QImage;
 import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QPixmap;
+import com.trolltech.qt.gui.QListWidgetItem;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QVBoxLayout;
 
@@ -33,9 +32,10 @@ public class CompositeRensoWindow extends QDialog {
 	private final QLabel elementLabel;
 	private final QLabel resultLabel;
 	private final QLabel explainLabel;
-	private final QLabel rightArrowLabel;
+	private final QPushButton searchButton;
+	// private final QLabel rightArrowLabel;
 	
-	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
+	// private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	
 	public CompositeRensoWindow(RensoDockWidget parent, DatabaseConnection conn) {
 		super(parent);
@@ -48,19 +48,21 @@ public class CompositeRensoWindow extends QDialog {
 		compositeRensoNoteList.setFixedSize(300, 400);
 		
 		deleteButton = new QPushButton(tr("Delete Slected Notes"));
-		getDeleteButton().setEnabled(false);
+		deleteButton.setEnabled(false);
 		allClearButton = new QPushButton(tr("All Clear"));
-		getAllClearButton().setEnabled(false);
+		allClearButton.setEnabled(false);
 		openButton = new QPushButton(tr("Open Selected Notes"));
-		getOpenButton().setEnabled(false);
+		openButton.setEnabled(false);
 		exitButton = new QPushButton(tr("Exit"));
 		exitButton.setFixedWidth(100);
+		searchButton = new QPushButton("> " + tr("Search") + " >");
+		getSearchButton().setEnabled(false);
 		elementLabel = new QLabel(tr("Element Notes:"));
 		resultLabel = new QLabel(tr("Search Result:"));
 		explainLabel = new QLabel(tr("Please drop notes in this list."));
-		QImage arrowImage = new QImage(iconPath+"greenRightArrow.png");
-		rightArrowLabel = new QLabel();
-		rightArrowLabel.setPixmap(QPixmap.fromImage(arrowImage));
+		// QImage arrowImage = new QImage(iconPath+"greenRightArrow.png");
+		// rightArrowLabel = new QLabel();
+		// rightArrowLabel.setPixmap(QPixmap.fromImage(arrowImage));
 		
 		initialize();
 	}
@@ -71,10 +73,11 @@ public class CompositeRensoWindow extends QDialog {
 	}
 	
 	private void connectButtons() {
-		getDeleteButton().clicked.connect(this, "deleteButtonClicked()");
-		getAllClearButton().clicked.connect(this, "allClearButtonClicked()");
-		getOpenButton().clicked.connect(this, "openButtonClicked()");
+		deleteButton.clicked.connect(this, "deleteButtonClicked()");
+		allClearButton.clicked.connect(this, "allClearButtonClicked()");
+		openButton.clicked.connect(this, "openButtonClicked()");
 		exitButton.clicked.connect(this, "reject()");
+		searchButton.clicked.connect(this, "searchButtonClicked()");
 	}
 	
 	private void layoutSettings() {		
@@ -96,7 +99,8 @@ public class CompositeRensoWindow extends QDialog {
 		
 		QHBoxLayout hLayout1 = new QHBoxLayout();
 		hLayout1.addLayout(vElementLayout);
-		hLayout1.addWidget(rightArrowLabel);
+		// hLayout1.addWidget(rightArrowLabel);
+		hLayout1.addWidget(getSearchButton());
 		hLayout1.addLayout(vResultLayout);
 		
 		QHBoxLayout hLayout2 = new QHBoxLayout();
@@ -129,11 +133,33 @@ public class CompositeRensoWindow extends QDialog {
 	
 	@SuppressWarnings("unused")
 	private void openButtonClicked() {
-		// TODO
-		System.out.println(compositeRensoNoteList.selectedItems());
+		boolean openFlag = false;
+		List<QListWidgetItem> selectedItems = compositeRensoNoteList.selectedItems();
+		for (int i = 0; i < selectedItems.size(); i++) {
+			String guid = compositeRensoNoteList.getNoteGuid(selectedItems.get(i));
+			System.out.println(guid);
+			parent.getParent().openTabEditor(guid);
+			if (!openFlag) {
+				openFlag = true;
+			}
+		}
+		
+		// ウィンドウを閉じる
+		if (openFlag) {
+			reject();
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void searchButtonClicked() {
+		executeCompositeRenso();
 	}
 	
 	public void executeCompositeRenso() {
+		if (compositeRensoElementList.getListItems().size() < 2) {
+			compositeRensoNoteList.clear();
+			return;
+		}
 		HashMap<String, String> elements = compositeRensoElementList.getListItems();
 		List<String> elementGuids = new ArrayList<String>();
 		
@@ -156,4 +182,9 @@ public class CompositeRensoWindow extends QDialog {
 	public QPushButton getOpenButton() {
 		return openButton;
 	}
+
+	public QPushButton getSearchButton() {
+		return searchButton;
+	}
+
 }

@@ -84,13 +84,25 @@ public class CompositeRensoNoteList extends RelationCalculator {
 			ReferencedCount.remove(guid);
 		}
 		
-		// 完成（参照数に応じた重み付けはまだ）
-		System.out.println(compositeRensoNotes);
+		addWeight(compositeRensoNotes, ReferencedCount);
+		
 		addSearchResult(compositeRensoNotes);
 		
 		enableOpenButton();
 	}
 	
+	// 各連想ノートの関連度に参照数を乗じて（重み付けして）新たな関連度とする
+	private void addWeight(HashMap<String, Integer> compositeRensoNotes, HashMap<String, Integer> referencedCount) {
+		Collection<String> guids = compositeRensoNotes.keySet();
+		Iterator<String> guidIterator = guids.iterator();
+		while (guidIterator.hasNext()) {
+			String guid = guidIterator.next();
+			int point = compositeRensoNotes.get(guid);
+			int count = referencedCount.get(guid);
+			compositeRensoNotes.put(guid, point * count);
+		}
+	}
+
 	private void addSearchResult(HashMap<String, Integer> History) {
 		// 引数保護のためディープコピー
 		HashMap<String, Integer> copyHistory = new HashMap<String, Integer>();
