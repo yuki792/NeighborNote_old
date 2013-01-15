@@ -1064,6 +1064,10 @@ public class NeverNote extends QMainWindow{
         	st.execute("shutdown");
         	st = conn.getIndexConnection().createStatement();
         	st.execute("shutdown");
+        	// ICHANGED
+        	st = conn.getBehaviorConnection().createStatement();
+        	st.execute("shutdown");
+        	
         	if (QMessageBox.question(this, tr("Are you sure"), 
         			tr("Are you sure you wish to encrypt the database?"),
         			QMessageBox.StandardButton.Yes, 
@@ -1071,6 +1075,9 @@ public class NeverNote extends QMainWindow{
         		ChangeFileEncryption.execute(dbPath, "NeverNote", encryptCipher, null, Global.cipherPassword.toCharArray(), true);
         		ChangeFileEncryption.execute(dbPath, "Resources", encryptCipher, null, Global.cipherPassword.toCharArray(), true);
         		ChangeFileEncryption.execute(dbPath, "Index", encryptCipher, null, Global.cipherPassword.toCharArray(), true);
+        		// ICHANGED
+        		ChangeFileEncryption.execute(dbPath, "Behavior", encryptCipher, null, Global.cipherPassword.toCharArray(), true);
+        		
         		Global.setDatabaseUrl(Global.getDatabaseUrl() + ";CIPHER="+encryptCipher);
         		Global.setResourceDatabaseUrl(Global.getResourceDatabaseUrl() + ";CIPHER="+encryptCipher);
         		Global.setIndexDatabaseUrl(Global.getIndexDatabaseUrl() + ";CIPHER="+encryptCipher);
