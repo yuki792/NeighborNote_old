@@ -35,10 +35,12 @@ public class RensoNoteList extends QListWidget {
 	private final QAction excludeNoteAction;
 	private final NeverNote parent;
 	private final QMenu menu;
+	private int allPointSum;
 
 	public RensoNoteList(DatabaseConnection c, NeverNote p) {
 		logger = new ApplicationLogger("rensoNoteList.log");
 		logger.log(logger.HIGH, "Setting up rensoNoteList");
+		allPointSum = 0;
 
 		conn = c;
 		this.parent = p;
@@ -118,6 +120,12 @@ public class RensoNoteList extends QListWidget {
 		HashMap<String, Integer> sameNotebookHistory = conn.getHistoryTable().getBehaviorHistory("sameNotebook", guid);
 		addWeight(sameNotebookHistory, Global.getSameNotebookWeight());
 		mergedHistory = mergeHistory(sameNotebookHistory, mergedHistory);
+		
+		// すべての関連ポイントの合計を取得（関連度のパーセント算出に利用）
+		allPointSum = 0;
+		for (int p : mergedHistory.values()) {
+			allPointSum += p;
+		}
 		
 		addRensoNoteList(mergedHistory);
 
@@ -206,7 +214,7 @@ public class RensoNoteList extends QListWidget {
 					isStared = conn.getStaredTable().existNote(currentNoteGuid, maxGuid);
 					
 					QListWidgetItem item = new QListWidgetItem();
-					RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, isStared, conn, this);
+					RensoNoteListItem myItem = new RensoNoteListItem(maxNote, maxNum, isStared, allPointSum, conn, this);
 					item.setSizeHint(new QSize(0, 90));
 					this.addItem(item);
 					this.setItemWidget(item, myItem);

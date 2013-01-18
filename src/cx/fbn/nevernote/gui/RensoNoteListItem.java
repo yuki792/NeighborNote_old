@@ -31,14 +31,16 @@ public class RensoNoteListItem extends QWidget{
 	private String noteContent;
 	private final RensoNoteList parent;
 	private final boolean isStared;
+	private final int allPointSum;
 	
 	private final String iconPath = new String("classpath:cx/fbn/nevernote/icons/");
 	
-	public RensoNoteListItem(Note note, int relationPoints, boolean isStared, DatabaseConnection c, RensoNoteList parent){
+	public RensoNoteListItem(Note note, int relationPoints, boolean isStared, int allPointSum, DatabaseConnection c, RensoNoteList parent){
 		
 		this.conn = c;
 		this.parent = parent;
 		this.isStared = isStared;
+		this.allPointSum = allPointSum;
 		this.noteGuid = new String(note.getGuid());
 		
 		this.noteTitle = new String(note.getTitle());
@@ -80,19 +82,30 @@ public class RensoNoteListItem extends QWidget{
 		painter.drawLine(0, rect().height() - 1, rect().width() - 1, rect().height() - 1);
 		
 		// 項目の中身
+		// フォント設定
 		painter.setPen(QColor.black);
 		QFont titleFont = new QFont();
 		titleFont.setPixelSize(15);
 		titleFont.setBold(true);
 		QFont normalFont = new QFont();
 		normalFont.setPixelSize(12);
+		
+		// タイトル
 		painter.setFont(titleFont);
-		painter.drawText(85, 3, size().width() - 85, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle + "  (" + String.valueOf(relationPoints) + ")");
+		painter.drawText(85, 3, size().width() - 130, 20, Qt.AlignmentFlag.AlignLeft.value(), noteTitle);
+		// 関連度
+		double ratio = (double)relationPoints / allPointSum;
+		int green = (int) (255 * (1.0 - ratio));
+		painter.setPen(new QColor(255, green, 0));
+		painter.drawText(size().width() - 40, 3, 40, 20, Qt.AlignmentFlag.AlignRight.value(), String.valueOf((int)(ratio * 100)) + "%");
+		// ノート作成日時
 		painter.setFont(normalFont);
 		painter.setPen(new QColor(60, 65, 255));
 		painter.drawText(85, 23, 75, 17, Qt.AlignmentFlag.AlignLeft.value(), noteCreated);
+		// タグ
 		painter.setPen(QColor.black);
 		painter.drawText(165, 23, size().width() - 165, 17, Qt.AlignmentFlag.AlignLeft.value(), tagNames);
+		// ノート内容
 		QTextOption option = new QTextOption();
 		option.setAlignment(Qt.AlignmentFlag.AlignLeft);
 		option.setUseDesignMetrics(true);
@@ -121,7 +134,7 @@ public class RensoNoteListItem extends QWidget{
 		
 		painter.end();
 	}
-	
+
 	@Override
 	protected void enterEvent(QEvent e){
 		if (!parent.isContextMenuVisible()) {
