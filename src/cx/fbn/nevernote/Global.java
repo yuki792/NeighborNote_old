@@ -221,7 +221,8 @@ public class Global {
 		//messageLevel = 1;
 		setMessageLevel(msglevel);
 		keepRunning = true;  // Make sure child threads stay running
-		disableUploads = disableUploads();  // Should we upload anything?  Normally true.
+		disableUploads = disableUploads();  // Should we upload anything?  Normally false.
+		//disableUploads = true;  //***** DELETE THIS LINE *******
 		enableCarriageReturnFix = enableCarriageReturnFix();  // Enable test fix?
 		enableHTMLEntitiesFix = enableHtmlEntitiesFix();  // Enable test fix?
 		
@@ -724,31 +725,13 @@ public class Global {
 		settings.setValue("recognitionWeight", len);
 		settings.endGroup();    	
     }
-    // IFIXED 
     public static int getRecognitionWeight() {
-		/*
-		 * settings.beginGroup("General");
-		 * Integer len;
-		 * try {
-		 * len = (Integer)settings.value("recognitionWeight", 30);
-		 * } catch (Exception e) {
-		 * len = 80;
-		 * }
-		 * settings.endGroup();
-		 * return len;
-		 */
-    	
 		settings.beginGroup("General");
 		Integer len;
 		try {
-			String l = (String)settings.value("recognitionWeight", 30);
-			len = new Integer(l.trim());
+			len = (Integer)settings.value("recognitionWeight", 30);
 		} catch (Exception e) {
-			try {
-				len = (Integer)settings.value("recognitionWeight", 30);
-			} catch (Exception e1) {
-				len = 80;
-			}
+			len = 80;
 		}
 		settings.endGroup();
 		return len;
