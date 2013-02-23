@@ -162,45 +162,52 @@ public class RensoNoteList extends QListWidget {
 		return mergedHistory;
 	}
 	
-	private void addRensoNoteList(HashMap<String, Integer> History){		
-		// 引数保護のためディープコピー
-		HashMap<String, Integer> copyHistory = new HashMap<String, Integer>();
-		copyHistory.putAll(History);
+	private void addRensoNoteList(HashMap<String, Integer> History){
+		String currentNoteGuid = new String(parent.getCurrentNoteGuid());
+		
+		// スター付きノートとスター無しノートを分ける
+		HashMap<String, Integer> staredNotes = new HashMap<String, Integer>();	// スター付きノートのマップ
+		HashMap<String, Integer> normalNotes = new HashMap<String, Integer>();	// スター無しノートのマップ
+		for (String nextGuid: History.keySet()) {
+			int relationPoint = History.get(nextGuid);
+			boolean isStared = conn.getStaredTable().existNote(currentNoteGuid, nextGuid);
+			if (isStared) {
+				staredNotes.put(nextGuid, relationPoint);
+			} else {
+				normalNotes.put(nextGuid, relationPoint);
+			}
+		}
 		
 		// 連想ノートリストアイテムの最大表示数まで繰り返す
 		for (int i = 0; i < Global.getRensoListItemMaximum(); i++) {
-			// 操作回数が多い順に取り出して連想ノートリストに追加
-			if (!copyHistory.isEmpty()) {
+			// スター付きノートがあれば先に処理する
+			HashMap<String, Integer> tmpMap = new HashMap<String, Integer>();
+			if (!staredNotes.isEmpty()) {
+				tmpMap = staredNotes;
+			}else if (!normalNotes.isEmpty()) {
+				tmpMap = normalNotes;
+			}
+			
+			// 操作回数が多い順に取り出して連想ノートリストに追加する
+			if (!tmpMap.isEmpty()) {
 				int maxNum = -1;
 				String maxGuid = new String();
-				Iterator<String> it = copyHistory.keySet().iterator();
 				
-				while (it.hasNext()) {
-					String nextGuid = it.next();
-					int tmpNum = copyHistory.get(nextGuid);
+				for (String nextGuid: tmpMap.keySet()) {
+					int relationPoint = tmpMap.get(nextGuid);
 					
-					// スター付きを見つけたら、その時点でそのノートを最大ノートとして表示させる
-					boolean isStared;
-					String currentNoteGuid = new String(parent.getCurrentNoteGuid());
-					isStared = conn.getStaredTable().existNote(currentNoteGuid, nextGuid);
-					if (isStared) {
-						maxNum = tmpNum;
-						maxGuid = nextGuid;
-						break;
-					}
-					
-					// スター付きでないなら、最大ノート探索する
-					if (tmpNum > maxNum) {
-						maxNum = tmpNum;
+					// 最大ノート探索する
+					if (relationPoint > maxNum) {
+						maxNum = relationPoint;
 						maxGuid = nextGuid;
 					}
 				}
+				
 				// 次の最大値探索で邪魔なので最大値をHashMapから削除
-				copyHistory.remove(maxGuid);
+				tmpMap.remove(maxGuid);
 	
 				// 関連度最大のノートがアクティブか確認
-				Note maxNote = conn.getNoteTable().getNote(maxGuid, true, false,
-						false, false, true);
+				Note maxNote = conn.getNoteTable().getNote(maxGuid, true, false, false, false, true);
 				boolean isNoteActive = false;
 				if(maxNote != null) {
 					isNoteActive = maxNote.isActive();
@@ -210,7 +217,6 @@ public class RensoNoteList extends QListWidget {
 				if (isNoteActive && maxNum > 0) {
 					// スター付きか確認
 					boolean isStared;
-					String currentNoteGuid = new String(parent.getCurrentNoteGuid());
 					isStared = conn.getStaredTable().existNote(currentNoteGuid, maxGuid);
 					
 					QListWidgetItem item = new QListWidgetItem();
