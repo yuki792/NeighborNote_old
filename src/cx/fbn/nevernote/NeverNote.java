@@ -3882,6 +3882,7 @@ public class NeverNote extends QMainWindow{
 		saveNote();
 		
 		// ICHANGED
+		// Ctrｌを押しながらノートテーブルを選択した時に選択ノート数0になってしまうのを止める
 		if (noteTableView.selectionModel().selectedRows().size() == 0) {
 			scrollToGuid(currentNoteGuid);
 			return;
@@ -4006,7 +4007,7 @@ public class NeverNote extends QMainWindow{
 		// ICHANGED
 		if (currentNoteGuid != null && !currentNoteGuid.equals("")) {
 			if (!Global.showDeleted) { // ゴミ箱じゃなければ
-				addHistory();
+				addBrowseHistory();
 			}
 		}
 
@@ -4020,7 +4021,8 @@ public class NeverNote extends QMainWindow{
     
 
 	// ICHANGED
-	private void addHistory() {
+    // 複数ノートの同時閲覧履歴をデータベースに保存
+	private void addBrowseHistory() {
 		// このノートと他のタブウィンドウノートの関連性を内部データベースのHistoryテーブルに登録
 		if (tabWindows.size() >= 2) {
 			Iterator<Integer> it = tabWindows.keySet().iterator();
@@ -4794,7 +4796,7 @@ public class NeverNote extends QMainWindow{
 
 		if (guid != null && !guid.equals("")) {
 			if (!Global.showDeleted) { // ゴミ箱じゃなければ
-				addHistory();
+				addBrowseHistory();
 			}
 		}
 	}
